@@ -34,6 +34,7 @@ Contents
 - [Documentation](#documentation)
 - [What is implemented](#what-is-implemented)
 - [Tests and performance](#tests-and-performance)
+- [License](#license)
 
 ## Installation
 
@@ -387,3 +388,9 @@ Uniformly sampled unit sphere, single radius, Apple Silicon laptop, Julia 1.12:
 | 1 000 000 | 2 000 000 | 3.4 s |
 
 Running time is linear in the number of points, as expected for bounded sampling density.
+
+## License
+
+MIT, see [LICENSE](LICENSE). The Stanford bunny and dragon scans that the scripts download
+are provided by the Stanford Computer Graphics Laboratory under their own terms and are not
+part of this repository.
