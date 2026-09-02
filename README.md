@@ -16,6 +16,9 @@ working in Claude Code from the PDF alone, with no reference to other BPA implem
 The code, tests, command-line tool and documentation were produced in that session and
 validated on synthetic surfaces and on the Stanford bunny and dragon scans; the choices
 made where the paper leaves room are listed under [What is implemented](#what-is-implemented).
+The output has since been cross-checked against the ball-pivoting implementations of Open3D
+and MeshLab on the same inputs, both by verifying that every triangle admits an empty ball
+and by comparing the triangle sets directly; a comprehensive comparison is planned.
 
 **The implementation is still at a preliminary stage.** It reproduces the algorithm and
 passes its tests on clean data, but it has not been used beyond the datasets in `data/`,
@@ -83,10 +86,10 @@ algorithm's normal test refuses to bridge the two sheets, leaving small holes th
 ```
 $ julia bpa.jl -r 0.03 -i data/knot-300-100.off
 input: data/knot-300-100.off (30000 points)
-triangles: 58334 in 0.12 s
+triangles: 58329 in 0.11 s
 points used: 29203 of 30000
-seeds: 2, pivots: 58538, boundary edges: 188
-rejected: no hit 0, normal 200, interior vertex 5, manifold 1
+seeds: 2, pivots: 58541, boundary edges: 203
+rejected: no hit 5, normal 199, interior vertex 8, manifold 2
 wrote /Users/.../BPA.jl/results/knot-300-100_bpa.off
 ```
 
@@ -95,10 +98,10 @@ wrote /Users/.../BPA.jl/results/knot-300-100_bpa.off
 ```
 $ julia bpa.jl -i data/bunny/data/bun000.off -r 0.00125
 input: data/bunny/data/bun000.off (40256 points)
-triangles: 78031 in 0.16 s
+triangles: 78030 in 0.16 s
 points used: 39700 of 40256
-seeds: 13, pivots: 79439, boundary edges: 1417
-rejected: no hit 106, normal 1311, interior vertex 2, manifold 2
+seeds: 13, pivots: 79439, boundary edges: 1420
+rejected: no hit 885, normal 532, interior vertex 3, manifold 2
 wrote /Users/.../BPA.jl/results/bun000_bpa.off
 ```
 
@@ -110,10 +113,10 @@ edges than above), which the summary makes visible:
 $ julia bpa.jl -i data/bunny/data/bun000.off
 input: data/bunny/data/bun000.off (40256 points)
 estimated sample spacing: 0.000516 -> radius 0.000774
-triangles: 75373 in 0.16 s
+triangles: 75369 in 0.11 s
 points used: 39540 of 40256
-seeds: 157, pivots: 79021, boundary edges: 3795
-rejected: no hit 1990, normal 1810, interior vertex 1, manifold 4
+seeds: 157, pivots: 79021, boundary edges: 3803
+rejected: no hit 3396, normal 404, interior vertex 5, manifold 4
 ```
 
 **Several radii** (Section 4.6 of the paper) and **sampling a mesh**. `--sample N` draws N
@@ -166,10 +169,10 @@ scans from /Users/.../BPA.jl/data/bunny/data:
   ...
   top3           36023 points  (transformed by top3.xf)
 merged 10 scans: 362272 points
-triangles: 317890 in 2.3 s
-points used: 161603 of 362272  (many points unreached: try a larger radius, or several radii)
-seeds: 22, pivots: 325374, boundary edges: 7404
-rejected: no hit 0, normal 7490, interior vertex 13, manifold 3
+triangles: 317867 in 2.8 s
+points used: 161601 of 362272  (many points unreached: try a larger radius, or several radii)
+seeds: 22, pivots: 325375, boundary edges: 7457
+rejected: no hit 244, normal 7239, interior vertex 44, manifold 3
 wrote results/bunny_bpa.ply
 ```
 
@@ -231,7 +234,9 @@ All options:
   needs one per connected component.
 - **boundary edges**: mesh edges with a single triangle. Zero means a closed surface.
 - **rejected**: why pivots failed. *no hit*: the ball made a full turn without touching a
-  point (too small a radius, or a true boundary). *normal*: the first point hit would give
+  point, or came back to the third vertex of the triangle it started from before touching
+  anything else (too small a radius, a true boundary, or nothing beyond the edge but points
+  under the surface). *normal*: the first point hit would give
   a triangle disagreeing with the vertex normals (noise, or two nearby surface sheets).
   *interior vertex*: the point hit already has a complete fan of triangles. *manifold*: the
   triangle would give an edge three triangles or a non-orientable configuration. Each
@@ -365,7 +370,12 @@ Decisions where the paper leaves room:
   If the resulting triangle fails the normal-consistency or manifoldness test, the edge is
   marked as boundary (lines 3 and 8–9 of the algorithm in Fig. 5) rather than trying the next
   point along the trajectory. Points hit at exactly the same angle are all "first"; among
-  them the one giving a valid triangle wins.
+  them the one giving a valid triangle wins. The third vertex of the triangle the ball
+  starts from is a candidate like any other: the ball leaves it at once but comes back to it
+  after about half a turn on a flat, well-sampled surface, and if that happens before any
+  other point is touched the pivot fails. Skipping that vertex, as several implementations
+  do, lets the ball roll on with the vertex inside it and produces triangles whose ball is
+  not empty.
 - **Normal test.** A new triangle must have a normal with positive dot product with all three
   of its vertex normals (the paper's seed test; for pivot triangles the text mentions only
   "the surface normal").
@@ -383,15 +393,16 @@ The tests check the geometric primitives against brute force, the glue cases of 
 hand-built fronts, the OFF/PLY/XYZ readers and writers, the command-line tool, and full
 reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
 (χ = 0), a plane patch (χ = 1, one clean boundary loop), exact lattices (cospherical
-quads), and a plane sampled at two densities where one radius leaves the sparse half
-uncovered and two radii cover it.
+quads), a plane sampled at two densities where one radius leaves the sparse half
+uncovered and two radii cover it, and a pivot whose ball returns to the starting
+triangle's third vertex before reaching anything else.
 
 Uniformly sampled unit sphere, single radius, Apple Silicon laptop, Julia 1.12:
 
 | points | triangles | time |
 | --- | --- | --- |
-| 200 000 | 400 000 | 0.7 s |
-| 1 000 000 | 2 000 000 | 3.4 s |
+| 200 000 | 400 000 | 0.8 s |
+| 1 000 000 | 2 000 000 | 3.6 s |
 
 Running time is linear in the number of points, as expected for bounded sampling density.
 
