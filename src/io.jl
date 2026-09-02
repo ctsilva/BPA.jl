@@ -83,27 +83,35 @@ function vertex_colors(mesh::BPAMesh, face_colors; unused = (255, 255, 255))
 end
 
 """
-    write_off(path, mesh::BPAMesh; face_colors=nothing)
+    write_off(path, mesh::BPAMesh; face_colors=nothing, normals=isempty(mesh.triangles))
 
-Write the points and triangles as an ASCII OFF file. Without colours the header is `NOFF`
-and the vertex normals follow each position. With `face_colors`, a vector of `(r, g, b)`
-integers in 0–255, one per triangle, the file is a `COFF`: each vertex line is
-`x y z r g b 1.0` with the colours in 0–1 (see [`vertex_colors`](@ref)), and no normals.
+Write the points and triangles as an ASCII OFF file. A mesh is written as a plain `OFF`,
+positions only, which is what viewers such as trimesh2's `mesh_view` read. A point cloud
+(no triangles) is written as `NOFF`, each position followed by its normal, so the normals
+survive a round trip through [`read_off`](@ref); `normals` overrides that choice. With
+`face_colors`, a vector of `(r, g, b)` integers in 0–255, one per triangle, the file is a
+`COFF`: each vertex line is `x y z r g b 1.0` with the colours in 0–1 (see
+[`vertex_colors`](@ref)), and no normals.
 """
-function write_off(path::AbstractString, mesh::BPAMesh; face_colors = nothing)
+function write_off(path::AbstractString, mesh::BPAMesh; face_colors = nothing,
+                   normals::Bool = isempty(mesh.triangles))
     c = mesh.cloud
     vc = face_colors === nothing ? nothing : vertex_colors(mesh, face_colors)
     open(path, "w") do io
-        println(io, vc === nothing ? "NOFF" : "COFF")
+        println(io, vc !== nothing ? "COFF" : normals ? "NOFF" : "OFF")
         println(io, length(c), " ", length(mesh.triangles), " 0")
-        if vc === nothing
+        if vc !== nothing
+            for (p, col) in zip(c.positions, vc)
+                r, g, b = round.(col ./ 255, digits = 3)
+                println(io, p[1], " ", p[2], " ", p[3], " ", r, " ", g, " ", b, " 1.0")
+            end
+        elseif normals
             for (p, n) in zip(c.positions, c.normals)
                 println(io, p[1], " ", p[2], " ", p[3], " ", n[1], " ", n[2], " ", n[3])
             end
         else
-            for (p, col) in zip(c.positions, vc)
-                r, g, b = round.(col ./ 255, digits = 3)
-                println(io, p[1], " ", p[2], " ", p[3], " ", r, " ", g, " ", b, " 1.0")
+            for p in c.positions
+                println(io, p[1], " ", p[2], " ", p[3])
             end
         end
         for t in mesh.triangles

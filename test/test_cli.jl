@@ -52,8 +52,11 @@ using BPA: Vec3, Tri, parse_cli, main, write_xyz, progress_colors, color_bucket,
     Ps, Ns = fibonacci_sphere(200)
     mesh = reconstruct(Ps, Ns, 1.5 * sphere_spacing(200))
     path = write_off(joinpath(dir, "sphere.off"), mesh)
+    @test readline(path) == "OFF"                      # a mesh: plain OFF, positions only
     P, F, N = read_off(path)
-    @test P ≈ Ps && N ≈ Ns && F == mesh.triangles
+    @test P ≈ Ps && F == mesh.triangles && isempty(N)  # normals are recomputed on reading
+    write_off(path, mesh; normals = true)
+    @test readline(path) == "NOFF" && read_off(path)[3] ≈ Ns
     colors = progress_colors(length(F), 100)
     @test all(c -> c[1] == c[2] == 0 < c[3], colors[1:100])           # first block: blue ...
     @test issorted(c[3] for c in colors[1:100]) && colors[1][3] < colors[100][3]   # ... brightening
@@ -118,12 +121,12 @@ end
     log = sprint(io -> @test(main(["-i", torus_off, "-r", "0.2", "-p", "1000", "-o", out]; io = io) == 0))
     @test occursin("wrote $out", log)
     P, F, N = read_off(out)
-    @test length(F) == 2nv && length(N) == nv                   # closed torus: F = 2V
+    @test length(F) == 2nv && length(P) == nv && isempty(N)     # closed torus: F = 2V
     snapshots = filter(f -> occursin(r"torus_bpa_\d{8}\.off", f), readdir(dir))
     @test length(snapshots) == 2nv ÷ 1000
     @test length(read_off(joinpath(dir, snapshots[1]))[2]) == 1000
     @test readlines(joinpath(dir, snapshots[1]))[1] == "COFF"   # snapshots are coloured
-    @test readlines(out)[1] == "NOFF"                            # the output is not
+    @test readlines(out)[1] == "OFF"                             # the output is not
 
     # --save-colored: plain output plus a coloured copy, in all three formats; -p N still
     # writes the snapshots
@@ -140,13 +143,13 @@ end
             @test any(==("property uchar red"), lines) && !any(==("property uchar red"), plain)
             @test length(split(lines[end])) == 7
         else
-            @test lines[1] == "COFF" && length(split(lines[nv + 2])) == 7 && plain[1] == "NOFF"
+            @test lines[1] == "COFF" && length(split(lines[nv + 2])) == 7 && plain[1] == "OFF"
         end
     end
 
     # NOFF point cloud input, radius estimated, PLY output, --write-points, --max-seeds
     noff = joinpath(dir, "cloud.off")
-    write_off(noff, BPAMesh(PointCloud(P, N), Tri[], BPAStats()))
+    write_off(noff, BPAMesh(PointCloud(P, vertex_normals(P, F)), Tri[], BPAStats()))
     ply = joinpath(dir, "cloud.ply")
     xyz = joinpath(dir, "cloud.xyz")
     log = sprint(io -> @test(main(["-i", noff, "-o", ply, "--write-points", xyz, "--max-seeds", "1"]; io = io) == 0))
