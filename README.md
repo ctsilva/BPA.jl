@@ -133,8 +133,11 @@ triangles per pass: [40000, 0], reactivated edges: [0, 0]
 ```
 
 **Watching the front advance.** `-p N` writes the partial mesh every N triangles next to
-the output; `--save-colored` instead colours the final mesh by creation order (blue first,
-red last), stepping every N triangles when `-p N` is also given:
+the output, coloured by creation order: each block of N triangles gets the next colour of
+blue, green, red, yellow, magenta, brightening within the block. `--save-colored` also
+writes the final mesh with these colours as `<output>_colored.<ext>`, with the block size
+of `-p N` or, without `-p`, about a tenth of the expected triangle count. Coloured `.off`
+files are COFF (per-vertex colours, no normals), `.ply` files carry face colours:
 
 ```
 $ julia bpa.jl -r 0.1 -i data/torus-120-80.off -p 5000 -o /tmp/snap/torus.off
@@ -142,7 +145,10 @@ saved /tmp/snap/torus_00005000.off
 saved /tmp/snap/torus_00010000.off
 saved /tmp/snap/torus_00015000.off
 ...
-$ julia bpa.jl -r 0.1 -i data/torus-120-80.off --save-colored -p 2000 -o results/torus-colored.ply
+$ julia bpa.jl -r 0.1 -i data/torus-120-80.off --save-colored -o results/torus.off
+...
+wrote results/torus.off
+wrote results/torus_colored.off (one colour per 1920 triangles)
 ```
 
 **Merging registered range scans.** The Stanford bunny comes as ten scans, each an OFF
@@ -206,8 +212,8 @@ All options:
 | `-d, --scan-dir DIR` | directory of the scans (default: the list file's directory, or `.`) |
 | `-o, --output FILE` | `.off`, `.obj` or `.ply`; default `results/<input or list basename>_bpa.off` in the package directory |
 | `-r, --radius R[,R,...]` | ball radius or increasing list for several passes; omitted or `-1`: 1.5 × the median nearest-neighbour distance |
-| `-p, --progress N` | write the partial mesh every N triangles as `<output>_<count>.<ext>` |
-| `--save-colored` | colour the final mesh by triangle creation order (blue to red; with `-p N`, one colour per block of N). Partial meshes are not written in this mode |
+| `-p, --progress N` | write the partial mesh every N triangles as `<output>_<count>.<ext>`, coloured by creation order (one colour per block of N) |
+| `--save-colored` | also write the final mesh coloured by creation order as `<output>_colored.<ext>` (block size N with `-p N`, otherwise about a tenth of the expected triangle count) |
 | `--max-seeds N` | stop after N seed triangles (`-1`: unlimited) |
 | `--sample N` | for mesh inputs, sample N points on the surface instead of using the vertices |
 | `--seed S` | random seed for sampling and the spacing estimate |

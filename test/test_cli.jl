@@ -1,4 +1,4 @@
-using BPA: Vec3, Tri, parse_cli, main, write_xyz, progress_colors, read_xf, transform
+using BPA: Vec3, Tri, parse_cli, main, write_xyz, progress_colors, color_bucket, read_xf, transform
 
 @testset "OFF, vertex normals, sampling" begin
     dir = mktempdir()
@@ -54,12 +54,17 @@ using BPA: Vec3, Tri, parse_cli, main, write_xyz, progress_colors, read_xf, tran
     path = write_off(joinpath(dir, "sphere.off"), mesh)
     P, F, N = read_off(path)
     @test P ≈ Ps && N ≈ Ns && F == mesh.triangles
-    colors = progress_colors(length(F))
-    @test colors[1] == (0, 0, 255) && colors[end] == (255, 0, 0)
-    @test length(unique(progress_colors(100; bucket = 10))) == 10
+    colors = progress_colors(length(F), 100)
+    @test all(c -> c[1] == c[2] == 0 < c[3], colors[1:100])           # first block: blue ...
+    @test issorted(c[3] for c in colors[1:100]) && colors[1][3] < colors[100][3]   # ... brightening
+    @test colors[101][1] == colors[101][3] == 0 < colors[101][2]     # second block: green
+    @test length(unique(progress_colors(100, 10))) == 50             # 5 colours x 10 levels, then repeats
+    @test_throws ArgumentError progress_colors(5, 0)
+    @test color_bucket(100) == 1000 && color_bucket(50_000) == 10_000 && color_bucket(10^7) == 100_000
     write_off(path, mesh; face_colors = colors)
     lines = readlines(path)
-    @test split(lines[end]) |> length == 7
+    @test lines[1] == "COFF" && length(split(lines[3])) == 7 && length(split(lines[end])) == 4
+    @test split(lines[F[1][1] + 2])[4:7] == ["0.0", "0.0", "0.298", "1.0"]  # first triangle: dark blue
     @test read_off(path)[2] == F                       # colours are ignored on reading
 end
 
@@ -117,22 +122,27 @@ end
     snapshots = filter(f -> occursin(r"torus_bpa_\d{8}\.off", f), readdir(dir))
     @test length(snapshots) == 2nv ÷ 1000
     @test length(read_off(joinpath(dir, snapshots[1]))[2]) == 1000
+    @test readlines(joinpath(dir, snapshots[1]))[1] == "COFF"   # snapshots are coloured
+    @test readlines(out)[1] == "NOFF"                            # the output is not
 
-    # coloured output in all three formats; no snapshots written in this mode
+    # --save-colored: plain output plus a coloured copy, in all three formats; -p N still
+    # writes the snapshots
     for ext in (".off", ".ply", ".obj")
-        out = joinpath(dir, "colored" * ext)
+        out = joinpath(dir, "tor" * ext)
         @test main(["-i", torus_off, "-r", "0.2", "-o", out, "--save-colored", "-p", "500"]; io = devnull) == 0
-        lines = readlines(out)
+        @test count(f -> occursin(Regex("^tor_\\d{8}\\" * ext * raw"$"), f), readdir(dir)) == 2nv ÷ 500
+        plain = readlines(out)
+        lines = readlines(joinpath(dir, "tor_colored" * ext))
         if ext == ".obj"
             @test count(l -> startswith(l, "v ") && length(split(l)) == 7, lines) == nv
+            @test count(l -> startswith(l, "v ") && length(split(l)) == 4, plain) == nv
         elseif ext == ".ply"
-            @test any(==("property uchar red"), lines)
+            @test any(==("property uchar red"), lines) && !any(==("property uchar red"), plain)
             @test length(split(lines[end])) == 7
         else
-            @test length(split(lines[end])) == 7
+            @test lines[1] == "COFF" && length(split(lines[nv + 2])) == 7 && plain[1] == "NOFF"
         end
     end
-    @test isempty(filter(f -> startswith(f, "colored_"), readdir(dir)))
 
     # NOFF point cloud input, radius estimated, PLY output, --write-points, --max-seeds
     noff = joinpath(dir, "cloud.off")

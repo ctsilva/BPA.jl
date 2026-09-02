@@ -24,10 +24,11 @@ options:
                         the package directory, <name> being the input or list file basename)
   -r, --radius R[,R..]  ball radius, or a comma-separated list of increasing radii for
                         multiple passes. Omitted or <= 0: 1.5 x the estimated sample spacing
-  -p, --progress N      save a partial mesh every N triangles, as <output>_<count>.<ext>
-  --save-colored        colour the final mesh by the order in which triangles were created
-                        (blue first, red last; with -p N the colours step every N triangles).
-                        Partial meshes are not saved in this mode
+  -p, --progress N      save a partial mesh every N triangles, as <output>_<count>.<ext>,
+                        coloured by creation order (a new colour every N triangles)
+  --save-colored        also write the final mesh coloured by creation order, as
+                        <output>_colored.<ext>. The colour changes every N triangles with
+                        -p N, otherwise about ten times over the expected triangle count
   --max-seeds N         stop after N seed triangles (-1, the default, for unlimited)
   --sample N            for mesh inputs, sample N points uniformly on the surface instead
                         of using the mesh vertices
@@ -228,23 +229,16 @@ end
 """
     write_mesh(path, mesh; face_colors=nothing)
 
-Write `mesh` in the format given by the extension of `path` (.off, .obj or .ply). For OBJ,
-which has no face colours, each vertex takes the colour of the first triangle using it.
+Write `mesh` in the format given by the extension of `path` (.off, .obj or .ply). PLY keeps
+the face colours; OFF (as COFF) and OBJ carry them per vertex, each vertex taking the colour
+of the first triangle using it.
 """
 function write_mesh(path::AbstractString, mesh::BPAMesh; face_colors = nothing)
     ext = lowercase(splitext(path)[2])
     if ext == ".obj"
-        vertex_colors = nothing
-        if face_colors !== nothing
-            vertex_colors = fill((200, 200, 200), length(mesh.cloud))
-            seen = falses(length(mesh.cloud))
-            for (k, t) in enumerate(mesh.triangles), v in t
-                seen[v] && continue
-                seen[v] = true
-                vertex_colors[v] = face_colors[k]
-            end
-        end
-        write_obj(path, mesh; vertex_colors = vertex_colors)
+        vc = face_colors === nothing ? nothing :
+             vertex_colors(mesh, face_colors; unused = (200, 200, 200))
+        write_obj(path, mesh; vertex_colors = vc)
     elseif ext == ".ply"
         write_ply(path, mesh; face_colors = face_colors)
     else
@@ -252,29 +246,37 @@ function write_mesh(path::AbstractString, mesh::BPAMesh; face_colors = nothing)
     end
 end
 
-"""
-    progress_colors(ntriangles; bucket=0) -> Vector{NTuple{3,Int}}
+"Base colours cycled through by `progress_colors`: blue, green, red, yellow, magenta."
+const PROGRESS_PALETTE = ((0.0, 0.0, 1.0), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0),
+                          (1.0, 1.0, 0.0), (1.0, 0.0, 1.0))
 
-Colour for each triangle by creation order, blue for the first through green to red for the
-last. With `bucket > 0` all triangles in the same block of `bucket` consecutive triangles
-share a colour.
 """
-function progress_colors(ntriangles::Integer; bucket::Integer = 0)
+    progress_colors(ntriangles, bucket) -> Vector{NTuple{3,Int}}
+
+Colour for each triangle by creation order: consecutive blocks of `bucket` triangles cycle
+through blue, green, red, yellow and magenta, and within a block the brightness ramps from
+30 % to full, so both the sequence of blocks and the direction of growth are visible.
+"""
+function progress_colors(ntriangles::Integer, bucket::Integer)
+    bucket > 0 || throw(ArgumentError("bucket must be positive"))
     colors = Vector{NTuple{3,Int}}(undef, ntriangles)
-    nb = bucket > 0 ? cld(ntriangles, bucket) : ntriangles
     for k in 1:ntriangles
-        step = bucket > 0 ? (k - 1) ÷ bucket : k - 1
-        t = nb <= 1 ? 0.0 : step / (nb - 1)
-        # hue from 240° (blue) down to 0° (red), full saturation and value
-        h = 240 * (1 - t) / 60
-        i = floor(Int, h) % 6
-        f = h - floor(h)
-        rgb = i == 0 ? (1.0, f, 0.0) : i == 1 ? (1 - f, 1.0, 0.0) : i == 2 ? (0.0, 1.0, f) :
-              i == 3 ? (0.0, 1 - f, 1.0) : i == 4 ? (f, 0.0, 1.0) : (1.0, 0.0, 1 - f)
-        colors[k] = (round(Int, 255 * rgb[1]), round(Int, 255 * rgb[2]), round(Int, 255 * rgb[3]))
+        base = PROGRESS_PALETTE[((k - 1) ÷ bucket) % length(PROGRESS_PALETTE) + 1]
+        lum = 0.3 + 0.7 * ((k - 1) % bucket) / bucket
+        colors[k] = map(c -> round(Int, 255 * c * lum), base)
     end
     colors
 end
+
+"""
+    color_bucket(npoints) -> Int
+
+Block size for `--save-colored` when `-p` is not given: the palette repeated about twice over
+the expected number of triangles (roughly two per point for a closed surface), clamped to
+1000 .. 100000.
+"""
+color_bucket(npoints::Integer) =
+    clamp(2 * npoints ÷ (2 * length(PROGRESS_PALETTE)), 1000, 100_000)
 
 """
     main(args = ARGS; io = stdout) -> exit code
@@ -317,11 +319,13 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
 
     base, ext = splitext(opts.output)
     mkpath(dirname(abspath(opts.output)))
+    bucket = opts.progress > 0 ? opts.progress : color_bucket(length(cloud))
     on_progress = nothing
-    if opts.progress > 0 && !opts.save_colored
+    if opts.progress > 0
         on_progress = (triangles, stats) -> begin
             path = base * "_" * lpad(length(triangles), 8, '0') * ext
-            write_mesh(path, BPAMesh(cloud, triangles, stats))
+            write_mesh(path, BPAMesh(cloud, triangles, stats);
+                       face_colors = progress_colors(length(triangles), bucket))
             println(io, "saved ", path)
         end
     end
@@ -345,8 +349,12 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
     length(radii) > 1 && println(io, "triangles per pass: ", s.triangles_per_pass,
                                  ", reactivated edges: ", s.reactivated_per_pass)
 
-    colors = opts.save_colored ? progress_colors(length(mesh.triangles); bucket = opts.progress) : nothing
-    write_mesh(opts.output, mesh; face_colors = colors)
+    write_mesh(opts.output, mesh)
     println(io, "wrote ", opts.output)
+    if opts.save_colored
+        colored = base * "_colored" * ext
+        write_mesh(colored, mesh; face_colors = progress_colors(length(mesh.triangles), bucket))
+        println(io, "wrote ", colored, " (one colour per ", bucket, " triangles)")
+    end
     return 0
 end
