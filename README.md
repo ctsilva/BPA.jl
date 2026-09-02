@@ -397,7 +397,8 @@ quads), a plane sampled at two densities where one radius leaves the sparse half
 uncovered and two radii cover it, and a pivot whose ball returns to the starting
 triangle's third vertex before reaching anything else.
 
-Uniformly sampled unit sphere, single radius, Apple Silicon laptop, Julia 1.12:
+Uniformly sampled unit sphere, single radius, single-threaded, on a MacBook Air with an
+Apple M5 (4 performance and 6 efficiency cores) and 32 GB of memory, Julia 1.12.7:
 
 | points | triangles | time |
 | --- | --- | --- |
