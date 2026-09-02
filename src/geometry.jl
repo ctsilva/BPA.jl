@@ -17,6 +17,19 @@ Unnormalised normal `(b - a) × (c - a)` of the triangle `(a, b, c)`.
     dot(n, na) > 0 && dot(n, nb) > 0 && dot(n, nc) > 0
 
 """
+    pivot_orientation_consistent(n, nk)
+
+`true` if the triangle normal `n` of a pivot triangle does not point against the normal `nk`
+of the point the ball landed on. The other two vertices are the front edge, whose
+orientation already fixes the winding of the new triangle, so only the new point can
+reveal that the ball has rolled onto the back of a nearby sheet. A zero dot product passes:
+it arises from a point without a normal (a scan vertex that belongs to no face) or from a
+normal at right angles to a steep triangle between two overlapping scans, and neither says
+the triangle faces the wrong way.
+"""
+@inline pivot_orientation_consistent(n::Vec3, nk::Vec3) = dot(n, nk) >= 0
+
+"""
     circumcircle(a, b, c) -> (center, unit_normal) or nothing
 
 Circumcentre of the triangle and its unit normal (right-hand rule). `nothing` if degenerate.

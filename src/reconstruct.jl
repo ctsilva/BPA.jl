@@ -94,9 +94,10 @@ function run_pass!(st::BPAState)
                 k, c = res
                 i, j = e.i, e.j
                 # "Edge orientation checks" left out of Fig. 5 for readability: the new
-                # triangle must agree with the vertex normals and keep the mesh a manifold.
+                # triangle must not face against the normal of the point hit, and must keep
+                # the mesh a manifold.
                 ntri = triangle_normal(P[i], P[k], P[j])
-                if !orientation_consistent(ntri, N[i], N[k], N[j])
+                if !pivot_orientation_consistent(ntri, N[k])
                     stats.rejected_normal += 1
                 elseif !(not_used(f, k) || on_front(f, k))       # 3. not_used(σ_k) || on_front(σ_k)
                     stats.rejected_used += 1

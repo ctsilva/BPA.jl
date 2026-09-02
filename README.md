@@ -86,10 +86,10 @@ algorithm's normal test refuses to bridge the two sheets, leaving small holes th
 ```
 $ julia bpa.jl -r 0.03 -i data/knot-300-100.off
 input: data/knot-300-100.off (30000 points)
-triangles: 58329 in 0.11 s
-points used: 29203 of 30000
-seeds: 2, pivots: 58541, boundary edges: 203
-rejected: no hit 5, normal 199, interior vertex 8, manifold 2
+triangles: 58400 in 0.1 s
+points used: 29208 of 30000
+seeds: 1, pivots: 58508, boundary edges: 62
+rejected: no hit 4, normal 65, interior vertex 37, manifold 3
 wrote /Users/.../BPA.jl/results/knot-300-100_bpa.off
 ```
 
@@ -98,10 +98,10 @@ wrote /Users/.../BPA.jl/results/knot-300-100_bpa.off
 ```
 $ julia bpa.jl -i data/bunny/data/bun000.off -r 0.00125
 input: data/bunny/data/bun000.off (40256 points)
-triangles: 78030 in 0.16 s
-points used: 39700 of 40256
-seeds: 13, pivots: 79439, boundary edges: 1420
-rejected: no hit 885, normal 532, interior vertex 3, manifold 2
+triangles: 78152 in 0.16 s
+points used: 39759 of 40256
+seeds: 11, pivots: 79566, boundary edges: 1418
+rejected: no hit 972, normal 448, interior vertex 3, manifold 2
 wrote /Users/.../BPA.jl/results/bun000_bpa.off
 ```
 
@@ -113,10 +113,10 @@ edges than above), which the summary makes visible:
 $ julia bpa.jl -i data/bunny/data/bun000.off
 input: data/bunny/data/bun000.off (40256 points)
 estimated sample spacing: 0.000516 -> radius 0.000774
-triangles: 75369 in 0.11 s
-points used: 39540 of 40256
-seeds: 157, pivots: 79021, boundary edges: 3803
-rejected: no hit 3396, normal 404, interior vertex 5, manifold 4
+triangles: 75382 in 0.11 s
+points used: 39553 of 40256
+seeds: 157, pivots: 79046, boundary edges: 3816
+rejected: no hit 3416, normal 394, interior vertex 7, manifold 4
 ```
 
 **Several radii** (Section 4.6 of the paper) and **sampling a mesh**. `--sample N` draws N
@@ -169,10 +169,10 @@ scans from /Users/.../BPA.jl/data/bunny/data:
   ...
   top3           36023 points  (transformed by top3.xf)
 merged 10 scans: 362272 points
-triangles: 317867 in 2.8 s
-points used: 161601 of 362272  (many points unreached: try a larger radius, or several radii)
-seeds: 22, pivots: 325375, boundary edges: 7457
-rejected: no hit 244, normal 7239, interior vertex 44, manifold 3
+triangles: 323934 in 2.3 s
+points used: 162289 of 362272  (many points unreached: try a larger radius, or several radii)
+seeds: 17, pivots: 325596, boundary edges: 806
+rejected: no hit 255, normal 1335, interior vertex 85, manifold 4
 wrote results/bunny_bpa.ply
 ```
 
@@ -236,8 +236,8 @@ All options:
 - **rejected**: why pivots failed. *no hit*: the ball made a full turn without touching a
   point, or came back to the third vertex of the triangle it started from before touching
   anything else (too small a radius, a true boundary, or nothing beyond the edge but points
-  under the surface). *normal*: the first point hit would give
-  a triangle disagreeing with the vertex normals (noise, or two nearby surface sheets).
+  under the surface). *normal*: the normal of the first point hit points against the
+  triangle it would make (noise, or the back of a nearby surface sheet).
   *interior vertex*: the point hit already has a complete fan of triangles. *manifold*: the
   triangle would give an edge three triangles or a non-orientable configuration. Each
   rejection leaves a boundary edge, so these counts explain where holes come from.
@@ -376,9 +376,13 @@ Decisions where the paper leaves room:
   other point is touched the pivot fails. Skipping that vertex, as several implementations
   do, lets the ball roll on with the vertex inside it and produces triangles whose ball is
   not empty.
-- **Normal test.** A new triangle must have a normal with positive dot product with all three
-  of its vertex normals (the paper's seed test; for pivot triangles the text mentions only
-  "the surface normal").
+- **Normal test.** A seed triangle must have a normal with positive dot product with all
+  three of its vertex normals (the paper's seed test). A pivot triangle is tested only
+  against the normal of the point the ball landed on, and a zero dot product passes: the
+  front edge already fixes the winding, so the test only has to catch the ball rolling onto
+  the back of a nearby sheet. Testing the two edge vertices as well, strictly, rejects the
+  steep triangles that join overlapping range scans and every point without a normal (a scan
+  vertex that belongs to no face), and leaves ten times as many holes on the merged bunny.
 - **Seed triangles** may reuse points already in the mesh, as long as the result stays a
   manifold; a seed edge coinciding with an existing front edge of opposite orientation is
   glued immediately.

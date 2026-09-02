@@ -150,6 +150,24 @@ end
 using BPA: BPAState, BPAStats, VoxelGrid, Front, add_seed!, ball_center, ball_pivot, pivot_frame,
            pivot_angle, Vec3, Tri
 
+@testset "pivot normal test" begin
+    using BPA: pivot_orientation_consistent, orientation_consistent
+    n = Vec3(0, 0, 1)
+    @test pivot_orientation_consistent(n, n) && pivot_orientation_consistent(n, Vec3(1, 0, 0))
+    @test pivot_orientation_consistent(n, zero(Vec3)) && !pivot_orientation_consistent(n, -n)
+    @test !orientation_consistent(n, n, n, zero(Vec3))         # seeds still need all three
+    # Points without a normal are reached by pivoting and the sphere closes; a point whose
+    # normal points inward is never used, and the mesh has a hole around it.
+    P, N = fibonacci_sphere(500)
+    rho = 1.5 * sphere_spacing(500)
+    Nz = copy(N); Nz[1:5] .= Ref(zero(Vec3))
+    m = reconstruct(P, Nz, rho)
+    @test m.stats.boundary_edges == 0 && all(v -> any(t -> v in t, m.triangles), 1:5)
+    Nf = copy(N); Nf[1] = -N[1]
+    m = reconstruct(P, Nf, rho)
+    @test m.stats.boundary_edges > 0 && !any(t -> 1 in t, m.triangles)
+end
+
 @testset "pivot rolling back to the opposite vertex" begin
     # Triangle (i, j, o) in the plane z = 0 with normals +z, ball radius 1. Pivoting around
     # e(i,j) the ball rolls away from o, under the plane, and its surface passes through o

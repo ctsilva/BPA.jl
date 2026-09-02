@@ -121,7 +121,7 @@ mutable struct BPAStats
     joins::Int                  # successful pivots (one triangle each)
     glues::Int                  # coincident edge pairs removed from the front
     rejected_no_hit::Int        # pivot found no point (edge became boundary)
-    rejected_normal::Int        # first hit point failed the normal-consistency test
+    rejected_normal::Int        # first hit point's normal points against the triangle
     rejected_used::Int          # first hit point is an interior vertex
     rejected_manifold::Int      # triangle would create a non-manifold / non-orientable edge
     boundary_edges::Int         # boundary edges left in the front at the end

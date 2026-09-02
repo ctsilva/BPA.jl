@@ -46,8 +46,11 @@ paper's `σ_i` is `P[i]` and `n_i` is `N[i]` in the code.
 
 **Triangle orientation.** A triangle `(a, b, c)` is stored counter-clockwise when seen from
 outside, i.e. `(P[b] - P[a]) × (P[c] - P[a])` has a positive dot product with the vertex
-normals. Every triangle that enters the mesh has passed this test against all three of its
-vertex normals (`orientation_consistent` in `geometry.jl`).
+normals. A seed triangle has passed this test against all three of its vertex normals
+(`orientation_consistent` in `geometry.jl`); a pivot triangle inherits its winding from the
+front edge and is tested only against the normal of the new point, with a zero dot product
+accepted (`pivot_orientation_consistent`), so that points without a normal and the steep
+triangles joining overlapping scans are not refused.
 
 **Front edge orientation.** A front edge `e(i,j)` has the same direction as the half-edge
 `i → j` of the single triangle `(i, j, o)` that owns it. Pivoting `e(i,j)` onto a point `k`

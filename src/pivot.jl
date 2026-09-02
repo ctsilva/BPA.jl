@@ -95,7 +95,7 @@ function tie_score(st::BPAState, e::FrontEdge, k::Int)
     N = st.cloud.normals
     i, j = e.i, e.j
     ntri = triangle_normal(P[i], P[k], P[j])
-    orientation_consistent(ntri, N[i], N[k], N[j]) || return 0
+    pivot_orientation_consistent(ntri, N[k]) || return 0
     (not_used(f, k) || on_front(f, k)) || return 0
     can_add_triangle(f, i, k, j) || return 0
     1 + haskey(f.lookup, (k, i)) + haskey(f.lookup, (j, k))
