@@ -186,8 +186,14 @@ if `|K| > R`, and otherwise `θ = φ ± arccos(K/R)` (mod 2π). The smaller of t
 the first contact. Because the initial ball is empty, `x` starts outside the ball, so the
 first contact is also the moment the ball's surface reaches `x`. A solution with `θ ≈ 0`
 means `x` touches the initial ball already: it is an immediate hit if the ball is moving
-into `x` (`dot(γ(0) - x, v) < 0`) and is ignored otherwise (this is what happens for the
-opposite vertex `o`, which is hit again only after almost a full turn).
+into `x` (`dot(γ(0) - x, v) < 0`) and is ignored otherwise, in which case the other root,
+where the ball comes back to `x` from the far side, is used. This is what happens for the
+opposite vertex `o`: the ball returns to it when it reaches the mirror-image ball through
+`σ_i, σ_j, σ_o` on the other side of the surface, after roughly half a turn when the ball
+starts well above the triangle, and only close to a full turn when the triangle's
+circumradius is near `ρ`. `o` therefore stays a candidate in `ball_pivot`; if it is the
+first point reached the pivot fails, since accepting any later point would leave `o`
+inside the new ball.
 
 Both roots have to be tested for "touching": a root that is mathematically 0 can come out
 of `mod2pi` as a tiny negative number wrapped to just below 2π. Testing only the smaller

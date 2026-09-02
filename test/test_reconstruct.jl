@@ -146,3 +146,37 @@ end
     @test length(cloud) == 300
     @test all(isapprox.(cloud.positions, P; atol = 1e-12))
 end
+
+using BPA: BPAState, BPAStats, VoxelGrid, Front, add_seed!, ball_center, ball_pivot, pivot_frame,
+           pivot_angle, Vec3, Tri
+
+@testset "pivot rolling back to the opposite vertex" begin
+    # Triangle (i, j, o) in the plane z = 0 with normals +z, ball radius 1. Pivoting around
+    # e(i,j) the ball rolls away from o, under the plane, and its surface passes through o
+    # again once it has reached the mirror-image position below the plane (angle θo). A point
+    # k that is only reached after that must not be accepted: o would lie inside its ball.
+    i, j, o, k = 1, 2, 3, 4
+    rho = 1.0
+    tri = [Vec3(-0.5, 0, 0), Vec3(0.5, 0, 0), Vec3(0, 0.8, 0)]
+    c = ball_center(tri[i], tri[j], tri[o], rho)
+    fr = pivot_frame(tri[i], tri[j], c)
+    θo = pivot_angle(fr, tri[o], rho)[1]
+    # a point at the leading tip of the ball at angle θ is first touched at θ
+    tip(θ) = BPA.point_on_trajectory(fr, θ) + rho * normalize(-sin(θ) * fr.u + cos(θ) * fr.v)
+    function pivot_state(P)
+        cloud = PointCloud(P, fill(Vec3(0, 0, 1), 4))
+        f = Front(4)
+        add_seed!(f, i, j, o, c)
+        st = BPAState(cloud, VoxelGrid(cloud.positions, 2rho), rho, f, Tri[], BPAStats(), 1, Int[],
+                      -1, nothing, 1000)
+        st, f.lookup[(i, j)]
+    end
+    P = vcat(tri, [tip(θo + 0.6)])
+    @test 0 < θo < pivot_angle(fr, P[k], rho)[1] < 2π     # the ball comes back to o before it reaches k
+    @test ball_pivot(pivot_state(P)...) === nothing        # so the pivot fails instead of returning k
+    # A point reached before the ball comes back to o is accepted as usual.
+    P = vcat(tri, [tip(θo - 0.6)])
+    @test pivot_angle(fr, P[k], rho)[1] < θo
+    res = ball_pivot(pivot_state(P)...)
+    @test res !== nothing && res[1] == k
+end
