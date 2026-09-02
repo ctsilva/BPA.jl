@@ -1,0 +1,29 @@
+# Julia
+Manifest.toml
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+.julia/
+docs/build/
+
+# Reconstruction outputs (regenerable, see results/README.md)
+results/*
+!results/README.md
+
+# Downloaded Stanford data and everything the scripts derive from it
+# (scripts/download_*.sh and scripts/convert_*_scans.sh recreate them)
+data/bunny/
+data/dragon/
+data/*_bpa*.off
+data/*-julia.off
+
+# Intermediates of the convert scripts, wherever they are run
+*_colored.ply
+*_xformed.ply
+combined.ply
+
+# Editors and OS
+.DS_Store
+.vscode/
+*.swp
+*~
