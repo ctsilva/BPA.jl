@@ -1,0 +1,36 @@
+  bun000         40256 points   78382 faces  (transformed by bun000.xf)
+  bun045         40097 points   77732 faces  (transformed by bun045.xf)
+  bun090         30379 points   57676 faces  (transformed by bun090.xf)
+  bun180         40251 points   78193 faces  (transformed by bun180.xf)
+merged 4 scans: 150983 points, 291983 faces
+depth complexity over 389257 covered pixels (colour ramp saturates at 7 layers):
+  1 triangles:   50311 pixels ( 12.9%)  odd
+  2 triangles:   81765 pixels ( 21.0%)
+  3 triangles:  116587 pixels ( 30.0%)  odd
+  4 triangles:   97356 pixels ( 25.0%)
+  5 triangles:   33279 pixels (  8.5%)  odd
+  6 triangles:    5548 pixels (  1.4%)
+  7 triangles:    1504 pixels (  0.4%)  odd
+  8 triangles:    1099 pixels (  0.3%)
+  9 triangles:     644 pixels (  0.2%)  odd
+  10 triangles:     489 pixels (  0.1%)
+  11 triangles:     252 pixels (  0.1%)  odd
+  12 triangles:     167 pixels (  0.0%)
+  13 triangles:      64 pixels (  0.0%)  odd
+  14 triangles:     102 pixels (  0.0%)
+  15 triangles:      28 pixels (  0.0%)  odd
+  16 triangles:      30 pixels (  0.0%)
+  17 triangles:      12 pixels (  0.0%)  odd
+  18 triangles:       7 pixels (  0.0%)
+  19 triangles:       3 pixels (  0.0%)  odd
+  20 triangles:       5 pixels (  0.0%)
+  22 triangles:       3 pixels (  0.0%)
+  23 triangles:       1 pixels (  0.0%)  odd
+  26 triangles:       1 pixels (  0.0%)
+  odd pixels (holes seen through): 202685 (52.07%)
+  front - back = -3: 70 pixels
+  front - back = -2: 5142 pixels
+  front - back = -1: 64829 pixels
+  front - back = +1: 134771 pixels
+  front - back = +2: 39767 pixels
+  front - back = +3: 3015 pixels

@@ -1,0 +1,22 @@
+depth complexity over 386436 covered pixels (colour ramp saturates at 16 layers):
+  1 triangles:  100350 pixels ( 26.0%)  odd
+  2 triangles:  273613 pixels ( 70.8%)
+  3 triangles:    5543 pixels (  1.4%)  odd
+  4 triangles:    5246 pixels (  1.4%)
+  5 triangles:     620 pixels (  0.2%)  odd
+  6 triangles:     708 pixels (  0.2%)
+  7 triangles:      82 pixels (  0.0%)  odd
+  8 triangles:     178 pixels (  0.0%)
+  9 triangles:      17 pixels (  0.0%)  odd
+  10 triangles:      59 pixels (  0.0%)
+  11 triangles:       5 pixels (  0.0%)  odd
+  12 triangles:      10 pixels (  0.0%)
+  14 triangles:       5 pixels (  0.0%)
+  odd pixels (holes seen through): 106617 (27.59%)
+  front - back = -4: 6 pixels
+  front - back = -3: 179 pixels
+  front - back = -2: 2504 pixels
+  front - back = -1: 60586 pixels
+  front - back = +1: 45852 pixels
+  front - back = +2: 105 pixels
+  front - back = +4: 1 pixels

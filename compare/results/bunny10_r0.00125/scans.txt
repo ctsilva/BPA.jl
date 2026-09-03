@@ -1,0 +1,10 @@
+bun000
+bun045
+bun090
+bun180
+bun270
+bun315
+chin
+ear_back
+top2
+top3

@@ -1,0 +1,6 @@
+input: /Users/csilva/src/bpa-compare/results/inputs/plane40.off (1600 points)
+triangles: 3042 in 0.0 s
+points used: 1600 of 1600
+seeds: 1, pivots: 3197, boundary edges: 156
+rejected: no hit 156, normal 0, interior vertex 0, manifold 0
+wrote /Users/csilva/src/bpa-compare/results/plane40/new.off

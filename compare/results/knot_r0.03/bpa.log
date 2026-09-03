@@ -1,0 +1,6 @@
+input: /Users/csilva/src/bpa/BPA.jl/data/knot-300-100.off (30000 points)
+triangles: 58400 in 0.11 s
+points used: 29208 of 30000
+seeds: 1, pivots: 58508, boundary edges: 62
+rejected: no hit 4, normal 65, interior vertex 37, manifold 3
+wrote /Users/csilva/src/bpa-compare/results/knot_r0.03/new.off

@@ -1,0 +1,15 @@
+  bun000         40256 points   78382 faces  (transformed by bun000.xf)
+merged 1 scans: 40256 points, 78382 faces
+depth complexity over 343567 covered pixels (colour ramp saturates at 2 layers):
+  1 triangles:  337775 pixels ( 98.3%)  odd
+  2 triangles:    3009 pixels (  0.9%)
+  3 triangles:    2243 pixels (  0.7%)  odd
+  4 triangles:     286 pixels (  0.1%)
+  5 triangles:     192 pixels (  0.1%)  odd
+  6 triangles:      44 pixels (  0.0%)
+  7 triangles:      17 pixels (  0.0%)  odd
+  9 triangles:       1 pixels (  0.0%)  odd
+  odd pixels (holes seen through): 340228 (99.03%)
+  front - back = -1: 5 pixels
+  front - back = +1: 340223 pixels
+  front - back = +2: 979 pixels

@@ -318,7 +318,7 @@ the boundary edges that disappear. Off by default; the paper keeps everything.
 - **Vertex-manifold at the end.** An interior vertex is never reused (`is_interior`), and the
   `outward` normal test keeps the ball on one side of the surface. A vertex may temporarily
   belong to several front loops (the paper's "constant number of loops"); the checks in
-  `test/meshcheck.jl` confirm that on the test surfaces every vertex ends with a single
+  `check_mesh` (`src/check.jl`) confirm that on the test surfaces every vertex ends with a single
   fan.
 - **Termination.** Each pivot either removes an edge (join) or marks it boundary; each seed
   uses at least one new point. Both are finite.

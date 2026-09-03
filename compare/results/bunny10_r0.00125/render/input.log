@@ -1,0 +1,52 @@
+  bun000         40256 points   78382 faces  (transformed by bun000.xf)
+  bun045         40097 points   77732 faces  (transformed by bun045.xf)
+  bun090         30379 points   57676 faces  (transformed by bun090.xf)
+  bun180         40251 points   78193 faces  (transformed by bun180.xf)
+  bun270         31701 points   60202 faces  (transformed by bun270.xf)
+  bun315         35336 points   67696 faces  (transformed by bun315.xf)
+  chin           37738 points   71885 faces  (transformed by chin.xf)
+  ear_back       32193 points   62071 faces  (transformed by ear_back.xf)
+  top2           38298 points   73791 faces  (transformed by top2.xf)
+  top3           36023 points   69406 faces  (transformed by top3.xf)
+merged 10 scans: 362272 points, 697034 faces
+depth complexity over 401658 covered pixels (colour ramp saturates at 13 layers):
+  1 triangles:    2771 pixels (  0.7%)  odd
+  2 triangles:    2819 pixels (  0.7%)
+  3 triangles:   12964 pixels (  3.2%)  odd
+  4 triangles:   20440 pixels (  5.1%)
+  5 triangles:   34519 pixels (  8.6%)  odd
+  6 triangles:   65436 pixels ( 16.3%)
+  7 triangles:  103054 pixels ( 25.7%)  odd
+  8 triangles:   93487 pixels ( 23.3%)
+  9 triangles:   40387 pixels ( 10.1%)  odd
+  10 triangles:   14442 pixels (  3.6%)
+  11 triangles:    4882 pixels (  1.2%)  odd
+  12 triangles:    1972 pixels (  0.5%)
+  13 triangles:    1624 pixels (  0.4%)  odd
+  14 triangles:    1020 pixels (  0.3%)
+  15 triangles:     657 pixels (  0.2%)  odd
+  16 triangles:     416 pixels (  0.1%)
+  17 triangles:     268 pixels (  0.1%)  odd
+  18 triangles:     230 pixels (  0.1%)
+  19 triangles:     102 pixels (  0.0%)  odd
+  20 triangles:      72 pixels (  0.0%)
+  21 triangles:      35 pixels (  0.0%)  odd
+  22 triangles:      24 pixels (  0.0%)
+  23 triangles:      14 pixels (  0.0%)  odd
+  24 triangles:      10 pixels (  0.0%)
+  25 triangles:       6 pixels (  0.0%)  odd
+  26 triangles:       4 pixels (  0.0%)
+  27 triangles:       1 pixels (  0.0%)  odd
+  31 triangles:       1 pixels (  0.0%)  odd
+  33 triangles:       1 pixels (  0.0%)  odd
+  odd pixels (holes seen through): 201286 (50.11%)
+  front - back = -4: 273 pixels
+  front - back = -3: 2761 pixels
+  front - back = -2: 12343 pixels
+  front - back = -1: 54805 pixels
+  front - back = +1: 109730 pixels
+  front - back = +2: 74768 pixels
+  front - back = +3: 30446 pixels
+  front - back = +4: 8115 pixels
+  front - back = +5: 3544 pixels
+  front - back = +6: 67 pixels

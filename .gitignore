@@ -27,3 +27,13 @@ combined.ply
 .vscode/
 *.swp
 *~
+
+# Comparison harness (see compare/README.md): the Python environment uv creates, and the
+# regenerable bulk of the results (meshes, difference lists, generated inputs). The reports,
+# logs and renderings under compare/results/ are kept, so the comparison reads on GitHub.
+compare/.venv/
+compare/__pycache__/
+compare/results/**/*.off
+compare/results/**/only_in_*.txt
+compare/results/inputs/
+compare/results/regen.log

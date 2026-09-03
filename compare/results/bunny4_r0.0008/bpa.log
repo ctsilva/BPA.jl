@@ -1,0 +1,11 @@
+scans from /Users/csilva/src/bpa/BPA.jl/data/bunny/data:
+  bun000         40256 points  (transformed by bun000.xf)
+  bun045         40097 points  (transformed by bun045.xf)
+  bun090         30379 points  (transformed by bun090.xf)
+  bun180         40251 points  (transformed by bun180.xf)
+merged 4 scans: 150983 points
+triangles: 239041 in 0.37 s
+points used: 122478 of 150983  (many points unreached: try a larger radius, or several radii)
+seeds: 177, pivots: 245952, boundary edges: 6475
+rejected: no hit 4695, normal 2178, interior vertex 182, manifold 33
+wrote /Users/csilva/src/bpa-compare/results/bunny4_r0.0008/new.off

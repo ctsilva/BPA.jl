@@ -1,0 +1,6 @@
+input: /Users/csilva/src/bpa-compare/results/inputs/sphere2000.off (2000 points)
+triangles: 3996 in 0.01 s
+points used: 2000 of 2000
+seeds: 1, pivots: 3995, boundary edges: 0
+rejected: no hit 0, normal 0, interior vertex 0, manifold 0
+wrote /Users/csilva/src/bpa-compare/results/sphere2000/new.off

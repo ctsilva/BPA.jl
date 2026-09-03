@@ -1,0 +1,48 @@
+<section id="torus_sampled20k"><h2>torus_sampled20k</h2>
+<p>20000 points sampled uniformly by area on the trimesh2 torus (uneven spacing, normals from the faces), rho = 0.05 (5 x the median nearest-neighbour distance). Expected: closed, chi = 0, 40000 triangles.</p><p><code>input: `-i /Users/csilva/src/bpa/BPA.jl/compare/results/inputs/torus_sampled20k.off`, rho = 0.05, 20000 points</code></p>
+<div class="tables">
+<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th></tr></thead><tbody>
+<tr><td>triangles</td><td>40000</td><td>40000</td><td>30279</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.13</td><td>0.217</td><td>0.06</td></tr>
+<tr><td>vertices used</td><td>20000</td><td>20000</td><td>15197</td></tr>
+<tr><td>boundary edges</td><td>0</td><td>0</td><td>425</td></tr>
+<tr><td>boundary loops</td><td>0</td><td>0</td><td>94</td></tr>
+<tr><td>components</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>largest component (triangles)</td><td>40000</td><td>40000</td><td>30279</td></tr>
+<tr><td>Euler characteristic</td><td>0</td><td>0</td><td>-155</td></tr>
+<tr><td>orientable</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>vertex-manifold</td><td>yes</td><td>yes</td><td>no</td></tr>
+<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>valid</td><td>40000</td><td>40000</td><td>18941</td></tr>
+<tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>11338</td></tr>
+<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>degenerate</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>7.62e-01</td></tr>
+<tr><td>render: odd-parity pixels (holes seen through)</td><td>0.00%</td><td>0.00%</td><td>2.41%</td></tr>
+<tr><td>render: pixels with front ≠ back</td><td>0.00%</td><td>0.00%</td><td>2.41%</td></tr>
+</tbody></table>
+<div><p>triangle sets against BPA.jl</p>
+<table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
+<tr><td>Open3D</td><td>40000</td><td>40000</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>MeshLab</td><td>18941</td><td>18941</td><td>21059</td><td>11338</td><td>4263/16568/211/17</td><td>755/4440/6044/99</td></tr>
+</tbody></table>
+</div></div>
+<p class="kind">shaded, boundary edges in red (view 40.0°)</p><div class="grid">
+<figure><a href="torus_sampled20k/render/bpa.png"><img src="torus_sampled20k/render/bpa.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_sampled20k/render/open3d.png"><img src="torus_sampled20k/render/open3d.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_sampled20k/render/meshlab.png"><img src="torus_sampled20k/render/meshlab.png" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+</div>
+<p class="kind">triangles behind each pixel: warm = odd (a hole is seen through), cool = even (view 40.0°)</p><div class="grid">
+<figure><a href="torus_sampled20k/render/bpa_depth.png"><img src="torus_sampled20k/render/bpa_depth.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_sampled20k/render/open3d_depth.png"><img src="torus_sampled20k/render/open3d_depth.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_sampled20k/render/meshlab_depth.png"><img src="torus_sampled20k/render/meshlab_depth.png" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+</div>
+<p class="kind">front-facing minus back-facing: grey 0, blue +, red − (view 40.0°)</p><div class="grid">
+<figure><a href="torus_sampled20k/render/bpa_signed.png"><img src="torus_sampled20k/render/bpa_signed.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_sampled20k/render/open3d_signed.png"><img src="torus_sampled20k/render/open3d_signed.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_sampled20k/render/meshlab_signed.png"><img src="torus_sampled20k/render/meshlab_signed.png" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+</div>
+</section>

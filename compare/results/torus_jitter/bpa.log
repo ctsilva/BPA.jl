@@ -1,0 +1,6 @@
+input: /Users/csilva/src/bpa-compare/results/inputs/torus_jitter.off (9600 points)
+triangles: 19200 in 0.02 s
+points used: 9600 of 9600
+seeds: 1, pivots: 19199, boundary edges: 0
+rejected: no hit 0, normal 0, interior vertex 0, manifold 0
+wrote /Users/csilva/src/bpa-compare/results/torus_jitter/new.off

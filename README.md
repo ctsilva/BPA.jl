@@ -18,15 +18,16 @@ were validated on synthetic surfaces and on the Stanford bunny and dragon scans.
 evolved since, in later sessions in which the repository's author asked for improvements and
 experiments and the findings were fed back into the code:
 
-- **Cross-check against other implementations.** The output was compared with Open3D,
-  MeshLab's VCG filter and an earlier Julia implementation on the same inputs (synthetic
-  sphere, plane, torus and knot, and four bunny scans at two radii), auditing every triangle
-  of every output for an empty ball and every mesh for orientability and manifoldness. The
-  comparison found a pivot bug: the ball skipped the third vertex of the triangle it started
-  from and could roll past the point where that vertex re-enters the ball, accepting a
-  triangle whose ball was not empty. It is fixed, with a regression test, and on every case
-  of the check all of BPA.jl's triangles now admit an empty ball, and its meshes are
-  orientable and manifold.
+- **Cross-check against other implementations.** The output was compared with Open3D and
+  MeshLab's VCG filter on the same inputs (synthetic sphere, plane, tori and knot, and the
+  Stanford bunny and dragon scans), auditing every triangle of every output for an empty
+  ball and every mesh for orientability and manifoldness. The comparison found a pivot bug:
+  the ball skipped the third vertex of the triangle it started from and could roll past the
+  point where that vertex re-enters the ball, accepting a triangle whose ball was not empty.
+  It is fixed, with a regression test, and on every case of the check all of BPA.jl's
+  triangles now admit an empty ball, and its meshes are orientable and manifold. The
+  harness is in [`compare/`](compare/README.md), where other implementations can be plugged
+  in, and the findings are in [`compare/REPORT.md`](compare/REPORT.md).
 - **Pivot normal test.** A pivot triangle was tested against all three vertex normals with
   a strict inequality; on the merged bunny scans this left ten times as many holes as
   needed, because it refused scan vertices without a normal and the steep triangles that
@@ -353,11 +354,10 @@ positions, faces, _ = read_off("data/bunny/data/bun045.off")
 scan = transform(PointCloud(positions, faces), read_xf("data/bunny/data/bun045.xf"))
 ```
 
-**Checking a result.** The test helper `test/meshcheck.jl` computes Euler characteristic,
-orientability, manifoldness, boundary loops and components of any triangle list:
+**Checking a result.** `check_mesh` computes Euler characteristic, orientability,
+manifoldness, boundary loops and components of any triangle list:
 
 ```julia
-include("test/meshcheck.jl")
 c = check_mesh(mesh.triangles)
 c.chi, c.orientable, c.edge_manifold, c.boundary_edges, c.components
 ```
@@ -390,6 +390,7 @@ were unreached, pass a larger radius, or a list of radii.
 | `results/` | default output directory of `bpa.jl`; regenerable, see `results/README.md` |
 | `scripts/` | shell scripts that generate the meshes and download and convert the Stanford scans; they need trimesh2 (see `scripts/README.md`) |
 | `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers (see `tools/README.md`) |
+| `compare/` | the cross-check harness: runs BPA.jl, Open3D, MeshLab and any implementation you register on the same inputs, audits every output and renders them side by side (see `compare/README.md`; findings in `compare/REPORT.md`) |
 | `examples/` | `sphere.jl` and `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) |
 
 ## Documentation
@@ -397,6 +398,8 @@ were unreached, pass a larger radius, or a list of radii.
 - Every exported and internal function has a docstring (`?BPA.ball_pivot` etc. in the REPL).
 - [`tools/README.md`](tools/README.md) explains how to read the depth and signed images of
   `tools/render.jl`.
+- [`compare/README.md`](compare/README.md) explains the comparison harness and how to add an
+  implementation to it; [`compare/REPORT.md`](compare/REPORT.md) is the comparison itself.
 - [`docs/algorithm.md`](docs/algorithm.md) explains the design: data flow, orientation
   conventions, the data structures and their invariants, the pivot geometry, the join/glue
   cases, why the output is an orientable manifold, complexity, and a table mapping every
@@ -455,8 +458,8 @@ reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points us
 (χ = 0), a plane patch (χ = 1, one clean boundary loop), exact lattices (cospherical
 quads), a plane sampled at two densities where one radius leaves the sparse half
 uncovered and two radii cover it, a pivot whose ball returns to the starting triangle's
-third vertex before reaching anything else, and the bounded seed search and component
-filter against the paper's behaviour.
+third vertex before reaching anything else, the bounded seed search and component filter
+against the paper's behaviour, and the comparison harness on the sphere.
 
 Single-threaded, on a MacBook Air with an Apple M5 (4 performance and 6 efficiency cores)
 and 32 GB of memory, Julia 1.12.7. Uniformly sampled unit sphere, single radius:

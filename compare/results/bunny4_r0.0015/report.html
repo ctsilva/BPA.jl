@@ -1,0 +1,52 @@
+<section id="bunny4_r0.0015"><h2>bunny4_r0.0015</h2>
+<p>the same four scans at rho = 1.5 mm, where the ball rides over the overlap layers.</p><p><code>input: `-l bun000,bun045,bun090,bun180 -d /Users/csilva/src/bpa/BPA.jl/data/bunny/data`, rho = 0.0015, 150983 points</code></p>
+<div class="tables">
+<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th></tr></thead><tbody>
+<tr><td>triangles</td><td>202958</td><td>201124</td><td>218720</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.53</td><td>5.104</td><td>8.558</td></tr>
+<tr><td>vertices used</td><td>102271</td><td>102125</td><td>113527</td></tr>
+<tr><td>boundary edges</td><td>1732</td><td>3918</td><td>28558</td></tr>
+<tr><td>boundary loops</td><td>60</td><td>315</td><td>512</td></tr>
+<tr><td>components</td><td>3</td><td>30</td><td>5</td></tr>
+<tr><td>largest component (triangles)</td><td>202898</td><td>201009</td><td>218664</td></tr>
+<tr><td>Euler characteristic</td><td>-74</td><td>-396</td><td>-10112</td></tr>
+<tr><td>orientable</td><td>yes</td><td>no</td><td>yes</td></tr>
+<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>vertex-manifold</td><td>no</td><td>no</td><td>no</td></tr>
+<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>valid</td><td>202958</td><td>201104</td><td>148442</td></tr>
+<tr><td>valid_reversed_winding</td><td>0</td><td>20</td><td>4146</td></tr>
+<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>3</td></tr>
+<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>66129</td></tr>
+<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>degenerate</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>9.80e-01</td></tr>
+<tr><td>render: odd-parity pixels (holes seen through)</td><td>19.20%</td><td>21.56%</td><td>35.36%</td></tr>
+<tr><td>render: pixels with front ≠ back</td><td>19.34%</td><td>21.80%</td><td>44.67%</td></tr>
+</tbody></table>
+<div><p>triangle sets against BPA.jl</p>
+<table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
+<tr><td>Open3D</td><td>200634</td><td>200595</td><td>2324</td><td>490</td><td>169/1275/718/162</td><td>37/6/447/0</td></tr>
+<tr><td>MeshLab</td><td>151975</td><td>147789</td><td>50983</td><td>66745</td><td>7140/34350/8518/975</td><td>35428/15275/15062/980</td></tr>
+</tbody></table>
+</div></div>
+<p class="kind">shaded, boundary edges in red (view 30.0°)</p><div class="grid">
+<figure><a href="bunny4_r0.0015/render/bpa.png"><img src="bunny4_r0.0015/render/bpa.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/open3d.png"><img src="bunny4_r0.0015/render/open3d.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/meshlab.png"><img src="bunny4_r0.0015/render/meshlab.png" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+</div>
+<p class="kind">triangles behind each pixel: warm = odd (a hole is seen through), cool = even (view 30.0°)</p><div class="grid">
+<figure><a href="bunny4_r0.0015/render/bpa_depth.png"><img src="bunny4_r0.0015/render/bpa_depth.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/open3d_depth.png"><img src="bunny4_r0.0015/render/open3d_depth.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/meshlab_depth.png"><img src="bunny4_r0.0015/render/meshlab_depth.png" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+</div>
+<p class="kind">front-facing minus back-facing: grey 0, blue +, red − (view 30.0°)</p><div class="grid">
+<figure><a href="bunny4_r0.0015/render/bpa_signed.png"><img src="bunny4_r0.0015/render/bpa_signed.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/open3d_signed.png"><img src="bunny4_r0.0015/render/open3d_signed.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/meshlab_signed.png"><img src="bunny4_r0.0015/render/meshlab_signed.png" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+</div>
+<p class="kind">input scans, with their boundaries</p><div class="grid">
+<figure><a href="bunny4_r0.0015/render/input.png"><img src="bunny4_r0.0015/render/input.png" loading="lazy"></a><figcaption>input</figcaption></figure>
+<figure><a href="bunny4_r0.0015/render/input_depth.png"><img src="bunny4_r0.0015/render/input_depth.png" loading="lazy"></a><figcaption>input_depth</figcaption></figure>
+</div>
+</section>

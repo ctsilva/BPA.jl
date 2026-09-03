@@ -1,0 +1,65 @@
+depth complexity over 130665 covered pixels (colour ramp saturates at 16 layers):
+  1 triangles:   25891 pixels ( 19.8%)  odd
+  2 triangles:   10700 pixels (  8.2%)
+  3 triangles:   19259 pixels ( 14.7%)  odd
+  4 triangles:   20956 pixels ( 16.0%)
+  5 triangles:   16992 pixels ( 13.0%)  odd
+  6 triangles:   11317 pixels (  8.7%)
+  7 triangles:    7435 pixels (  5.7%)  odd
+  8 triangles:    4831 pixels (  3.7%)
+  9 triangles:    3307 pixels (  2.5%)  odd
+  10 triangles:    2379 pixels (  1.8%)
+  11 triangles:    1879 pixels (  1.4%)  odd
+  12 triangles:    1442 pixels (  1.1%)
+  13 triangles:    1157 pixels (  0.9%)  odd
+  14 triangles:     868 pixels (  0.7%)
+  15 triangles:     607 pixels (  0.5%)  odd
+  16 triangles:     460 pixels (  0.4%)
+  17 triangles:     321 pixels (  0.2%)  odd
+  18 triangles:     237 pixels (  0.2%)
+  19 triangles:     151 pixels (  0.1%)  odd
+  20 triangles:     121 pixels (  0.1%)
+  21 triangles:      84 pixels (  0.1%)  odd
+  22 triangles:      73 pixels (  0.1%)
+  23 triangles:      52 pixels (  0.0%)  odd
+  24 triangles:      42 pixels (  0.0%)
+  25 triangles:      24 pixels (  0.0%)  odd
+  26 triangles:      20 pixels (  0.0%)
+  27 triangles:       9 pixels (  0.0%)  odd
+  28 triangles:      17 pixels (  0.0%)
+  29 triangles:      14 pixels (  0.0%)  odd
+  30 triangles:       6 pixels (  0.0%)
+  31 triangles:       4 pixels (  0.0%)  odd
+  32 triangles:       3 pixels (  0.0%)
+  33 triangles:       4 pixels (  0.0%)  odd
+  37 triangles:       1 pixels (  0.0%)  odd
+  38 triangles:       1 pixels (  0.0%)
+  39 triangles:       1 pixels (  0.0%)  odd
+  odd pixels (holes seen through): 77192 (59.08%)
+  front - back = -13: 1 pixels
+  front - back = -12: 2 pixels
+  front - back = -11: 2 pixels
+  front - back = -10: 8 pixels
+  front - back = -9: 14 pixels
+  front - back = -8: 62 pixels
+  front - back = -7: 161 pixels
+  front - back = -6: 566 pixels
+  front - back = -5: 1510 pixels
+  front - back = -4: 3536 pixels
+  front - back = -3: 6904 pixels
+  front - back = -2: 11747 pixels
+  front - back = -1: 40451 pixels
+  front - back = +1: 19152 pixels
+  front - back = +2: 12437 pixels
+  front - back = +3: 7257 pixels
+  front - back = +4: 3404 pixels
+  front - back = +5: 1451 pixels
+  front - back = +6: 518 pixels
+  front - back = +7: 235 pixels
+  front - back = +8: 108 pixels
+  front - back = +9: 46 pixels
+  front - back = +10: 24 pixels
+  front - back = +11: 5 pixels
+  front - back = +12: 7 pixels
+  front - back = +13: 2 pixels
+  front - back = +15: 1 pixels

@@ -1,0 +1,17 @@
+scans from /Users/csilva/src/bpa/BPA.jl/data/bunny/data:
+  bun000         40256 points  (transformed by bun000.xf)
+  bun045         40097 points  (transformed by bun045.xf)
+  bun090         30379 points  (transformed by bun090.xf)
+  bun180         40251 points  (transformed by bun180.xf)
+  bun270         31701 points  (transformed by bun270.xf)
+  bun315         35336 points  (transformed by bun315.xf)
+  chin           37738 points  (transformed by chin.xf)
+  ear_back       32193 points  (transformed by ear_back.xf)
+  top2           38298 points  (transformed by top2.xf)
+  top3           36023 points  (transformed by top3.xf)
+merged 10 scans: 362272 points
+triangles: 323934 in 1.12 s
+points used: 162289 of 362272  (many points unreached: try a larger radius, or several radii)
+seeds: 17, pivots: 325596, boundary edges: 806
+rejected: no hit 255, normal 1335, interior vertex 85, manifold 4
+wrote /Users/csilva/src/bpa-compare/results/bunny10_r0.00125/new.off

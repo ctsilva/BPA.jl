@@ -1,6 +1,6 @@
-# Synthetic point clouds with analytic normals.
+# Synthetic point clouds with analytic normals, for tests and for the comparison harness in
+# compare/.
 
-using StaticArrays, Random
 
 """
     fibonacci_sphere(n; r=1.0) -> (positions, normals)

@@ -1,0 +1,6 @@
+input: /Users/csilva/src/bpa/BPA.jl/data/torus-120-80.off (9600 points)
+triangles: 19200 in 0.04 s
+points used: 9600 of 9600
+seeds: 1, pivots: 19203, boundary edges: 0
+rejected: no hit 0, normal 0, interior vertex 4, manifold 0
+wrote /Users/csilva/src/bpa-compare/results/torus_r0.10/new.off

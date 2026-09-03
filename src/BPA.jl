@@ -23,6 +23,10 @@ The main entry point is [`reconstruct`](@ref), which takes a [`PointCloud`](@ref
 - `vertex_normals`, `sample_surface`: turn a triangle mesh into a point cloud with normals
   (for experiments with meshes that have no normals of their own).
 - `estimate_spacing`: median nearest-neighbour distance, to choose a radius.
+- `check_mesh`: topology of a triangle list (orientable, manifold, boundary loops, components,
+  Euler characteristic), for checking a result.
+- `fibonacci_sphere`, `torus`, `plane_patch` (not exported): synthetic point clouds with
+  analytic normals, for tests and the comparison harness in `compare/`.
 - `main(args)`: the command-line tool behind `bpa.jl` (`julia bpa.jl -h`). Its helpers
   `read_xf` and `transform` (not exported) apply the 4×4 `.xf` matrices of registered
   range scans to a point cloud.
@@ -40,6 +44,8 @@ The main entry point is [`reconstruct`](@ref), which takes a [`PointCloud`](@ref
 | `reconstruct.jl` | the main loop (Fig. 5) and multiple passes | 4, 4.6 |
 | `io.jl` | XYZ / PLY / OFF input, OBJ / PLY output, mesh sampling | — |
 | `spacing.jl` | sample spacing estimate | — |
+| `check.jl` | `check_mesh`: topology of a triangle list | — |
+| `synthetic.jl` | synthetic point clouds with analytic normals | — |
 | `cli.jl` | command-line interface | — |
 
 `docs/algorithm.md` walks through the algorithm, the conventions and the invariants.
@@ -52,6 +58,7 @@ using Random
 
 export PointCloud, BPAMesh, BPAStats, reconstruct, estimate_spacing
 export read_xyz, read_ply, read_off, write_ply, write_obj, write_off, vertex_normals, sample_surface
+export MeshCheck, check_mesh
 
 include("types.jl")
 include("grid.jl")
@@ -62,6 +69,8 @@ include("pivot.jl")
 include("reconstruct.jl")
 include("io.jl")
 include("spacing.jl")
+include("check.jl")
+include("synthetic.jl")
 include("cli.jl")
 
 end # module

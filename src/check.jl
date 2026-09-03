@@ -1,4 +1,5 @@
-# Topological checks on a triangle list (1-based vertex ids).
+# Topological checks on a triangle list (1-based vertex ids), for tests and for auditing any
+# reconstruction, this package's or another's (see compare/).
 #
 # `check_mesh(triangles)` returns a `MeshCheck`. For a correct BPA output one expects
 # `orientable`, `edge_manifold` and `vertex_manifold` to hold; for a closed surface

@@ -4,8 +4,7 @@ using LinearAlgebra
 using StaticArrays
 using Random
 
-include("synthetic.jl")
-include("meshcheck.jl")
+using BPA: outward, fibonacci_sphere, sphere_spacing, torus, plane_patch
 
 @testset "BPA" begin
     @testset "geometry" begin
@@ -23,4 +22,5 @@ include("meshcheck.jl")
     @testset "cli" begin
         include("test_cli.jl")
     end
+    include("test_compare.jl")
 end

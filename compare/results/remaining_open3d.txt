@@ -1,0 +1,39 @@
+sphere2000:
+  only in Open3D (after flips) 0 -> Dict{Symbol, Int64}(); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 0 -> Dict{Symbol, Int64}(); one-triangle holes in Open3D: 0; failing the all-three-normals test: 0 (with a zero normal: 0)
+plane40:
+  only in Open3D (after flips) 0 -> Dict{Symbol, Int64}(); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 0 -> Dict{Symbol, Int64}(); one-triangle holes in Open3D: 0; failing the all-three-normals test: 0 (with a zero normal: 0)
+torus_r0.10:
+  only in Open3D (after flips) 0 -> Dict{Symbol, Int64}(); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 0 -> Dict{Symbol, Int64}(); one-triangle holes in Open3D: 0; failing the all-three-normals test: 0 (with a zero normal: 0)
+torus_r0.05:
+  only in Open3D (after flips) 0 -> Dict{Symbol, Int64}(); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 0 -> Dict{Symbol, Int64}(); one-triangle holes in Open3D: 0; failing the all-three-normals test: 0 (with a zero normal: 0)
+torus_jitter:
+  only in Open3D (after flips) 0 -> Dict{Symbol, Int64}(); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 0 -> Dict{Symbol, Int64}(); one-triangle holes in Open3D: 0; failing the all-three-normals test: 0 (with a zero normal: 0)
+torus_sampled20k:
+  only in Open3D (after flips) 0 -> Dict{Symbol, Int64}(); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 0 -> Dict{Symbol, Int64}(); one-triangle holes in Open3D: 0; failing the all-three-normals test: 0 (with a zero normal: 0)
+knot_r0.0188:
+  only in Open3D (after flips) 90 -> Dict(:valid => 90); one-triangle holes in BPA.jl: 9
+  only in BPA.jl 270 -> Dict(:valid => 270); one-triangle holes in Open3D: 26; failing the all-three-normals test: 182 (with a zero normal: 0)
+knot_r0.03:
+  only in Open3D (after flips) 34 -> Dict(:valid => 34); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 108 -> Dict(:valid => 108); one-triangle holes in Open3D: 31; failing the all-three-normals test: 93 (with a zero normal: 0)
+bun000:
+  only in Open3D (after flips) 60 -> Dict(:valid => 60); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 218 -> Dict(:valid => 218); one-triangle holes in Open3D: 34; failing the all-three-normals test: 101 (with a zero normal: 88)
+bunny4_r0.0008:
+  only in Open3D (after flips) 241 -> Dict(:valid => 241); one-triangle holes in BPA.jl: 2
+  only in BPA.jl 2078 -> Dict(:valid => 2078); one-triangle holes in Open3D: 284; failing the all-three-normals test: 1804 (with a zero normal: 909)
+bunny4_r0.0015:
+  only in Open3D (after flips) 110 -> Dict(:valid_reversed_winding => 1, :valid => 109); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 1944 -> Dict(:valid => 1944); one-triangle holes in Open3D: 162; failing the all-three-normals test: 1766 (with a zero normal: 1094)
+bunny10_r0.00125:
+  only in Open3D (after flips) 161 -> Dict(:valid => 161); one-triangle holes in BPA.jl: 0
+  only in BPA.jl 6120 -> Dict(:valid => 6120); one-triangle holes in Open3D: 505; failing the all-three-normals test: 5942 (with a zero normal: 4000)
+dragon62_r0.0007:
+  only in Open3D (after flips) 1574 -> Dict(:valid => 1574); one-triangle holes in BPA.jl: 20
+  only in BPA.jl 26241 -> Dict(:valid => 26241); one-triangle holes in Open3D: 5635; failing the all-three-normals test: 24069 (with a zero normal: 6683)
