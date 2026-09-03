@@ -134,7 +134,8 @@ the radius as an absolute value, not a percentage of the bounding box.
    and loops, connected components and the size of the largest, Euler characteristic. On
    the closed synthetic surfaces the exact answer is known (sphere χ = 2, torus χ = 0, two
    triangles per vertex).
-3. *Renderings*, with `tools/render.jl`, saved as PNG in `results/<case>/render/`:
+3. *Renderings*, with `tools/render.jl`, saved as PNG in `results/<case>/render/` (a
+   selection is reproduced below; `results/index.html` shows all of them side by side):
    the mesh flat-shaded with its boundary edges in red; the number of triangles behind each
    pixel, warm colours for odd counts and cool for even, so that for a closed surface every
    warm pixel is a hole seen through (including holes on the far side); and front-facing
@@ -217,6 +218,12 @@ the points and leaves 94 boundary loops and 11338 triangles with a non-empty bal
 jittered torus (spacing 0.029, above 0.2ρ = 0.012) it does fine but still loses four
 triangles.
 
+The area-sampled torus, shaded with boundary edges in red: closed for BPA.jl and Open3D, 94 holes for MeshLab, whose clustering dropped a quarter of the points.
+
+| BPA.jl | Open3D | MeshLab |
+|---|---|---|
+| ![](results/torus_sampled20k/render/bpa.png) | ![](results/torus_sampled20k/render/open3d.png) | ![](results/torus_sampled20k/render/meshlab.png) |
+
 ### Knot (30 000 points)
 
 | | BPA.jl | Open3D | MeshLab |
@@ -240,6 +247,12 @@ covers the most surface in 4 components; Open3D has 19 components and a non-orie
 mesh. At ρ = 0.03 BPA.jl leaves 62 boundary edges in 16 small loops where the tube nearly
 touches itself, Open3D three times as many, and MeshLab 1770, with a third of its triangles either wound backwards or on a non-empty ball. In the
 renderings the knot's holes are all at the self-contact zones.
+
+The knot at ρ = 0.03: 62 boundary edges in 16 loops for BPA.jl, 214 for Open3D, 1770 for MeshLab.
+
+| BPA.jl | Open3D | MeshLab |
+|---|---|---|
+| ![](results/knot_r0.03/render/bpa.png) | ![](results/knot_r0.03/render/open3d.png) | ![](results/knot_r0.03/render/meshlab.png) |
 
 ### Bunny, one scan (40 256 points, ρ = 1.25 mm)
 
@@ -283,6 +296,12 @@ ball stays empty. MeshLab's output on merged scans is mostly not ball-pivoting o
 and a third are wound against the normals, in whole patches (the signed rendering shows
 them as large blue and red regions).
 
+Four scans at ρ = 0.8 mm, front-facing minus back-facing triangles per pixel: grey where a consistently oriented surface cancels, blue and red at holes (the unscanned underside for everyone) and, for MeshLab, whole patches wound the wrong way.
+
+| BPA.jl | Open3D | MeshLab |
+|---|---|---|
+| ![](results/bunny4_r0.0008/render/bpa_signed.png) | ![](results/bunny4_r0.0008/render/open3d_signed.png) | ![](results/bunny4_r0.0008/render/meshlab_signed.png) |
+
 ### Bunny, ten scans (362 272 points, ρ = 1.25 mm)
 
 | | BPA.jl | Open3D | MeshLab |
@@ -307,6 +326,25 @@ roll over) and returns 174 000 boundary edges, 61 % of its triangles on a non-em
 and a rendering in which half the pixels see through the surface; at nearly 3 minutes it
 is also 150 times slower than BPA.jl. Open3D's time is 24 times BPA.jl's: at this radius
 each pivot scans a neighbourhood of several hundred points twice.
+
+All ten scans, shaded with boundary edges in red: BPA.jl's boundary is the four patches under the feet and a scattering of single triangles; Open3D's is the seams between scans; MeshLab's is almost everywhere.
+
+| BPA.jl | Open3D | MeshLab |
+|---|---|---|
+| ![](results/bunny10_r0.00125/render/bpa.png) | ![](results/bunny10_r0.00125/render/open3d.png) | ![](results/bunny10_r0.00125/render/meshlab.png) |
+
+The same meshes as triangles behind each pixel, cool for even counts and warm for odd: on a closed surface every warm pixel is a hole seen through, including holes on the far side.
+
+| BPA.jl | Open3D | MeshLab |
+|---|---|---|
+| ![](results/bunny10_r0.00125/render/bpa_depth.png) | ![](results/bunny10_r0.00125/render/open3d_depth.png) | ![](results/bunny10_r0.00125/render/meshlab_depth.png) |
+
+The overlap the tools had to deal with: the ten input scans, with the number of scans
+behind each pixel (pale yellow to purple), and their boundaries in red.
+
+| input scans | scans per pixel |
+|---|---|
+| ![](results/bunny10_r0.00125/render/input.png) | ![](results/bunny10_r0.00125/render/input_depth.png) |
 
 ### Dragon, 62 scans (1 826 038 points, ρ = 0.7 mm)
 
@@ -337,6 +375,12 @@ stand that the scans `dragonToes_0` and `dragonToes3_0` contain (the yellow patc
 the figure in `results/dragon62_r0.0007/render/bpa_depth.png`), single sheets and therefore odd.
 On the dragon itself the two depth images look alike, and the visible holes are at the
 same places: the scales and the underside of the belly, where the scans do not reach.
+
+The dragon as triangles behind each pixel: the yellow fragments below the figure are single-sheet pieces of the turntable and stand, present in every tool's output; MeshLab's image is warm nearly everywhere because it triangulated the overlap layers separately.
+
+| BPA.jl | Open3D | MeshLab |
+|---|---|---|
+| ![](results/dragon62_r0.0007/render/bpa_depth.png) | ![](results/dragon62_r0.0007/render/open3d_depth.png) | ![](results/dragon62_r0.0007/render/meshlab_depth.png) |
 
 ### Diagonal switching, Open3D toward BPA.jl
 
