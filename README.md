@@ -42,7 +42,11 @@ experiments and the findings were fed back into the code:
   bounded seed search and per-vertex edge chains in place of the front's hash tables. The ten bunny scans reconstruct in 1.2 s instead of 2.3 s and the 62
   dragon scans in 5 s instead of 22 s, with the same triangles. An option to drop stray
   fragments is off by default. The changes and their measurements are in
-  [`docs/algorithm.md`](docs/algorithm.md).
+  [`docs/algorithm.md`](docs/algorithm.md). On the same machine Open3D takes 27 s on the
+  ten bunny scans and 11 minutes on the dragon, MeshLab 3 minutes and 4 hours, mainly
+  because their pivots rescan the neighbourhood of every candidate; the gap grows with the
+  number of points per ball. The full comparison, including what each tool gets right, is
+  in [`compare/REPORT.md`](compare/REPORT.md).
 
 The choices made where the paper leaves room are listed under
 [What is implemented](#what-is-implemented). The scope is the in-core algorithm on clean or
@@ -469,13 +473,14 @@ and 32 GB of memory, Julia 1.12.7. Uniformly sampled unit sphere, single radius:
 | 200 000 | 400 000 | 0.47 s |
 | 1 000 000 | 2 000 000 | 2.2 s |
 
-Range scans, merged, single radius (the time of the reconstruction alone, as the tool
-prints it):
+Range scans, merged, single radius (the time of the reconstruction alone, as each tool
+reports it; the Open3D and MeshLab columns are from the comparison in `compare/`, on the
+same machine):
 
-| input | points | triangles | time |
-| --- | --- | --- | --- |
-| bunny, 10 scans, ρ = 1.25 mm | 362 272 | 323 934 | 1.2 s |
-| dragon, 62 scans, ρ = 0.7 mm | 1 826 038 | 649 518 | 5.1 s |
+| input | points | triangles | BPA.jl | Open3D | MeshLab |
+| --- | --- | --- | --- | --- | --- |
+| bunny, 10 scans, ρ = 1.25 mm | 362 272 | 323 934 | 1.2 s | 27 s | 166 s |
+| dragon, 62 scans, ρ = 0.7 mm | 1 826 038 | 649 518 | 5.1 s | 11.2 min | 4.1 h |
 
 Running time is linear in the number of points, as expected for bounded sampling density.
 Before the performance work described in `docs/algorithm.md` the same runs took 2.3 s and
