@@ -9,11 +9,17 @@ Renders a mesh to an image and, alongside it, two images that count what lies be
 pixel. Useful for finding the holes and duplicate layers that the summary numbers only hint at.
 
 ```
-julia tools/render.jl mesh.off [out.ppm] [ANGLE]
-julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE]
+julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--size WxH]
+julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]
 ```
 
-- `mesh.off`: an OFF, NOFF or COFF file; only the positions and faces are used.
+- `mesh.off`: an OFF, NOFF or COFF file. A COFF file's per-vertex colours (as `bpa.jl`
+  writes with `--save-colored` or `-p`) are used for the shading, each triangle taking the
+  colour of its first vertex; otherwise the mesh is drawn in a single colour.
+- `--no-edges`: leave the boundary edges undrawn, for a picture rather than a diagnosis.
+- `--size WxH`: image size, default 1400x1000; a larger size lets a detail be cropped at
+  full resolution afterwards (the dragon pictures in the package README are a 2800x2000
+  rendering cropped to the figure, since its bounding box includes the turntable).
 - `-f scans.txt`: instead of one mesh, the range scans named in a list file (one per line,
   `#` comments), merged into one mesh. Each `<name>.off` is read with its faces from `DIR`
   (`-d`, default: the list file's directory) and moved by `<name>.xf` when that file exists.
@@ -22,7 +28,7 @@ julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE]
 - `ANGLE`: rotation about the vertical axis in degrees, default 30. The elevation is fixed
   at 15 degrees, and the projection is orthographic.
 
-Three images are written, all 1400×1000 binary PPM:
+Three images are written, binary PPM, 1400×1000 unless `--size` says otherwise:
 
 | file | contents |
 |---|---|

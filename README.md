@@ -169,7 +169,9 @@ the output, coloured by creation order: each block of N triangles gets the next 
 blue, green, red, yellow, magenta, brightening within the block. `--save-colored` also
 writes the final mesh with these colours as `<output>_colored.<ext>`, with the block size
 of `-p N` or, without `-p`, about a tenth of the expected triangle count. Coloured `.off`
-files are COFF (per-vertex colours, no normals), `.ply` files carry face colours:
+files are COFF (per-vertex colours, no normals), `.ply` files carry face colours. The
+coloured bunny and dragon under [Tests and performance](#tests-and-performance) are such
+files, rendered with `tools/render.jl`:
 
 ```
 $ julia bpa.jl -r 0.1 -i data/torus-120-80.off -p 5000 -o /tmp/snap/torus.off
@@ -481,6 +483,18 @@ same machine):
 | --- | --- | --- | --- | --- | --- |
 | bunny, 10 scans, ρ = 1.25 mm | 362 272 | 323 934 | 1.2 s | 27 s | 166 s |
 | dragon, 62 scans, ρ = 0.7 mm | 1 826 038 | 649 518 | 5.1 s | 11.2 min | 4.1 h |
+
+The two reconstructions, rendered with `tools/render.jl`. Below them, the same meshes
+coloured by creation order (`--save-colored`): each block of triangles, 72 454 on the bunny
+and 100 000 on the dragon, takes the next colour of blue, green, red, yellow and magenta,
+brightening within the block, so the sweep of the front over the surface is visible. The
+bunny grew from one seed on the head to the tail; the dragon needed 101 seeds, and its
+first block starts on the turntable fragments the scans contain.
+
+| bunny, 10 scans | dragon, 62 scans |
+| --- | --- |
+| ![](docs/images/bunny.png) | ![](docs/images/dragon.png) |
+| ![](docs/images/bunny_colored.png) | ![](docs/images/dragon_colored.png) |
 
 Running time is linear in the number of points, as expected for bounded sampling density.
 Before the performance work described in `docs/algorithm.md` the same runs took 2.3 s and

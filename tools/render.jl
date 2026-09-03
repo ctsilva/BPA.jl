@@ -1,8 +1,12 @@
 # Minimal flat-shaded painter's-algorithm renderer: OFF -> PPM, plus depth-complexity images.
 #
-#   julia tools/render.jl mesh.off [out.ppm] [ANGLE]
-#   julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE]
+#   julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--size WxH]
+#   julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]
 #
+# A COFF mesh (per-vertex colours, as bpa.jl writes with --save-colored or -p) is shaded in
+# its own colours, each triangle taking the colour of its first vertex; --no-edges leaves the
+# boundary edges undrawn, for pictures rather than diagnosis; --size sets the image size
+# (default 1400x1000), for instance to crop a detail at full resolution afterwards.
 # The second form renders the range scans named in the list file (one per line, # comments)
 # as one mesh: each <name>.off is read from DIR (default: the list file's directory) with its
 # faces and moved by <name>.xf when that exists, so the depth-complexity images show how
@@ -17,12 +21,20 @@
 # top-left rule for centres on a shared edge, so every pixel is counted once per triangle.
 using LinearAlgebra, Printf
 
+# Returns the vertices, the faces and, for a COFF file, the per-vertex colours (r, g, b in
+# 0..1; nothing otherwise).
 function read_off_faces(path)
     lines = filter(l -> !isempty(strip(l)) && !startswith(strip(l), '#'), readlines(path))
     nv, nf, _ = parse.(Int, split(lines[2]))
-    V = [parse.(Float64, split(lines[2+i])[1:3]) for i in 1:nv]
+    rows = [split(lines[2+i]) for i in 1:nv]
+    V = [parse.(Float64, r[1:3]) for r in rows]
     F = [parse.(Int, split(lines[2+nv+i])[2:4]) .+ 1 for i in 1:nf]
-    V, F
+    C = nothing
+    if startswith(strip(lines[1]), "COFF") && all(r -> length(r) >= 6, rows)
+        C = [parse.(Float64, r[4:6]) for r in rows]
+        maximum(maximum.(C)) > 1 && (C = [c ./ 255 for c in C])      # 0..255 colours
+    end
+    V, F, C
 end
 
 # Read the scans named in a list file and merge them into one mesh in the common frame.
@@ -32,7 +44,7 @@ function read_scan_list(list, dir)
     for name in names
         off = joinpath(dir, name * ".off")
         isfile(off) || error("scan not found: $off")
-        Vs, Fs = read_off_faces(off)
+        Vs, Fs, _ = read_off_faces(off)
         xf = joinpath(dir, name * ".xf")
         if isfile(xf)
             M = reduce(vcat, [parse.(Float64, split(l))' for l in readlines(xf) if !isempty(strip(l))])
@@ -105,28 +117,30 @@ function signed_color(s)
 end
 
 function main(args)
-    list = ""; dir = ""; positional = String[]
+    list = ""; dir = ""; positional = String[]; edges = true; W, H = 1400, 1000
     i = 1
     while i <= length(args)
         if args[i] == "-f" && i < length(args); list = args[i+1]; i += 2
         elseif args[i] == "-d" && i < length(args); dir = args[i+1]; i += 2
+        elseif args[i] == "--no-edges"; edges = false; i += 1
+        elseif args[i] == "--size" && i < length(args); W, H = parse.(Int, split(args[i+1], 'x')); i += 2
         else push!(positional, args[i]); i += 1
         end
     end
     if isempty(list) && isempty(positional)
-        println(stderr, "usage: julia render.jl mesh.off [out.ppm] [ANGLE]\n       julia render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE]")
+        println(stderr, "usage: julia render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--size WxH]\n       julia render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]")
         exit(1)
     end
     if isempty(list)
         input = popfirst!(positional)
-        V, F = read_off_faces(input)
+        V, F, C = read_off_faces(input)
     else
         input = list
         V, F = read_scan_list(list, isempty(dir) ? dirname(abspath(list)) : dir)
+        C = nothing
     end
     out = length(positional) >= 1 ? positional[1] : splitext(input)[1] * ".ppm"
     angle = length(positional) >= 2 ? parse(Float64, positional[2]) : 30.0
-    W, H = 1400, 1000
     # View: rotate about Y (bunny's up axis is +Y in Stanford data) so we see the side/front
     θ = deg2rad(angle); φ = deg2rad(15)
     Ry = [cos(θ) 0 sin(θ); 0 1 0; -sin(θ) 0 cos(θ)]
@@ -149,7 +163,7 @@ function main(args)
         facing = n[3] >= 0 ? 1 : -1
         if n[3] < 0; n = -n; end  # two-sided lighting
         shade = 0.25 + 0.75 * max(0.0, dot(n, light))
-        base = (0.85, 0.70, 0.55)
+        base = C === nothing ? (0.85, 0.70, 0.55) : (C[f[1]][1], C[f[1]][2], C[f[1]][3])
         col = (UInt8(round(255*base[1]*shade)), UInt8(round(255*base[2]*shade)), UInt8(round(255*base[3]*shade)))
         rasterize(sx(a),sy(a),sx(b),sy(b),sx(c),sy(c), W, H) do x, y
             img[1,x,y] = col[1]; img[2,x,y] = col[2]; img[3,x,y] = col[3]
@@ -161,7 +175,7 @@ function main(args)
     ec = Dict{Tuple{Int,Int},Int}()
     for f in F, (p,q) in ((f[1],f[2]),(f[2],f[3]),(f[3],f[1])); k = p<q ? (p,q) : (q,p); ec[k] = get(ec,k,0)+1; end
     for ((p,q),c) in ec
-        c == 1 || continue
+        (edges && c == 1) || continue
         a, b = P[p], P[q]
         x1,y1,x2,y2 = sx(a),sy(a),sx(b),sy(b)
         nsteps = max(2, ceil(Int, 2*hypot(x2-x1,y2-y1)))
