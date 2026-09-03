@@ -90,6 +90,19 @@ end
     @test m.stats.seeds == 1
     @test length(m.triangles) == 2 * 300 - 4
     @test isempty(reconstruct(P, N, rho; max_seeds = 0).triangles)
+    # min_component: a lone triangle far away is a third component, dropped on request
+    h = 0.6 * sphere_spacing(300)
+    P3 = vcat(P, [Vec3(10, 0, 0), Vec3(10 + h, 0, 0), Vec3(10, h, 0)]); N3 = vcat(N, fill(Vec3(0, 0, 1), 3))
+    m = reconstruct(P3, N3, rho)
+    @test m.stats.seeds == 3 && length(m.triangles) == 2 * (2 * 300 - 4) + 1 && m.stats.boundary_edges == 3
+    @test m.stats.dropped_components == 0 && m.stats.dropped_triangles == 0
+    m = reconstruct(P3, N3, rho; min_component = 2)
+    @test m.stats.seeds == 3 && length(m.triangles) == 2 * (2 * 300 - 4) && m.stats.boundary_edges == 0
+    @test m.stats.dropped_components == 1 && m.stats.dropped_triangles == 1
+    @test !any(t -> any(>(600), t), m.triangles)
+    m = reconstruct(P3, N3, rho; min_component = 1000)
+    @test isempty(m.triangles) && m.stats.dropped_components == 3 && m.stats.boundary_edges == 0
+    @test_throws ArgumentError reconstruct(P, N, rho; min_component = -1)
     counts = Int[]
     reconstruct(P, N, rho; on_progress = (t, s) -> push!(counts, length(t)), progress_every = 100)
     @test counts == 100:100:(2 * (2 * 300 - 4))
@@ -107,6 +120,10 @@ end
     @test o.radii == [0.1, 0.2] && o.input == "data/t.off" && o.progress == 1000
     @test o.verbose && o.seed == 7 && o.output == joinpath(BPA.RESULTS_DIR, "t_bpa.off")
     @test o.save_colored && o.max_seeds == 3 && o.sample == 500 && o.seed_neighbors == 40
+    @test o.min_component == 0
+    o = parse_cli(["-i", "a.off", "--min-component", "10"])
+    @test o.min_component == 10 && o.seed_neighbors == BPA.DEFAULT_SEED_NEIGHBORS
+    @test_throws ArgumentError parse_cli(["-i", "a.off", "--min-component", "-1"])
     @test isempty(parse_cli(["-i", "a.off", "-r", "-1"]).radii)          # -1: estimate
     @test sprint(io -> main(["-h"]; io = io)) |> s -> occursin("usage:", s)
 

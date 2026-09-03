@@ -22,16 +22,22 @@ Keyword arguments:
   its nearest this many neighbours (default `DEFAULT_SEED_NEIGHBORS`; `-1` pairs all
   points within `2ρ`, as the paper describes). A bound the paper does not specify; see
   `docs/algorithm.md`, Section 4.2.
+- `min_component`: after the last pass, drop every connected component with fewer than
+  this many triangles (default 0: keep everything, as the paper does). Stray seeds whose
+  front dies at once leave fragments of a few triangles, which this removes; the counts are
+  in `stats.dropped_components` and `stats.dropped_triangles`.
 - `on_progress`, `progress_every`: if `on_progress` is given, it is called as
   `on_progress(triangles, stats)` each time the number of triangles reaches a multiple of
   `progress_every`. `triangles` is the live output vector; copy it if it is to be kept.
 """
 function reconstruct(cloud::PointCloud, radii::AbstractVector{<:Real}; verbose::Bool = false,
                      max_seeds::Integer = -1, seed_neighbors::Integer = DEFAULT_SEED_NEIGHBORS,
-                     on_progress = nothing, progress_every::Integer = 1000)
+                     min_component::Integer = 0, on_progress = nothing,
+                     progress_every::Integer = 1000)
     isempty(radii) && throw(ArgumentError("at least one radius is required"))
     all(r -> r > 0, radii) || throw(ArgumentError("radii must be positive"))
     progress_every > 0 || throw(ArgumentError("progress_every must be positive"))
+    min_component >= 0 || throw(ArgumentError("min_component must not be negative"))
     radii = sort(Float64.(radii))
     n = length(cloud)
     front = Front(n)
@@ -57,7 +63,46 @@ function reconstruct(cloud::PointCloud, radii::AbstractVector{<:Real}; verbose::
         end
     end
     stats.boundary_edges = boundary_edge_count(front)
+    min_component > 1 && drop_small_components!(triangles, front, stats, Int(min_component))
     BPAMesh(cloud, triangles, stats)
+end
+
+"""
+    drop_small_components!(triangles, front, stats, min_component)
+
+Remove every connected component of `triangles` (triangles joined by shared edges, or
+equivalently here by shared vertices, as a component's vertices are used by nothing else)
+with fewer than `min_component` triangles. A boundary edge belongs to exactly one triangle,
+so the boundary count is corrected by the live front edges whose origin lies in a dropped
+component. Records the counts in `stats`.
+"""
+function drop_small_components!(triangles::Vector{Tri}, front::Front, stats::BPAStats,
+                                min_component::Int)
+    n = length(front.used)
+    parent = collect(1:n)
+    function root(x)
+        while parent[x] != x
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        end
+        x
+    end
+    for t in triangles
+        a, b, c = root(t[1]), root(t[2]), root(t[3])
+        parent[a] = c
+        parent[b] = c
+    end
+    size = zeros(Int, n)
+    for t in triangles
+        size[root(t[1])] += 1
+    end
+    keep(v) = size[root(v)] >= min_component
+    stats.dropped_components = count(r -> 0 < size[r] < min_component, 1:n)
+    stats.dropped_triangles = count(t -> !keep(t[1]), triangles)
+    stats.dropped_triangles == 0 && return nothing
+    stats.boundary_edges -= count(e -> e.alive && e.status == BOUNDARY && !keep(e.i), front.edges)
+    filter!(t -> keep(t[1]), triangles)
+    nothing
 end
 
 reconstruct(cloud::PointCloud, rho::Real; kwargs...) = reconstruct(cloud, [rho]; kwargs...)

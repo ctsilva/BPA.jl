@@ -134,12 +134,14 @@ mutable struct BPAStats
     rejected_normal::Int        # first hit point's normal points against the triangle
     rejected_used::Int          # first hit point is an interior vertex
     rejected_manifold::Int      # triangle would create a non-manifold / non-orientable edge
-    boundary_edges::Int         # boundary edges left in the front at the end
+    boundary_edges::Int         # boundary edges of the output (after `min_component` filtering)
+    dropped_components::Int     # min_component only: components removed at the end
+    dropped_triangles::Int      # min_component only: triangles removed with them
     triangles_per_pass::Vector{Int}    # triangles created by each radius
     reactivated_per_pass::Vector{Int}  # boundary edges re-activated at the start of each pass
 end
 
-BPAStats() = BPAStats(0, 0, 0, 0, 0, 0, 0, 0, 0, Int[], Int[])
+BPAStats() = BPAStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Int[], Int[])
 
 """
     BPAMesh

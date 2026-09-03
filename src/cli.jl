@@ -33,6 +33,8 @@ options:
   --seed-neighbors N    when searching for a seed triangle, pair only the N nearest
                         neighbours of the candidate point (default 100; -1 pairs every
                         point within 2 x radius, as the paper describes)
+  --min-component N     drop connected components with fewer than N triangles at the end
+                        (default 0: keep everything)
   --sample N            for mesh inputs, sample N points uniformly on the surface instead
                         of using the mesh vertices
   --seed SEED           random seed for sampling and spacing estimation (default 1)
@@ -54,6 +56,7 @@ struct CLIOptions
     save_colored::Bool
     max_seeds::Int
     seed_neighbors::Int
+    min_component::Int
     sample::Int
     seed::Int
     write_points::String
@@ -69,8 +72,8 @@ Throws an `ArgumentError` with a message for invalid input.
 function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     input = ""; scans = String[]; scan_dir = ""; listfile = ""; output = ""
     radii = Float64[]; progress = 0; save_colored = false
-    max_seeds = -1; seed_neighbors = DEFAULT_SEED_NEIGHBORS; sample = 0; seed = 1
-    write_points = ""; verbose = false
+    max_seeds = -1; seed_neighbors = DEFAULT_SEED_NEIGHBORS; min_component = 0
+    sample = 0; seed = 1; write_points = ""; verbose = false
     k = 1
     value(flag) = (k + 1 <= length(args) || throw(ArgumentError("$flag needs a value")); k += 1; args[k])
     while k <= length(args)
@@ -108,6 +111,9 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
             max_seeds = parse(Int, value(a))
         elseif a == "--seed-neighbors"
             seed_neighbors = parse(Int, value(a))
+        elseif a == "--min-component"
+            min_component = parse(Int, value(a))
+            min_component >= 0 || throw(ArgumentError("--min-component needs a non-negative count"))
         elseif a == "--sample"
             sample = parse(Int, value(a))
             sample > 0 || throw(ArgumentError("--sample needs a positive count"))
@@ -136,7 +142,7 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     ext = lowercase(splitext(output)[2])
     ext in (".off", ".obj", ".ply") || throw(ArgumentError("output must be .off, .obj or .ply"))
     CLIOptions(input, scans, scan_dir, output, radii, progress, save_colored, max_seeds,
-               seed_neighbors, sample, seed, write_points, verbose)
+               seed_neighbors, min_component, sample, seed, write_points, verbose)
 end
 
 """
@@ -338,7 +344,8 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
     end
 
     t = @elapsed mesh = reconstruct(cloud, radii; verbose = opts.verbose, max_seeds = opts.max_seeds,
-                                    seed_neighbors = opts.seed_neighbors, on_progress = on_progress,
+                                    seed_neighbors = opts.seed_neighbors,
+                                    min_component = opts.min_component, on_progress = on_progress,
                                     progress_every = max(opts.progress, 1))
     s = mesh.stats
     println(io, "triangles: ", length(mesh.triangles), " in ", round(t; digits = 2), " s")
@@ -353,6 +360,8 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
     println(io, "seeds: ", s.seeds, ", pivots: ", s.pivots, ", boundary edges: ", s.boundary_edges)
     println(io, "rejected: no hit ", s.rejected_no_hit, ", normal ", s.rejected_normal,
             ", interior vertex ", s.rejected_used, ", manifold ", s.rejected_manifold)
+    opts.min_component > 0 && println(io, "dropped: ", s.dropped_components, " components of fewer than ",
+                                      opts.min_component, " triangles (", s.dropped_triangles, " triangles)")
     length(radii) > 1 && println(io, "triangles per pass: ", s.triangles_per_pass,
                                  ", reactivated edges: ", s.reactivated_per_pass)
 
