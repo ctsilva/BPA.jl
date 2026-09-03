@@ -18,12 +18,17 @@ Keyword arguments:
 - `max_seeds`: stop after this many seed triangles have been found (over all passes);
   `-1` for no limit. Useful to reconstruct only the largest components or to watch the
   front grow from a single seed.
+- `seed_neighbors`: when looking for a seed triangle around a candidate point, pair only
+  its nearest this many neighbours (default `DEFAULT_SEED_NEIGHBORS`; `-1` pairs all
+  points within `2ρ`, as the paper describes). A bound the paper does not specify; see
+  `docs/algorithm.md`, Section 4.2.
 - `on_progress`, `progress_every`: if `on_progress` is given, it is called as
   `on_progress(triangles, stats)` each time the number of triangles reaches a multiple of
   `progress_every`. `triangles` is the live output vector; copy it if it is to be kept.
 """
 function reconstruct(cloud::PointCloud, radii::AbstractVector{<:Real}; verbose::Bool = false,
-                     max_seeds::Integer = -1, on_progress = nothing, progress_every::Integer = 1000)
+                     max_seeds::Integer = -1, seed_neighbors::Integer = DEFAULT_SEED_NEIGHBORS,
+                     on_progress = nothing, progress_every::Integer = 1000)
     isempty(radii) && throw(ArgumentError("at least one radius is required"))
     all(r -> r > 0, radii) || throw(ArgumentError("radii must be positive"))
     progress_every > 0 || throw(ArgumentError("progress_every must be positive"))
@@ -36,8 +41,9 @@ function reconstruct(cloud::PointCloud, radii::AbstractVector{<:Real}; verbose::
     for (pass, rho) in enumerate(radii)
         t0 = time()
         grid = VoxelGrid(cloud.positions, 2 * rho)
-        st = BPAState(cloud, grid, rho, front, triangles, stats, 1, Int[],
-                      Int(max_seeds), on_progress, Int(progress_every))
+        st = BPAState(cloud, grid, rho, front, triangles, stats; max_seeds = max_seeds,
+                      seed_neighbors = seed_neighbors, on_progress = on_progress,
+                      progress_every = progress_every)
         ntri0 = length(triangles)
         nreact = pass > 1 ? reactivate!(st) : 0
         push!(stats.reactivated_per_pass, nreact)

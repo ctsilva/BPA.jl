@@ -1,6 +1,8 @@
 # Spatial queries (Section 4.1): a regular grid of cubic voxels of side δ = 2ρ.
 # Points are bucket-sorted so that the points of one voxel form a contiguous sublist of
-# `sorted`; `cell_start` holds the sublist offsets (with one extra entry at the end).
+# `sorted`; `cell_start` holds the sublist offsets (with one extra entry at the end). The
+# positions are copied into the same order (`sorted_positions`), so that scanning a voxel
+# reads memory sequentially instead of following each id to the input array.
 #
 # When the bounding box would need far more voxels than there are points (tiny ρ), the
 # grid switches to a sparse representation where only non-empty voxels get a slot.
@@ -20,8 +22,10 @@ Two layouts share the same interface:
 - **sparse**: only non-empty cells have a slot, found through `slot_of`. Used when `delta`
   is tiny relative to the extent of the data, where a dense box would exhaust memory.
 
-The grid stores a reference to `positions` (not a copy) and is immutable; a new grid is built
-for each ball radius.
+The grid keeps a reference to `positions` and a copy of them in bucket-sorted order,
+`sorted_positions[t] == positions[sorted[t]]`: the points of a voxel are then adjacent in
+memory, and the queries below read distances from the copy and look up the original id only
+for points that pass. The grid is immutable; a new one is built for each ball radius.
 """
 struct VoxelGrid
     positions::Vector{Vec3}
@@ -33,6 +37,7 @@ struct VoxelGrid
     slot_coords::Vector{NTuple{3,Int}}   # sparse mode only: slot → cell coordinates
     cell_start::Vector{Int}              # length nslots + 1
     sorted::Vector{Int}                  # point ids bucket-sorted by slot
+    sorted_positions::Vector{Vec3}       # positions[sorted[t]], contiguous per slot
 end
 
 "Integer cell coordinates of point `p` (may lie outside the box for points outside the data)."
@@ -60,7 +65,7 @@ function VoxelGrid(positions::Vector{Vec3}, delta::Real)
     delta = Float64(delta)
     if n == 0
         return VoxelGrid(positions, delta, zero(Vec3), (1, 1, 1), true,
-                         Dict{NTuple{3,Int},Int}(), NTuple{3,Int}[], [1, 1], Int[])
+                         Dict{NTuple{3,Int},Int}(), NTuple{3,Int}[], [1, 1], Int[], Vec3[])
     end
     lo = positions[1]; hi = positions[1]
     for p in positions
@@ -70,7 +75,7 @@ function VoxelGrid(positions::Vector{Vec3}, delta::Real)
     # Cell coordinates are computed by the same expression `cell_of` uses, and the box
     # dimensions are taken from them, so that no point can round to a cell outside the box.
     tmp = VoxelGrid(positions, delta, origin, (0, 0, 0), true,
-                    Dict{NTuple{3,Int},Int}(), NTuple{3,Int}[], Int[], Int[])
+                    Dict{NTuple{3,Int},Int}(), NTuple{3,Int}[], Int[], Int[], Vec3[])
     coords = [cell_of(tmp, p) for p in positions]
     dims = ntuple(k -> maximum(c -> c[k], coords) + 1, 3)
     ncells = prod(Float64.(dims))
@@ -98,11 +103,14 @@ function VoxelGrid(positions::Vector{Vec3}, delta::Real)
     cell_start = cumsum(counts) .+ 1          # cell_start[s]:cell_start[s+1]-1 is slot s
     fill_pos = copy(cell_start)
     sorted = Vector{Int}(undef, n)
+    sorted_positions = Vector{Vec3}(undef, n)
     for (id, s) in enumerate(slots)
         sorted[fill_pos[s]] = id
+        sorted_positions[fill_pos[s]] = positions[id]
         fill_pos[s] += 1
     end
-    VoxelGrid(positions, delta, origin, dims, dense, slot_of, slot_coords, cell_start, sorted)
+    VoxelGrid(positions, delta, origin, dims, dense, slot_of, slot_coords, cell_start, sorted,
+              sorted_positions)
 end
 
 "Number of slots (all cells in dense mode, non-empty cells in sparse mode)."
@@ -130,12 +138,11 @@ function neighbors!(buf::Vector{Int}, g::VoxelGrid, p::Vec3, r::Real)
     empty!(buf)
     c = cell_of(g, p)
     r2 = r * r
-    P = g.positions
+    S = g.sorted_positions
     for dz in -1:1, dy in -1:1, dx in -1:1
         for t in cell_range(g, (c[1] + dx, c[2] + dy, c[3] + dz))
-            id = g.sorted[t]
-            if sum(abs2, P[id] - p) <= r2
-                push!(buf, id)
+            if sum(abs2, S[t] - p) <= r2
+                push!(buf, g.sorted[t])
             end
         end
     end
@@ -153,15 +160,22 @@ function empty_ball(g::VoxelGrid, center::Vec3, rho::Real, e1::Int, e2::Int, e3:
                     tol::Real = 1e-9)
     c = cell_of(g, center)
     r2 = (rho * (1 - tol))^2
-    P = g.positions
-    for dz in -1:1, dy in -1:1, dx in -1:1
-        for t in cell_range(g, (c[1] + dx, c[2] + dy, c[3] + dz))
-            id = g.sorted[t]
-            (id == e1 || id == e2 || id == e3) && continue
-            if sum(abs2, P[id] - center) < r2
-                return false
+    S = g.sorted_positions
+    # The cell holding the centre is scanned first: an intruding point is most likely there,
+    # and the scan stops at the first one. The order does not affect the result.
+    for k in 0:26
+        d = SCAN_ORDER[k + 1]
+        for t in cell_range(g, (c[1] + d[1], c[2] + d[2], c[3] + d[3]))
+            if sum(abs2, S[t] - center) < r2
+                id = g.sorted[t]
+                (id == e1 || id == e2 || id == e3) || return false
             end
         end
     end
     true
+end
+
+"The 27 cell offsets of a 3×3×3 block, the centre cell first."
+const SCAN_ORDER = let offs = [(dx, dy, dz) for dz in -1:1 for dy in -1:1 for dx in -1:1]
+    Tuple(sort(offs; by = d -> (abs(d[1]) + abs(d[2]) + abs(d[3]))))
 end

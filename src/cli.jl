@@ -30,6 +30,9 @@ options:
                         <output>_colored.<ext>. The colour changes every N triangles with
                         -p N, otherwise about ten times over the expected triangle count
   --max-seeds N         stop after N seed triangles (-1, the default, for unlimited)
+  --seed-neighbors N    when searching for a seed triangle, pair only the N nearest
+                        neighbours of the candidate point (default 100; -1 pairs every
+                        point within 2 x radius, as the paper describes)
   --sample N            for mesh inputs, sample N points uniformly on the surface instead
                         of using the mesh vertices
   --seed SEED           random seed for sampling and spacing estimation (default 1)
@@ -50,6 +53,7 @@ struct CLIOptions
     progress::Int
     save_colored::Bool
     max_seeds::Int
+    seed_neighbors::Int
     sample::Int
     seed::Int
     write_points::String
@@ -65,7 +69,8 @@ Throws an `ArgumentError` with a message for invalid input.
 function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     input = ""; scans = String[]; scan_dir = ""; listfile = ""; output = ""
     radii = Float64[]; progress = 0; save_colored = false
-    max_seeds = -1; sample = 0; seed = 1; write_points = ""; verbose = false
+    max_seeds = -1; seed_neighbors = DEFAULT_SEED_NEIGHBORS; sample = 0; seed = 1
+    write_points = ""; verbose = false
     k = 1
     value(flag) = (k + 1 <= length(args) || throw(ArgumentError("$flag needs a value")); k += 1; args[k])
     while k <= length(args)
@@ -101,6 +106,8 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
             save_colored = true
         elseif a == "--max-seeds"
             max_seeds = parse(Int, value(a))
+        elseif a == "--seed-neighbors"
+            seed_neighbors = parse(Int, value(a))
         elseif a == "--sample"
             sample = parse(Int, value(a))
             sample > 0 || throw(ArgumentError("--sample needs a positive count"))
@@ -129,7 +136,7 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     ext = lowercase(splitext(output)[2])
     ext in (".off", ".obj", ".ply") || throw(ArgumentError("output must be .off, .obj or .ply"))
     CLIOptions(input, scans, scan_dir, output, radii, progress, save_colored, max_seeds,
-               sample, seed, write_points, verbose)
+               seed_neighbors, sample, seed, write_points, verbose)
 end
 
 """
@@ -331,7 +338,7 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
     end
 
     t = @elapsed mesh = reconstruct(cloud, radii; verbose = opts.verbose, max_seeds = opts.max_seeds,
-                                    on_progress = on_progress,
+                                    seed_neighbors = opts.seed_neighbors, on_progress = on_progress,
                                     progress_every = max(opts.progress, 1))
     s = mesh.stats
     println(io, "triangles: ", length(mesh.triangles), " in ", round(t; digits = 2), " s")

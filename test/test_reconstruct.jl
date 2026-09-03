@@ -20,12 +20,17 @@
     @test reconstruct(Pm, Nm, rho).triangles == mesh.triangles
     @test reconstruct(PointCloud(Pm', Nm'), rho).triangles == mesh.triangles
     @test reconstruct(PointCloud(P, N), [rho]).triangles == mesh.triangles
+    # the bounded seed pair search (default) agrees with the paper's unbounded one, and even
+    # a tight bound finds a seed on a clean surface
+    @test reconstruct(P, N, rho; seed_neighbors = -1).triangles == mesh.triangles
+    @test reconstruct(P, N, rho; seed_neighbors = 5).triangles == mesh.triangles
 end
 
 @testset "torus" begin
     P, N = torus(120, 48)
     rho = 0.09
     mesh = reconstruct(P, N, rho)
+    @test reconstruct(P, N, rho; seed_neighbors = -1).triangles == mesh.triangles
     c = check_mesh(mesh.triangles)
     @test c.nverts == length(P)
     @test c.orientable && c.edge_manifold && c.vertex_manifold
@@ -185,8 +190,7 @@ end
         cloud = PointCloud(P, fill(Vec3(0, 0, 1), 4))
         f = Front(4)
         add_seed!(f, i, j, o, c)
-        st = BPAState(cloud, VoxelGrid(cloud.positions, 2rho), rho, f, Tri[], BPAStats(), 1, Int[],
-                      -1, nothing, 1000)
+        st = BPAState(cloud, VoxelGrid(cloud.positions, 2rho), rho, f, Tri[], BPAStats())
         st, BPA.edge_id(f, i, j)
     end
     P = vcat(tri, [tip(θo + 0.6)])

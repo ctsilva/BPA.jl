@@ -103,10 +103,10 @@ end
     @test_throws ArgumentError parse_cli(["-i", "a.off", "-o", "a.stl"])
     @test_throws ArgumentError parse_cli(["-i", "a.off", "--bogus"])
     o = parse_cli(["-r", "0.1,0.2", "-i", "data/t.off", "-p", "1000", "-v", "--seed", "7",
-                   "--save-colored", "--max-seeds", "3", "--sample", "500"])
+                   "--save-colored", "--max-seeds", "3", "--sample", "500", "--seed-neighbors", "40"])
     @test o.radii == [0.1, 0.2] && o.input == "data/t.off" && o.progress == 1000
     @test o.verbose && o.seed == 7 && o.output == joinpath(BPA.RESULTS_DIR, "t_bpa.off")
-    @test o.save_colored && o.max_seeds == 3 && o.sample == 500
+    @test o.save_colored && o.max_seeds == 3 && o.sample == 500 && o.seed_neighbors == 40
     @test isempty(parse_cli(["-i", "a.off", "-r", "-1"]).radii)          # -1: estimate
     @test sprint(io -> main(["-h"]; io = io)) |> s -> occursin("usage:", s)
 
