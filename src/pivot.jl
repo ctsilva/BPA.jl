@@ -4,9 +4,10 @@
     ball_pivot(state, id) -> (k, center) or nothing
 
 Pivot the ball around front edge `id = e(i,j)`, starting from its stored centre. All points
-within `2ρ` of the edge midpoint are candidates (any point the ball can touch lies within
-`r_γ + ρ ≤ 2ρ` of the midpoint); for each the first touching angle along the trajectory is
-computed, and the point hit first is returned with the corresponding ball centre. `nothing`
+within `r_γ + ρ` of the edge midpoint are candidates, `r_γ ≤ ρ` being the radius of the
+circle the centre moves on (a point farther away is never touched); for each the ball centre at first contact along the trajectory is
+computed (`pivot_contact`), and the point hit first, i.e. the contact of smallest pivot
+angle (`angle_less`), is returned with that centre. `nothing`
 if the ball touches no point during a full revolution.
 
 The endpoints are excluded: the ball touches them throughout. The opposite vertex `σ_o` is
@@ -33,39 +34,41 @@ function ball_pivot(st::BPAState, id::Int)
     fr === nothing && return nothing
     rho = st.rho
     buf = st.buf
-    neighbors!(buf, st.grid, fr.m, 2 * rho)
+    # Any point the ball can touch lies within r + ρ of the midpoint. pivot_contact admits
+    # contacts up to a relative 1e-9 beyond the exact reach, which the margin covers.
+    neighbors!(buf, st.grid, fr.m, min(2 * rho, (fr.r + rho) * (1 + 1e-8)))
+    r2 = fr.r * fr.r
     best = 0
-    bestθ = Inf
-    bestc = zero(Vec3)
+    bestc = Vec2(0.0, 0.0)      # contact of the smallest angle among the current leaders
     nties = 1
     for x in buf
         (x == e.i || x == e.j) && continue
-        res = pivot_angle(fr, P[x], rho)
-        res === nothing && continue
-        θ, c = res
-        if θ < bestθ - TIE_TOLERANCE
-            bestθ = θ
+        c = pivot_contact(fr, P[x], rho)
+        c === nothing && continue
+        if best == 0
+            best = x
+            bestc = c
+        elseif angle_tie(c, bestc, r2, TIE_SIN)
+            nties += 1
+            angle_less(c, bestc) && (bestc = c)
+        elseif angle_less(c, bestc)
             best = x
             bestc = c
             nties = 1
-        elseif θ <= bestθ + TIE_TOLERANCE
-            nties += 1
-            bestθ = min(bestθ, θ)
         end
     end
     best == 0 && return nothing
     best == e.o && nties == 1 && return nothing    # the ball came back to σ_o first
-    nties == 1 && return best, bestc
+    nties == 1 && return best, pivot_center(fr, bestc)
 
     # Resolve simultaneous hits deterministically. σ_o is never chosen: a point hit at the
     # same angle gives a valid triangle, with σ_o on the ball's surface rather than inside.
     bestscore = -1
     for x in buf
         (x == e.i || x == e.j || x == e.o) && continue
-        res = pivot_angle(fr, P[x], rho)
-        res === nothing && continue
-        θ, c = res
-        θ <= bestθ + TIE_TOLERANCE || continue
+        c = pivot_contact(fr, P[x], rho)
+        c === nothing && continue
+        (angle_tie(c, bestc, r2, TIE_SIN) || angle_less(c, bestc)) || continue
         score = tie_score(st, e, x)
         if score > bestscore || (score == bestscore && x < best)
             bestscore = score
@@ -73,11 +76,14 @@ function ball_pivot(st::BPAState, id::Int)
             bestc = c
         end
     end
-    return best, bestc
+    return best, pivot_center(fr, bestc)
 end
 
 "Angular tolerance (radians) within which two pivot hits count as simultaneous."
 const TIE_TOLERANCE = 1e-7
+
+"`sin(TIE_TOLERANCE)`, the form in which `angle_tie` takes the tolerance."
+const TIE_SIN = sin(TIE_TOLERANCE)
 
 """
     tie_score(state, edge, k) -> Int

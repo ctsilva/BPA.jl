@@ -111,8 +111,11 @@ A solution within `θeps` of 0 (or, equivalently, of 2π: a tiny negative angle 
 below 2π) means `x` is touching the ball in its initial position. If the ball is moving into
 `x` the hit is immediate (`θ = 0`); otherwise that solution is ignored and the other one,
 where the ball comes back to `x` from the far side, is used.
+
+This is the reference formulation; `ball_pivot` uses [`pivot_contact`](@ref), which gives the
+same first contact without trigonometry.
 """
-function pivot_angle(fr::PivotFrame, x::Vec3, rho::Real; θeps::Real = 1e-6)
+function pivot_angle(fr::PivotFrame, x::Vec3, rho::Real; θeps::Real = TOUCH_TOLERANCE)
     d = x - fr.m
     du = dot(d, fr.u)
     dv = dot(d, fr.v)
@@ -139,4 +142,101 @@ function pivot_angle(fr::PivotFrame, x::Vec3, rho::Real; θeps::Real = 1e-6)
     end
     θ = min(θa, θb)
     return θ, point_on_trajectory(fr, θ)
+end
+
+"Angle (radians) below which a candidate counts as touching the ball in its initial position."
+const TOUCH_TOLERANCE = 1e-6
+
+"`sin(TOUCH_TOLERANCE)`: the touching test on a 2-D contact compares `|y| / r` with this."
+const TOUCH_SIN = sin(TOUCH_TOLERANCE)
+
+"""
+A position of the ball centre on the pivot circle, as coordinates `(x, y)` in the frame
+`(u, v)` of a `PivotFrame`: the centre is `m + x u + y v`, with `x² + y² = r²`, and the
+pivot angle is the argument of `(x, y)` taken in `[0, 2π)`. Contacts are compared by angle
+without evaluating it (`angle_less`, `angle_tie`).
+"""
+const Vec2 = SVector{2,Float64}
+
+"3-D ball centre of the contact `c` on the trajectory of `frame`."
+@inline pivot_center(fr::PivotFrame, c::Vec2) = fr.m + c[1] * fr.u + c[2] * fr.v
+
+"`true` if the angle of `c` lies in `[π, 2π)`, `false` if in `[0, π)`."
+@inline lower_half(c::Vec2) = c[2] < 0 || (c[2] == 0 && c[1] < 0)
+
+"""
+    angle_less(p, q) -> Bool
+
+`true` if the pivot angle of contact `p` is smaller than that of `q`, both taken in
+`[0, 2π)`. An angle in `[0, π)` precedes any angle in `[π, 2π)`; within one half the two
+angles differ by less than π, so the sign of the 2-D cross product `p × q` decides: it is
+positive exactly when `q` is counter-clockwise from `p`.
+"""
+@inline function angle_less(p::Vec2, q::Vec2)
+    hp = lower_half(p)
+    hq = lower_half(q)
+    hp == hq ? p[1] * q[2] - p[2] * q[1] > 0 : hq
+end
+
+"""
+    angle_tie(p, q, r2, sintol) -> Bool
+
+`true` if the pivot angles of `p` and `q`, taken as numbers in `[0, 2π)`, differ by at most
+the angle whose sine is `sintol`; `r2` is the squared radius of the pivot circle. The
+angular difference `Δ` satisfies `r² sin Δ = p × q` and `r² cos Δ = p · q`, so `|Δ| ≤ tol`
+is `p · q > 0` and `|p × q| ≤ r² sin tol`. Two contacts on either side of angle 0 are not a
+tie, although they are geometrically close: the rolling ball reaches one at once and the
+other only after a full turn. They are told apart by lying in different halves with a
+positive first coordinate, whereas a near-π pair in different halves has a negative one.
+"""
+@inline function angle_tie(p::Vec2, q::Vec2, r2::Float64, sintol::Float64)
+    p[1] * q[1] + p[2] * q[2] > 0 &&
+        abs(p[1] * q[2] - p[2] * q[1]) <= r2 * sintol &&
+        (lower_half(p) == lower_half(q) || p[1] < 0)
+end
+
+"`true` if contact `c` on a circle of radius `r` is within `TOUCH_TOLERANCE` of angle 0."
+@inline touching(c::Vec2, r::Float64) = c[1] > 0 && abs(c[2]) < r * TOUCH_SIN
+
+"""
+    pivot_contact(frame, x, rho) -> Vec2 or nothing
+
+The ball centre at the first contact of the pivoting ball with `x`, as a 2-D contact on the
+trajectory of `frame` (see [`Vec2`](@ref)); `nothing` if the ball never reaches `x`. This
+is [`pivot_angle`](@ref) without trigonometry: the pivot needs only the order of the
+candidates' first contacts, and that order can be read off the 2-D positions of the centre.
+
+In the coordinates of the pivot plane the centre `(x, y)` runs on the circle of radius `r`
+and the contact condition `d_u cos θ + d_v sin θ = K` is the line `d_u x + d_v y = r K`.
+Its intersections with the circle are `F ± h (-d_v, d_u) / R` with `F` the foot of the
+perpendicular from the origin, `F = (r K / R²) (d_u, d_v)`, and half-chord
+`h = r sqrt(1 - (K/R)²)`. The `+` root is `θ = φ + α` of `pivot_angle` and the `-` root
+`θ = φ - α`; the touching rule of `pivot_angle` is applied to the same roots, and otherwise
+the root with the smaller angle is the first contact.
+"""
+function pivot_contact(fr::PivotFrame, x::Vec3, rho::Real)
+    d = x - fr.m
+    du = dot(d, fr.u)
+    dv = dot(d, fr.v)
+    R = sqrt(du * du + dv * dv)                  # no overflow to guard against: |d| ≤ 2ρ
+    R > 1e-12 * rho || return nothing
+    r = fr.r
+    K = (r * r + dot(d, d) - rho * rho) / (2 * r)
+    ratio = K / R
+    abs(ratio) <= 1 + 1e-9 || return nothing
+    ratio = clamp(ratio, -1.0, 1.0)
+    s = r * ratio / R                            # F = s (d_u, d_v)
+    h = r * sqrt(1 - ratio * ratio) / R          # roots F ± h (-d_v, d_u)
+    ca = Vec2(s * du - h * dv, s * dv + h * du)  # θ = φ + α
+    cb = Vec2(s * du + h * dv, s * dv - h * du)  # θ = φ - α
+    ta = touching(ca, r)
+    tb = touching(cb, r)
+    if ta || tb
+        # x is on the initial ball. Moving into it? The centre's velocity at θ = 0 is along
+        # v, so the ball moves into x exactly when d_v > 0.
+        dv > 0 && return Vec2(r, 0.0)
+        (ta && tb) && return nothing
+        return ta ? cb : ca
+    end
+    angle_less(cb, ca) ? cb : ca
 end
