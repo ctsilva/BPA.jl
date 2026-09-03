@@ -77,18 +77,25 @@ end
 """
 The advancing front `F` (Section 4): the set of mesh edges that have exactly one triangle,
 organised in loops, plus the per-vertex bookkeeping needed for the `not_used`/`on_front`
-tests and for `glue`.
+tests, for `glue` and for the manifoldness test.
+
+Edges are found from their origin vertex without hashing: `out_head[v]` is the first live
+edge leaving `v` and `out_next[id]` the next one with the same origin, a chain that is a few
+edges long at most (a vertex has as many live edges leaving it as front loops passing
+through it). Closed edges are recorded the same way from their smaller endpoint:
+`closed_head[a]` starts the chain of records `(closed_to[r], closed_next[r])` for the
+closed edges `{a, w}` with `a < w`.
 
 Invariants maintained by the operations in `front.jl`:
 
-- A live edge `(i,j)` is in `lookup` exactly once, and the mesh contains the half-edge
-  `i → j` exactly once and `j → i` not at all.
+- A live edge `(i,j)` is in the chain of `i` exactly once (`edge_id`), and the mesh contains
+  the half-edge `i → j` exactly once and `j → i` not at all.
 - `front_count[v]` is the number of live edges with `v` as an endpoint. A vertex with
   `used[v] && front_count[v] == 0` is *interior*: its fan of triangles is complete and no
   further triangle may use it.
-- `closed` holds every undirected edge that has two triangles. Together with `lookup` it
-  decides whether adding a half-edge would make the mesh non-manifold or non-orientable
-  (`can_add_triangle`).
+- The closed records hold every undirected edge that has two triangles (`is_closed`).
+  Together with `edge_id` they decide whether adding a half-edge would make the mesh
+  non-manifold or non-orientable (`can_add_triangle`).
 - Following `next` from any live edge returns to it, and `edges[e.next].prev == e`.
   Loops are only needed for diagnostics (`loops`) and for the out-of-core extension; the
   in-core algorithm's correctness does not depend on them.
@@ -99,15 +106,18 @@ mutable struct Front
     edges::Vector{FrontEdge}
     queue::Vector{Int}                   # FIFO of active edge ids (stale ids skipped on pop)
     qhead::Int                           # index of the next queue entry to pop
-    lookup::Dict{Tuple{Int,Int},Int}     # directed (i,j) → live edge id
+    out_head::Vector{Int}                # per vertex: first live edge leaving it, 0 if none
+    out_next::Vector{Int}                # per edge: next live edge with the same origin, 0 at the end
     front_count::Vector{Int}             # number of live front edges incident on each vertex
     used::BitVector                      # vertex is part of the triangulation
-    closed::Set{Tuple{Int,Int}}          # undirected edges already shared by two triangles
+    closed_head::Vector{Int}             # per vertex a: first record of a closed edge {a, w}, a < w
+    closed_to::Vector{Int}               # per record: the larger endpoint w
+    closed_next::Vector{Int}             # per record: next record with the same smaller endpoint
     nlive::Int                           # number of live edges
 end
 
-Front(n::Integer) = Front(FrontEdge[], Int[], 1, Dict{Tuple{Int,Int},Int}(),
-                          zeros(Int, n), falses(n), Set{Tuple{Int,Int}}(), 0)
+Front(n::Integer) = Front(FrontEdge[], Int[], 1, zeros(Int, n), Int[], zeros(Int, n), falses(n),
+                          zeros(Int, n), Int[], Int[], 0)
 
 """
 Counters collected while running the algorithm. Every pivot ends in exactly one of `joins`,

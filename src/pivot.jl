@@ -98,5 +98,5 @@ function tie_score(st::BPAState, e::FrontEdge, k::Int)
     pivot_orientation_consistent(ntri, N[k]) || return 0
     (not_used(f, k) || on_front(f, k)) || return 0
     can_add_triangle(f, i, k, j) || return 0
-    1 + haskey(f.lookup, (k, i)) + haskey(f.lookup, (j, k))
+    1 + has_edge(f, k, i) + has_edge(f, j, k)
 end

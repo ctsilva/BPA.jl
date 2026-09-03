@@ -187,7 +187,7 @@ end
         add_seed!(f, i, j, o, c)
         st = BPAState(cloud, VoxelGrid(cloud.positions, 2rho), rho, f, Tri[], BPAStats(), 1, Int[],
                       -1, nothing, 1000)
-        st, f.lookup[(i, j)]
+        st, BPA.edge_id(f, i, j)
     end
     P = vcat(tri, [tip(θo + 0.6)])
     @test 0 < θo < pivot_angle(fr, P[k], rho)[1] < 2π     # the ball comes back to o before it reaches k

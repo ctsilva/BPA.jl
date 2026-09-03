@@ -28,16 +28,60 @@ on_front(f::Front, k::Int) = f.front_count[k] > 0
 is_interior(f::Front, k::Int) = f.used[k] && f.front_count[k] == 0
 
 """
+    edge_id(front, i, j) -> edge id or 0
+
+Id of the live front edge `e(i,j)`, found by walking the chain of edges leaving `i`.
+"""
+@inline function edge_id(f::Front, i::Int, j::Int)
+    id = f.out_head[i]
+    while id != 0
+        f.edges[id].j == j && return id
+        id = f.out_next[id]
+    end
+    0
+end
+
+"`true` if the front holds the directed edge `e(i,j)`."
+@inline has_edge(f::Front, i::Int, j::Int) = edge_id(f, i, j) != 0
+
+"""
+    is_closed(front, i, j) -> Bool
+
+`true` if the undirected edge `{i, j}` already has two triangles, found by walking the
+closed records of the smaller endpoint.
+"""
+@inline function is_closed(f::Front, i::Int, j::Int)
+    a, b = undirected(i, j)
+    r = f.closed_head[a]
+    while r != 0
+        f.closed_to[r] == b && return true
+        r = f.closed_next[r]
+    end
+    false
+end
+
+"Record that the undirected edge `{i, j}` now has two triangles."
+function close_edge!(f::Front, i::Int, j::Int)
+    a, b = undirected(i, j)
+    push!(f.closed_to, b)
+    push!(f.closed_next, f.closed_head[a])
+    f.closed_head[a] = length(f.closed_to)
+    nothing
+end
+
+"""
     insert_edge!(front, i, j, o, center) -> edge id
 
-Add the active edge `e(i,j)` with opposite vertex `o` and ball centre `center` to the front and
-to the queue of active edges. Loop links are left for the caller to set.
+Add the active edge `e(i,j)` with opposite vertex `o` and ball centre `center` to the front,
+to the chain of edges leaving `i` and to the queue of active edges. Loop links are left for
+the caller to set.
 """
 function insert_edge!(f::Front, i::Int, j::Int, o::Int, center::Vec3)
-    haskey(f.lookup, (i, j)) && error("front already contains edge ($i, $j)")
+    has_edge(f, i, j) && error("front already contains edge ($i, $j)")
     push!(f.edges, FrontEdge(i, j, o, center, 0, 0, ACTIVE, true))
     id = length(f.edges)
-    f.lookup[(i, j)] = id
+    push!(f.out_next, f.out_head[i])       # chain the new edge in front of the others at i
+    f.out_head[i] = id
     f.front_count[i] += 1
     f.front_count[j] += 1
     f.used[i] = true
@@ -50,7 +94,7 @@ end
 """
     remove_edge!(front, id)
 
-Tombstone edge `id`: drop it from `lookup` and the vertex counts. The loop links of its
+Tombstone edge `id`: drop it from the chain of its origin and from the vertex counts. The loop links of its
 neighbours are left for the caller to repair (`join!` splices replacements in, `glue!`
 bypasses the pair).
 """
@@ -58,7 +102,15 @@ function remove_edge!(f::Front, id::Int)
     e = f.edges[id]
     e.alive || error("edge $id is already removed")
     e.alive = false
-    delete!(f.lookup, (e.i, e.j))
+    if f.out_head[e.i] == id                # unchain it from the edges leaving e.i
+        f.out_head[e.i] = f.out_next[id]
+    else
+        p = f.out_head[e.i]
+        while f.out_next[p] != id
+            p = f.out_next[p]
+        end
+        f.out_next[p] = f.out_next[id]
+    end
     f.front_count[e.i] -= 1
     f.front_count[e.j] -= 1
     f.nlive -= 1
@@ -117,10 +169,10 @@ already has two triangles.
 """
 function can_add_triangle(f::Front, i::Int, k::Int, j::Int)
     is_interior(f, k) && return false
-    haskey(f.lookup, (i, k)) && return false
-    haskey(f.lookup, (k, j)) && return false
-    undirected(i, k) in f.closed && return false
-    undirected(k, j) in f.closed && return false
+    has_edge(f, i, k) && return false
+    has_edge(f, k, j) && return false
+    is_closed(f, i, k) && return false
+    is_closed(f, k, j) && return false
     true
 end
 
@@ -132,8 +184,8 @@ Same test for a seed triangle `(a, b, c)`, all of whose vertices may already be 
 function can_add_seed(f::Front, a::Int, b::Int, c::Int)
     (is_interior(f, a) || is_interior(f, b) || is_interior(f, c)) && return false
     for (p, q) in ((a, b), (b, c), (c, a))
-        haskey(f.lookup, (p, q)) && return false
-        undirected(p, q) in f.closed && return false
+        has_edge(f, p, q) && return false
+        is_closed(f, p, q) && return false
     end
     true
 end
@@ -166,7 +218,7 @@ function join!(f::Front, id::Int, k::Int, center::Vec3)
     i, j = e.i, e.j
     prev, next = e.prev, e.next
     remove_edge!(f, id)
-    push!(f.closed, undirected(i, j))
+    close_edge!(f, i, j)
     e1 = insert_edge!(f, i, k, j, center)
     e2 = insert_edge!(f, k, j, i, center)
     link!(f, prev, e1)
@@ -187,7 +239,7 @@ function glue_opposites!(f::Front, ids)
     for id in ids
         e = f.edges[id]
         e.alive || continue
-        other = get(f.lookup, (e.j, e.i), 0)
+        other = edge_id(f, e.j, e.i)
         if other != 0
             glue!(f, id, other)
             n += 1
@@ -228,7 +280,7 @@ function glue!(f::Front, id1::Int, id2::Int)
     end
     remove_edge!(f, id1)
     remove_edge!(f, id2)
-    push!(f.closed, undirected(e1.i, e1.j))
+    close_edge!(f, e1.i, e1.j)
     nothing
 end
 
