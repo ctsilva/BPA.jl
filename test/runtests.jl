@@ -19,6 +19,12 @@ using BPA: outward, fibonacci_sphere, sphere_spacing, torus, plane_patch
     @testset "reconstruct" begin
         include("test_reconstruct.jl")
     end
+    @testset "normals" begin
+        include("test_normals.jl")
+    end
+    @testset "fill" begin
+        include("test_fill.jl")
+    end
     @testset "cli" begin
         include("test_cli.jl")
     end

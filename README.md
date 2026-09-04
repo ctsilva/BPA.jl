@@ -148,6 +148,28 @@ seeds: 157, pivots: 79046, boundary edges: 3816
 rejected: no hit 3416, normal 394, interior vertex 7, manifold 4
 ```
 
+**A cloud without normals, or with unsigned ones.** Positions alone (an OFF or `.xyz` with
+three numbers per line, a PLY without `nx ny nz`) need `--estimate-normals`; a cloud whose
+normals point to either side at random needs `--orient-normals`; `--knn` sets the
+neighbourhood of both. Neither is part of the paper; see
+[What is implemented](#what-is-implemented) for what they do and where they fail:
+
+```
+$ julia bpa.jl -i bunny_o3d.off --estimate-normals -r 0.0033
+normals: estimated from the positions (10 nearest neighbours) and oriented: 1 components, 4893 flipped, 0.11 s
+triangles: 19189 in 0.03 s
+```
+
+**Filling small holes.** `--fill-loops N` closes boundary loops of at most N edges by ear
+clipping after the reconstruction. The added triangles have no empty ball, so this is not
+the BPA and is off by default; they are appended after the BPA triangles:
+
+```
+$ julia bpa.jl -i eagle.off -r 0.02 --fill-loops 10
+...
+filled: 1277 boundary loops of at most 10 edges with 4221 triangles (appended after the BPA triangles), 38448 boundary edges left, 0.7 s
+```
+
 **Several radii** (Section 4.6 of the paper) and **sampling a mesh**. `--sample N` draws N
 random points on the faces of a mesh input instead of using its vertices, which gives an
 uneven sampling; a second, larger radius then fills what the first one left. With `-v`
@@ -328,6 +350,19 @@ write_ply("scan.ply", mesh)
 write_off("scan.off", mesh)
 ```
 
+**Normals from positions, and filling holes afterwards:**
+
+```julia
+using BPA
+
+cloud = read_xyz("points.xyz")              # x y z per line, no normals
+N     = estimate_normals(cloud.positions; k = 10)   # least-variance directions, signs propagated
+mesh  = reconstruct(PointCloud(cloud.positions, N), 0.005)
+
+orient_normals!(cloud; k = 10)              # for a cloud whose normals have random signs
+mesh  = fill_small_loops(mesh; max_edges = 10)      # not BPA triangles: see stats.filled_triangles
+```
+
 **From a mesh without normals.** `read_off` returns positions, faces and (for NOFF files)
 normals; `vertex_normals` and `sample_surface` turn a mesh into a cloud:
 
@@ -380,8 +415,11 @@ each pass fills the holes the previous one left where it can (Section 4.6 of the
 
 The automatic radius is based on the nearest-neighbour distance, which underestimates the
 spacing of anisotropic samplings (a lattice much finer in one direction than the other, as
-the torus and knot meshes are). Use the *points used* line as the guide: if many points
-were unreached, pass a larger radius, or a list of radii.
+the torus and knot meshes are) and of random samplings, whose gaps are much larger than
+their median spacing: points drawn uniformly from a surface (`--sample`, or Open3D's
+`sample_points_uniformly`) want about 3 times the estimate, or two passes at 1.5 and 3
+times. Use the *points used* line as the guide: if many points were unreached, pass a
+larger radius, or a list of radii.
 
 ## Data, results and scripts
 
@@ -454,6 +492,29 @@ Decisions where the paper leaves room:
   reproduces the unbounded output on every dataset in `data/`.
 - **Small components** are kept, as in the paper, unless `--min-component` is given.
 
+Beyond the paper, two optional steps, both off unless asked for:
+
+- **Normals from positions** (`--estimate-normals`, `--orient-normals`; `estimate_normals`,
+  `orient_normals!`). The BPA assumes oriented normals, and inconsistently signed ones
+  fragment the output: a bunny sampled by Open3D with unoriented normals came out in 19
+  pieces with 3,205 boundary edges, and in one piece with 79 after orientation. The method
+  is Hoppe et al. (SIGGRAPH 1992): the normal at a point is the direction of least variance
+  of its k nearest neighbours, and the signs are propagated over the minimum spanning tree
+  of the neighbour graph weighted by `1 - |n_i · n_j|`, from the highest point of each
+  connected piece. The weighting matters: a plain breadth-first walk over the neighbours
+  crosses between the two sides of thin structures and made the eagle and living-room
+  clouds of the Open3D data sets worse, while the spanning tree left them unchanged. On
+  797,000 points the neighbour search takes 3 s and the orientation under a second. See
+  `src/normals.jl`.
+- **Hole filling** (`--fill-loops N`; `fill_small_loops`). Boundary loops of at most N
+  edges are closed by greedy ear clipping, each ear checked against the vertex normals, for
+  other loop vertices inside it, and for edges it would duplicate, so the result stays
+  orientable and edge-manifold. The triangles it adds are not BPA triangles (their ball is
+  not empty, which is why the hole was there) and are appended after the BPA triangles and
+  counted separately, so a result can always be split back. On the eagle it closes about
+  half of the 2,400 loops of ten edges or fewer; the large holes, where the data is missing,
+  stay. See `src/fill.jl`.
+
 ## Tests and performance
 
 ```
@@ -462,8 +523,11 @@ julia --project=BPA.jl -e 'using Pkg; Pkg.test()'
 
 The tests check the geometric primitives against brute force, the trigonometry-free
 first contact against the angle formulation on random pivots, the glue cases of Fig. 7 on
-hand-built fronts, the OFF/PLY/XYZ readers and writers, the command-line tool, and full
-reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
+hand-built fronts, the OFF/PLY/XYZ readers and writers, the command-line tool, the
+nearest-neighbour search and the closed-form eigenvector against brute force and
+LinearAlgebra, normal estimation and orientation on a sphere, a torus with half its normals
+flipped and two separate spheres, hole filling on a sphere with a triangle or a vertex fan
+removed, and full reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
 (χ = 0), a plane patch (χ = 1, one clean boundary loop), exact lattices (cospherical
 quads), a plane sampled at two densities where one radius leaves the sparse half
 uncovered and two radii cover it, a pivot whose ball returns to the starting triangle's

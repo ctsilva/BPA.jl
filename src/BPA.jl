@@ -23,6 +23,12 @@ The main entry point is [`reconstruct`](@ref), which takes a [`PointCloud`](@ref
 - `vertex_normals`, `sample_surface`: turn a triangle mesh into a point cloud with normals
   (for experiments with meshes that have no normals of their own).
 - `estimate_spacing`: median nearest-neighbour distance, to choose a radius.
+- `estimate_normals`, `orient_normals!`: normals from positions alone (least variance of the
+  nearest neighbours) and consistent signs by propagation over a spanning tree (Hoppe et al.
+  1992), for clouds whose normals are missing or unsigned. `nearest_neighbors` (not
+  exported) is the k-nearest-neighbour search behind them.
+- `fill_small_loops`: close small boundary loops of a result by ear clipping. Not part of
+  the BPA; the added triangles have no empty ball.
 - `check_mesh`: topology of a triangle list (orientable, manifold, boundary loops, components,
   Euler characteristic), for checking a result.
 - `fibonacci_sphere`, `torus`, `plane_patch` (not exported): synthetic point clouds with
@@ -44,6 +50,8 @@ The main entry point is [`reconstruct`](@ref), which takes a [`PointCloud`](@ref
 | `reconstruct.jl` | the main loop (Fig. 5) and multiple passes | 4, 4.6 |
 | `io.jl` | XYZ / PLY / OFF input, OBJ / PLY output, mesh sampling | — |
 | `spacing.jl` | sample spacing estimate | — |
+| `normals.jl` | normal estimation and orientation (Hoppe et al. 1992) | — |
+| `fill.jl` | `fill_small_loops`: hole filling by ear clipping, after the reconstruction | — |
 | `check.jl` | `check_mesh`: topology of a triangle list | — |
 | `synthetic.jl` | synthetic point clouds with analytic normals | — |
 | `cli.jl` | command-line interface | — |
@@ -60,6 +68,7 @@ using Random
 export PointCloud, BPAMesh, BPAStats, reconstruct, estimate_spacing
 export read_xyz, read_ply, read_off, write_ply, write_obj, write_off, vertex_normals, sample_surface
 export MeshCheck, check_mesh
+export estimate_normals, orient_normals!, fill_small_loops
 
 include("types.jl")
 include("grid.jl")
@@ -70,6 +79,8 @@ include("pivot.jl")
 include("reconstruct.jl")
 include("io.jl")
 include("spacing.jl")
+include("normals.jl")
+include("fill.jl")
 include("check.jl")
 include("synthetic.jl")
 include("cli.jl")

@@ -404,6 +404,7 @@ collection is only 4% of the run, and made every update a copy.
 | (not in the paper) simultaneous hits | `tie_score` in `pivot.jl` |
 | (not in the paper) `seed_neighbors`, `min_component` | `try_seed`, `drop_small_components!` |
 | (not in the paper) command-line tool | `cli.jl`, `bpa.jl`; mesh sampling and OFF I/O in `io.jl`; radius estimate in `spacing.jl` |
+| (not in the paper) normals from positions, hole filling | `estimate_normals`, `orient_normals!` in `normals.jl`; `fill_small_loops` in `fill.jl` (Section 9) |
 
 ## 9. Extending the implementation
 
@@ -417,11 +418,20 @@ collection is only 4% of the run, and made every update a copy.
   `insert_edge!` mark edges above the upper plane `FROZEN` instead of `ACTIVE`; when the
   queue empties, advance the planes, load/unload points and turn frozen edges active. The
   loop links are already maintained for this purpose.
-- **Hole filling.** Boundary loops can be read from `loops(front)` at the end of a run
-  (return the front from `reconstruct` or expose it through `BPAState`).
-- **Normal estimation.** The package requires normals. For range scans they come from the
-  scanner geometry; for raw clouds a PCA of the neighbourhood plus a consistent orientation
-  step would be needed before calling `reconstruct`.
+- **Hole filling** is done, outside the algorithm, by `fill_small_loops` (`fill.jl`): the
+  boundary loops are read back from the triangle list rather than from `loops(front)`, so
+  it works on any mesh, and the triangles it adds are appended and counted apart
+  (`stats.filled_triangles`), since their ball is not empty. It is greedy ear clipping
+  under the same normal and manifold rules as the reconstruction; a version that chose
+  ears by the empty-ball criterion with a larger radius would be the multi-pass
+  extension of Section 4.6 instead, which `reconstruct` already offers.
+- **Normal estimation** is done, before the algorithm, by `estimate_normals` and
+  `orient_normals!` (`normals.jl`), after Hoppe et al. 1992: least-variance directions
+  from the k nearest neighbours, signs propagated over the minimum spanning tree of the
+  neighbour graph weighted by `1 - |n_i · n_j|`. The neighbour search reuses `VoxelGrid`
+  with growing radii. What it cannot do is decide the side of a thin sheet sampled from
+  both faces, or of two surfaces closer than the neighbour distance; range scans that come
+  as meshes should keep their `vertex_normals`.
 
 ## 10. Glossary
 

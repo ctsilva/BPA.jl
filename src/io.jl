@@ -181,7 +181,8 @@ end
     read_xyz(path) -> PointCloud
 
 Read a text file with one sample per line: `x y z nx ny nz` (whitespace separated; lines
-starting with `#` are ignored).
+starting with `#` are ignored). Lines with only `x y z` are accepted and get a zero normal,
+to be filled in by [`estimate_normals`](@ref).
 """
 function read_xyz(path::AbstractString)
     positions = Vec3[]
@@ -190,10 +191,10 @@ function read_xyz(path::AbstractString)
         s = strip(line)
         (isempty(s) || startswith(s, '#')) && continue
         v = split(s)
-        length(v) >= 6 || error("$path:$ln: expected 6 numbers, got $(length(v))")
-        x = parse.(Float64, v[1:6])
+        length(v) == 3 || length(v) >= 6 || error("$path:$ln: expected 3 or 6 numbers, got $(length(v))")
+        x = parse.(Float64, v[1:min(6, end)])
         push!(positions, Vec3(x[1], x[2], x[3]))
-        push!(normals, Vec3(x[4], x[5], x[6]))
+        push!(normals, length(x) >= 6 ? Vec3(x[4], x[5], x[6]) : zero(Vec3))
     end
     PointCloud(positions, normals)
 end
@@ -201,7 +202,8 @@ end
 """
     read_ply(path) -> PointCloud
 
-Read the vertices of an ASCII PLY file. Vertex properties `x y z` and `nx ny nz` are required;
+Read the vertices of an ASCII PLY file. Vertex properties `x y z` are required; `nx ny nz`
+are read when present and the normals are zero otherwise (see [`estimate_normals`](@ref));
 other properties and elements are skipped.
 """
 function read_ply(path::AbstractString)
@@ -237,9 +239,10 @@ function read_ply(path::AbstractString)
     haskey(props, "vertex") || error("$path: no vertex element")
     vp = props["vertex"]
     idx = Dict(name => k for (k, name) in enumerate(vp))
-    for name in ("x", "y", "z", "nx", "ny", "nz")
+    for name in ("x", "y", "z")
         haskey(idx, name) || error("$path: vertex property '$name' is required")
     end
+    has_normals = all(name -> haskey(idx, name), ("nx", "ny", "nz"))
     positions = Vec3[]
     normals = Vec3[]
     for (name, count) in elements
@@ -250,7 +253,7 @@ function read_ply(path::AbstractString)
             v = split(strip(it[1]))
             x = n -> parse(Float64, v[idx[n]])
             push!(positions, Vec3(x("x"), x("y"), x("z")))
-            push!(normals, Vec3(x("nx"), x("ny"), x("nz")))
+            push!(normals, has_normals ? Vec3(x("nx"), x("ny"), x("nz")) : zero(Vec3))
         end
     end
     PointCloud(positions, normals)

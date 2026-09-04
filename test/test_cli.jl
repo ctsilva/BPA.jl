@@ -236,3 +236,61 @@ end
     @test main(["-l", "upper,missing", "-d", dir, "-o", out]; io = devnull) == 1
     @test main(["-l", "upper", "-d", dir, "--sample", "10", "-o", out]; io = devnull) == 1
 end
+
+@testset "normals and hole filling from the command line" begin
+    dir = mktempdir()
+    n = 1500
+    P, N = fibonacci_sphere(n)
+    rho = string(1.5 * sphere_spacing(n))
+    # positions only, as a point-only OFF and as a 3-column xyz: refused without the flag
+    off = joinpath(dir, "points.off")
+    open(off, "w") do io
+        println(io, "OFF\n", n, " 0 0")
+        foreach(p -> println(io, p[1], " ", p[2], " ", p[3]), P)
+    end
+    xyz = joinpath(dir, "points.xyz")
+    open(xyz, "w") do io
+        foreach(p -> println(io, p[1], " ", p[2], " ", p[3]), P)
+    end
+    out = joinpath(dir, "out.off")
+    for input in (off, xyz)
+        log = sprint(io -> @test(main(["-i", input, "-r", rho, "-o", out]; io = io) == 1))
+        @test occursin("no normals", log)
+        log = sprint(io -> @test(main(["-i", input, "-r", rho, "-o", out, "--estimate-normals", "--knn", "12"]; io = io) == 0))
+        @test occursin("normals: estimated from the positions (12 nearest neighbours) and oriented: 1 components", log)
+        @test occursin("boundary edges: 0", log)
+        _, F, _ = read_off(out)
+        @test check_mesh(F).chi == 2
+    end
+    # normals with random signs: --orient-normals fixes them, --write-points keeps the result
+    noff = joinpath(dir, "flipped.off")
+    rng = Xoshiro(5)
+    open(noff, "w") do io
+        println(io, "NOFF\n", n, " 0 0")
+        for (p, v) in zip(P, N)
+            s = rand(rng) < 0.5 ? -1 : 1
+            println(io, p[1], " ", p[2], " ", p[3], " ", s * v[1], " ", s * v[2], " ", s * v[3])
+        end
+    end
+    pts = joinpath(dir, "oriented.xyz")
+    log = sprint(io -> @test(main(["-i", noff, "-r", rho, "-o", out, "--orient-normals", "--write-points", pts]; io = io) == 0))
+    @test occursin("normals: oriented (10 nearest neighbours): 1 components", log)
+    @test occursin("boundary edges: 0", log)
+    @test read_xyz(pts).normals ≈ N
+    # hole filling: a cloud with the fan of one vertex removed leaves a small loop
+    keep = filter(!=(300), 1:n)
+    holed = joinpath(dir, "holed.off")
+    open(holed, "w") do io
+        println(io, "NOFF\n", length(keep), " 0 0")
+        for i in keep
+            println(io, P[i][1], " ", P[i][2], " ", P[i][3], " ", N[i][1], " ", N[i][2], " ", N[i][3])
+        end
+    end
+    log = sprint(io -> @test(main(["-i", holed, "-r", rho, "-o", out, "--fill-loops", "10"]; io = io) == 0))
+    @test occursin("filled: ", log)
+    @test occursin(" 0 boundary edges left", log) || occursin("boundary edges: 0", log)
+    _, F, _ = read_off(out)
+    @test check_mesh(F).boundary_edges == 0
+    @test main(["-i", holed, "--fill-loops", "2", "-o", out]; io = devnull) == 1
+    @test main(["-i", holed, "--knn", "0", "-o", out]; io = devnull) == 1
+end

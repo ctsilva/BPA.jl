@@ -12,6 +12,7 @@ input (one of):
                                 or a mesh, whose vertex normals are computed from the faces
                           .xyz  x y z nx ny nz per line
                           .ply  ASCII PLY with nx ny nz vertex properties
+                        a file without normals (x y z only) needs --estimate-normals
   -l, --list NAMES      comma-separated scan names: each is read from DIR/<name>.off and,
                         if DIR/<name>.xf exists, transformed by that 4x4 matrix (positions
                         by the full matrix, normals by its rotation part); the scans are
@@ -35,6 +36,15 @@ options:
                         point within 2 x radius, as the paper describes)
   --min-component N     drop connected components with fewer than N triangles at the end
                         (default 0: keep everything)
+  --estimate-normals    ignore the input normals and estimate them from the positions: the
+                        direction of least variance of the K nearest neighbours, with the
+                        signs made consistent as by --orient-normals (Hoppe et al. 1992)
+  --orient-normals      keep the input normals' directions but make their signs consistent,
+                        by propagation over a spanning tree of the K-nearest-neighbour graph
+  --knn K               neighbours used by the two options above (default 10)
+  --fill-loops N        after the reconstruction, close boundary loops of at most N edges by
+                        ear clipping (default 0: off). Not part of the BPA: the triangles
+                        added have no empty ball; they are appended after the BPA triangles
   --sample N            for mesh inputs, sample N points uniformly on the surface instead
                         of using the mesh vertices
   --seed SEED           random seed for sampling and spacing estimation (default 1)
@@ -57,6 +67,10 @@ struct CLIOptions
     max_seeds::Int
     seed_neighbors::Int
     min_component::Int
+    estimate_normals::Bool
+    orient_normals::Bool
+    knn::Int
+    fill_loops::Int
     sample::Int
     seed::Int
     write_points::String
@@ -73,6 +87,7 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     input = ""; scans = String[]; scan_dir = ""; listfile = ""; output = ""
     radii = Float64[]; progress = 0; save_colored = false
     max_seeds = -1; seed_neighbors = DEFAULT_SEED_NEIGHBORS; min_component = 0
+    estimate = false; orient = false; knn = 10; fill_loops = 0
     sample = 0; seed = 1; write_points = ""; verbose = false
     k = 1
     value(flag) = (k + 1 <= length(args) || throw(ArgumentError("$flag needs a value")); k += 1; args[k])
@@ -114,6 +129,16 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
         elseif a == "--min-component"
             min_component = parse(Int, value(a))
             min_component >= 0 || throw(ArgumentError("--min-component needs a non-negative count"))
+        elseif a == "--estimate-normals"
+            estimate = true
+        elseif a == "--orient-normals"
+            orient = true
+        elseif a == "--knn"
+            knn = parse(Int, value(a))
+            knn >= 1 || throw(ArgumentError("--knn needs a positive count"))
+        elseif a == "--fill-loops"
+            fill_loops = parse(Int, value(a))
+            fill_loops == 0 || fill_loops >= 3 || throw(ArgumentError("--fill-loops needs 0 or at least 3"))
         elseif a == "--sample"
             sample = parse(Int, value(a))
             sample > 0 || throw(ArgumentError("--sample needs a positive count"))
@@ -142,7 +167,8 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     ext = lowercase(splitext(output)[2])
     ext in (".off", ".obj", ".ply") || throw(ArgumentError("output must be .off, .obj or .ply"))
     CLIOptions(input, scans, scan_dir, output, radii, progress, save_colored, max_seeds,
-               seed_neighbors, min_component, sample, seed, write_points, verbose)
+               seed_neighbors, min_component, estimate, orient, knn, fill_loops, sample, seed,
+               write_points, verbose)
 end
 
 """
@@ -219,8 +245,8 @@ function load_input(opts::CLIOptions; io::IO = stdout)
             return sample_surface(positions, faces, opts.sample; rng = rng)
         end
         isempty(normals) || return PointCloud(positions, normals)
-        isempty(faces) && throw(ArgumentError("$(opts.input) has neither normals nor faces"))
-        return PointCloud(positions, faces)
+        isempty(faces) || return PointCloud(positions, faces)
+        return PointCloud(positions, fill(zero(Vec3), length(positions)))  # normals to be estimated
     elseif ext == ".xyz" || ext == ".ply"
         opts.sample > 0 && throw(ArgumentError("--sample requires a mesh input (.off)"))
         return ext == ".xyz" ? read_xyz(opts.input) : read_ply(opts.input)
@@ -321,6 +347,22 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
     else
         println(io, "merged ", length(opts.scans), " scans: ", length(cloud), " points")
     end
+    if opts.estimate_normals
+        t = @elapsed begin
+            N = estimate_normals(cloud.positions; k = opts.knn, orient = false)
+            cloud = PointCloud(cloud.positions, N)
+            components, flipped = orient_normals!(cloud; k = opts.knn)
+        end
+        println(io, "normals: estimated from the positions (", opts.knn, " nearest neighbours) and oriented: ",
+                components, " components, ", flipped, " flipped, ", round(t; digits = 2), " s")
+    elseif opts.orient_normals
+        t = @elapsed (components, flipped) = orient_normals!(cloud; k = opts.knn)
+        println(io, "normals: oriented (", opts.knn, " nearest neighbours): ", components,
+                " components, ", flipped, " flipped, ", round(t; digits = 2), " s")
+    elseif all(iszero, cloud.normals)
+        println(io, "error: the input has no normals; pass --estimate-normals to compute them from the positions")
+        return 1
+    end
     isempty(opts.write_points) || write_xyz(opts.write_points, cloud)
 
     radii = opts.radii
@@ -364,6 +406,13 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
                                       opts.min_component, " triangles (", s.dropped_triangles, " triangles)")
     length(radii) > 1 && println(io, "triangles per pass: ", s.triangles_per_pass,
                                  ", reactivated edges: ", s.reactivated_per_pass)
+    if opts.fill_loops > 0
+        t = @elapsed mesh = fill_small_loops(mesh; max_edges = opts.fill_loops)
+        s = mesh.stats
+        println(io, "filled: ", s.filled_loops, " boundary loops of at most ", opts.fill_loops, " edges with ",
+                s.filled_triangles, " triangles (appended after the BPA triangles), ",
+                s.boundary_edges, " boundary edges left, ", round(t; digits = 2), " s")
+    end
 
     write_mesh(opts.output, mesh)
     println(io, "wrote ", opts.output)

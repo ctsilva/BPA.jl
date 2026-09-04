@@ -2,13 +2,16 @@
 
 """
     estimate_spacing(cloud; nsamples=2000, rng) -> Float64
+    estimate_spacing(positions; nsamples=2000, rng) -> Float64
 
 Median distance from a point to its nearest neighbour, estimated on a random subset of at
 most `nsamples` points. A ball radius of about 1.5–2 times this value is a reasonable
-default for uniformly sampled data.
+default for evenly sampled data; random samples of a surface (as from `sample_surface`)
+have larger gaps and want 3 times, or two passes at 1.5 and 3 times.
 """
-function estimate_spacing(cloud::PointCloud; nsamples::Integer = 2000, rng = Random.default_rng())
-    P = cloud.positions
+estimate_spacing(cloud::PointCloud; kwargs...) = estimate_spacing(cloud.positions; kwargs...)
+
+function estimate_spacing(P::Vector{Vec3}; nsamples::Integer = 2000, rng = Random.default_rng())
     n = length(P)
     n >= 2 || throw(ArgumentError("need at least two points"))
     idx = n <= nsamples ? collect(1:n) : sort!(randperm(rng, n)[1:nsamples])

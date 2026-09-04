@@ -137,11 +137,13 @@ mutable struct BPAStats
     boundary_edges::Int         # boundary edges of the output (after `min_component` filtering)
     dropped_components::Int     # min_component only: components removed at the end
     dropped_triangles::Int      # min_component only: triangles removed with them
+    filled_loops::Int           # fill_small_loops only: boundary loops closed afterwards
+    filled_triangles::Int       # fill_small_loops only: triangles it appended (not BPA triangles)
     triangles_per_pass::Vector{Int}    # triangles created by each radius
     reactivated_per_pass::Vector{Int}  # boundary edges re-activated at the start of each pass
 end
 
-BPAStats() = BPAStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Int[], Int[])
+BPAStats() = BPAStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Int[], Int[])
 
 """
     BPAMesh
