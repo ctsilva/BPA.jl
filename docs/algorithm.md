@@ -3,7 +3,8 @@
 This document explains how the package implements the Ball-Pivoting Algorithm (BPA) of
 Bernardini, Mittleman, Rushmeier, Silva and Taubin (IEEE TVCG 5(4), 1999). It is written for
 someone who wants to read or modify the code; the README covers usage. Section numbers and
-figure numbers refer to the paper.
+figure numbers refer to the paper. [`LITERATE.md`](LITERATE.md) is the companion: the
+source itself in the paper's order, with the paper's own words at the head of each chapter.
 
 Contents
 

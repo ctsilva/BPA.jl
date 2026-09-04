@@ -410,6 +410,9 @@ were unreached, pass a larger radius, or a list of radii.
   conventions, the data structures and their invariants, the pivot geometry, the join/glue
   cases, why the output is an orientable manifold, complexity, and a table mapping every
   construct of the paper to the code.
+- [`docs/LITERATE.md`](docs/LITERATE.md) is the core source read in the paper's order, each
+  chapter opening with the passage of the paper it implements. It is generated from the
+  docstrings and code by `docs/literate.jl`, and a test keeps it in step with the source.
 
 ## What is implemented
 

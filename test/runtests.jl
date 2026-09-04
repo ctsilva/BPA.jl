@@ -23,4 +23,5 @@ using BPA: outward, fibonacci_sphere, sphere_spacing, torus, plane_patch
         include("test_cli.jl")
     end
     include("test_compare.jl")
+    include("test_literate.jl")
 end
