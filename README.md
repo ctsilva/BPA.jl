@@ -287,6 +287,12 @@ All options:
 | `--max-seeds N` | stop after N seed triangles (`-1`: unlimited) |
 | `--seed-neighbors N` | when searching for a seed triangle, pair only the N nearest neighbours of the candidate point (default 100; `-1` pairs every point within 2ρ, as the paper describes) |
 | `--min-component N` | drop connected components with fewer than N triangles at the end (default 0: keep everything) |
+| `--estimate-normals` | ignore the input normals and estimate them from the positions, oriented (Hoppe et al. 1992); required for inputs without normals |
+| `--orient-normals` | keep the input normals' directions, make their signs consistent |
+| `--knn K` | neighbours used by the two options above (default 10) |
+| `--fill-loops N` | close boundary loops of at most N edges by ear clipping afterwards (default 0: off); not BPA triangles, appended after them |
+| `--check` | report the topology of the result and audit every triangle for the empty-ball property (the report of `tools/check.jl`) |
+| `--stats FILE` | write a JSON record of the run: input, radii, options, counts, time and every statistic |
 | `--sample N` | for mesh inputs, sample N points on the surface instead of using the vertices |
 | `--seed S` | random seed for sampling and the spacing estimate |
 | `--write-points FILE` | save the point cloud that was reconstructed as `.xyz` |
@@ -312,6 +318,12 @@ All options:
   rejection leaves a boundary edge, so these counts explain where holes come from.
 - **dropped**: with `--min-component N`, the components and triangles removed at the end;
   the boundary edge count above it is that of the remaining mesh.
+- **filled**: with `--fill-loops N`, the loops closed and the triangles appended, and the
+  boundary edges left.
+- **check**: with `--check`, the topology (orientable, manifold, Euler characteristic),
+  the components, the boundary loops by size and the empty-ball audit of the result; the
+  same report `tools/check.jl` gives for any mesh file, and `tools/sweep.jl` prints one
+  line of it per radius. `--stats FILE` keeps all the counts as JSON.
 
 ## Library examples
 
@@ -433,7 +445,7 @@ larger radius, or a list of radii.
 | `data/dragon/` | Stanford's vripped reconstruction (`dragon_vrip.ply`/`.off` and lower resolutions) and the scan lists: `dragon_scans.txt` (all 71), `dragon_scans_clean.txt` (62 surface scans, without the backdrop and clear-space carvers), `dragon_subset.txt` (10 scans) |
 | `results/` | default output directory of `bpa.jl`; regenerable, see `results/README.md` |
 | `scripts/` | shell scripts that generate the meshes and download and convert the Stanford scans; they need trimesh2 (see `scripts/README.md`) |
-| `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers (see `tools/README.md`) |
+| `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers; `check.jl`: topology report and empty-ball audit of any mesh file; `sweep.jl`: one reconstruction per radius, as a table (see `tools/README.md`) |
 | `compare/` | the cross-check harness: runs BPA.jl, Open3D, MeshLab and any implementation you register on the same inputs, audits every output and renders them side by side (see `compare/README.md`; findings in `compare/REPORT.md`) |
 | `examples/` | `sphere.jl` and `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) |
 
@@ -441,7 +453,7 @@ larger radius, or a list of radii.
 
 - Every exported and internal function has a docstring (`?BPA.ball_pivot` etc. in the REPL).
 - [`tools/README.md`](tools/README.md) explains how to read the depth and signed images of
-  `tools/render.jl`.
+  `tools/render.jl`, the report of `tools/check.jl` and the table of `tools/sweep.jl`.
 - [`compare/README.md`](compare/README.md) explains the comparison harness and how to add an
   implementation to it; [`compare/REPORT.md`](compare/REPORT.md) is the comparison itself.
 - [`docs/algorithm.md`](docs/algorithm.md) explains the design: data flow, orientation
@@ -527,7 +539,8 @@ hand-built fronts, the OFF/PLY/XYZ readers and writers, the command-line tool, t
 nearest-neighbour search and the closed-form eigenvector against brute force and
 LinearAlgebra, normal estimation and orientation on a sphere, a torus with half its normals
 flipped and two separate spheres, hole filling on a sphere with a triangle or a vertex fan
-removed, and full reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
+removed, the empty-ball audit on valid, reversed, oversized and intruded triangles, the
+check and sweep tools and the JSON run record, and full reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
 (χ = 0), a plane patch (χ = 1, one clean boundary loop), exact lattices (cospherical
 quads), a plane sampled at two densities where one radius leaves the sparse half
 uncovered and two radii cover it, a pivot whose ball returns to the starting triangle's

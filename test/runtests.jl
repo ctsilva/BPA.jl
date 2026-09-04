@@ -25,6 +25,9 @@ using BPA: outward, fibonacci_sphere, sphere_spacing, torus, plane_patch
     @testset "fill" begin
         include("test_fill.jl")
     end
+    @testset "check" begin
+        include("test_check.jl")
+    end
     @testset "cli" begin
         include("test_cli.jl")
     end

@@ -30,7 +30,8 @@
 
 using BPA
 using BPA: Vec3, Tri, VoxelGrid, triangle_normal, orientation_consistent, ball_center,
-           empty_ball, neighbors!, fibonacci_sphere, torus, plane_patch
+           empty_ball, neighbors!, fibonacci_sphere, torus, plane_patch,
+           classify_triangle, audit_triangles, component_sizes, AUDIT_CLASSES
 using Printf, Random, StaticArrays, LinearAlgebra
 
 const PKG = dirname(@__DIR__)                       # the BPA.jl package directory
@@ -315,44 +316,12 @@ end
 
 # ---------------------------------------------------------------- checks on one output
 
-"""
-Classify a triangle by the defining BPA property: the rho-ball through its three vertices on
-the outward side contains no other sample point. The outward side is the one all three
-vertex normals agree on when they do. When they do not (a vertex without a normal, or a
-normal at right angles to a steep triangle between two scan layers) the normals cannot
-name the side, so both are tried: the winding side first, which is where a pivoting ball
-sits, then the reverse. Returns the class and, for `:ball_not_empty`, how deep (relative to
-rho) the most intruding point sits in the ball (the shallower side when both were tried).
-"""
-function classify(P, N, grid, rho, t)
-    a, b, c = t
-    (a == b || b == c || a == c) && return :degenerate, 0.0
-    n = triangle_normal(P[a], P[b], P[c])
-    sides = if orientation_consistent(n, N[a], N[b], N[c])
-        (1,)
-    elseif orientation_consistent(-n, N[a], N[b], N[c])
-        (-1,)
-    else
-        (1, -1)
-    end
-    worst = Inf
-    for side in sides
-        bb, cc = side > 0 ? (b, c) : (c, b)
-        ctr = ball_center(P[a], P[bb], P[cc], rho)   # on this side
-        ctr === nothing && return :circumradius_too_large, 0.0
-        empty_ball(grid, ctr, rho, a, b, c) && return (side > 0 ? :valid : :valid_reversed_winding), 0.0
-        buf = Int[]
-        neighbors!(buf, grid, ctr, rho)
-        depth = maximum((rho - sqrt(sum(abs2, P[id] - ctr))) / rho
-                        for id in buf if !(id == a || id == b || id == c); init = 0.0)
-        worst = min(worst, depth)
-    end
-    return :ball_not_empty, worst
-end
+# The empty-ball test lives in the package (`classify_triangle`, `audit_triangles` in
+# src/check.jl); `classify` is kept as the name the other scripts here use.
+classify(P, N, grid, rho, t) = classify_triangle(P, N, grid, rho, t)
 
 const TIE = 1e-5     # intrusions below this fraction of rho are cospherical ties, not errors
-const CLASSES = (:valid, :valid_reversed_winding, :ball_not_empty_tie, :ball_not_empty,
-                 :circumradius_too_large, :degenerate)
+const CLASSES = AUDIT_CLASSES
 
 struct Analysis
     ntri::Int
@@ -365,33 +334,13 @@ struct Analysis
 end
 
 "Number of triangles in the largest edge-connected component."
-function largest_component(tris)
-    isempty(tris) && return 0
-    n = maximum(maximum(t) for t in tris)
-    parent = collect(1:n)
-    root(x) = (while parent[x] != x; parent[x] = parent[parent[x]]; x = parent[x]; end; x)
-    for t in tris
-        a, b, c = root(t[1]), root(t[2]), root(t[3])
-        parent[a] = c; parent[b] = c
-    end
-    size = zeros(Int, n)
-    for t in tris
-        size[root(t[1])] += 1
-    end
-    maximum(size)
-end
+largest_component(tris) = (s = component_sizes(tris); isempty(s) ? 0 : s[1])
 
 function analyze(cloud, grid, rho, tris)
-    P, N = cloud.positions, cloud.normals
-    classes = Dict{Symbol,Int}()
-    max_depth = 0.0
+    au = audit_triangles(cloud, rho, tris; grid = grid, tie = TIE)
     seen = Set{NTuple{3,Int}}()
     dup = 0
     for t in tris
-        k, d = classify(P, N, grid, rho, t)
-        k == :ball_not_empty && d <= TIE && (k = :ball_not_empty_tie)
-        classes[k] = get(classes, k, 0) + 1
-        max_depth = max(max_depth, d)
         key = Tuple(sort(collect(t)))
         key in seen ? (dup += 1) : push!(seen, key)
     end
@@ -399,7 +348,7 @@ function analyze(cloud, grid, rho, tris)
     for t in tris, v in t
         used[v] = true
     end
-    Analysis(length(tris), check_mesh(tris), classes, max_depth, dup, count(used), largest_component(tris))
+    Analysis(length(tris), check_mesh(tris), au.classes, au.max_depth, dup, count(used), largest_component(tris))
 end
 
 # ---------------------------------------------------------------- comparing two outputs

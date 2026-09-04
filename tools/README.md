@@ -86,3 +86,68 @@ odd pixels are the four unscanned patches under the feet plus a scattering of si
 missing triangles. The scans have seven or eight layers behind a typical pixel, which is the
 overlap that the reconstruction collapses into one surface and the reason fewer than half
 of the input points end up in the mesh.
+
+## check.jl
+
+Topology report and empty-ball audit of a mesh file, from this package or any other tool:
+
+```
+julia tools/check.jl mesh.off [-i cloud] [-r RADIUS]
+```
+
+Prints the triangle and vertex counts, whether the mesh is orientable, edge-manifold and
+vertex-manifold, its Euler characteristic, the components with the size of the largest and
+the number of tiny ones, and the boundary edges with a histogram of the loops by size (at
+most 10 edges, 11–50, 51–200, larger), which is what tells a mesh with a few large holes
+from one riddled with small ones. With `-r`, the ball radius of the reconstruction, every
+triangle is audited for the defining property of the BPA, an empty ball of that radius
+through its vertices on the outward side, and counted as `valid`, `valid_reversed_winding`,
+`ball_not_empty_tie` (a cospherical tie), `ball_not_empty` (with the deepest intrusion),
+`circumradius_too_large` or `degenerate`. A BPA output is all `valid`; the triangles that
+`--fill-loops` adds, or another tool's departures from the algorithm, show up in the other
+classes. The outward side is taken from the normals of `-i`, a point cloud with the same
+vertices in the same order (`.off`, `.xyz` or `.ply`), or from the mesh itself when it is a
+NOFF file; a mesh with no normals is audited on both sides of each triangle.
+
+`bpa.jl --check` prints the same report on a fresh reconstruction.
+
+```
+$ julia tools/check.jl results/knot-300-100_bpa.off -i data/knot-300-100.off -r 0.03
+mesh: results/knot-300-100_bpa.off (30000 vertices, 58400 triangles)
+cloud: data/knot-300-100.off
+triangles: 58400, vertices used: 29208 of 30000
+orientable: yes, edge-manifold: yes, vertex-manifold: no, Euler characteristic: -23
+components: 1 (largest 58400 triangles)
+boundary edges: 62 in 16 loops (16 of at most 10 edges, 0 of 11-50, 0 of 51-200, 0 larger; largest 7 edges)
+empty-ball audit at rho = 0.03: valid 58400
+```
+
+## sweep.jl
+
+One reconstruction per radius, as a table, for choosing the radius by measurement rather
+than by guessing from the sample spacing:
+
+```
+julia tools/sweep.jl -i cloud.off -r 0.05,0.1,0.2
+julia tools/sweep.jl -f scans.txt -d DIR
+```
+
+The input options are those of `bpa.jl` (`-i`, `-l`, `-f`, `-d`, `--estimate-normals`,
+`--orient-normals`, `--knn`, `--max-seeds`, `--seed-neighbors`, `--min-component`,
+`--sample`, `--seed`). Without `-r` the radii are 1.5, 2, 3 and 4 times the estimated
+spacing. Each radius is a separate single-pass run; no mesh is written. The columns are the
+time, the triangles, the points used, the seeds, the connected components, the boundary
+edges and the pivots rejected by the normal test. Read it as: the radius where the points
+used stop rising and the components stop falling is the smallest one that walks the whole
+surface; past it the boundary edges keep falling while detail is lost.
+
+```
+$ julia tools/sweep.jl -i armadillo_o3d.off
+input: armadillo_o3d.off (20000 points)
+estimated sample spacing: 0.6505034783508097; radii at 1.5, 2.0, 3.0, 4.0 times it
+      radius   time s  triangles       used  seeds  comps  boundary  rej.norm
+    0.975755     0.03      17526      17782   2013    871     16782      1941
+     1.30101     0.04      28351      19279    285     27     12883      3592
+     1.95151     0.07      34585      18969     35      5      5989      4748
+     2.60201     0.08      32588      17768     24      8      5202      4647
+```

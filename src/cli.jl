@@ -45,6 +45,11 @@ options:
   --fill-loops N        after the reconstruction, close boundary loops of at most N edges by
                         ear clipping (default 0: off). Not part of the BPA: the triangles
                         added have no empty ball; they are appended after the BPA triangles
+  --check               report the topology of the result (orientable, manifold, components,
+                        boundary loops by size) and audit every triangle for the empty-ball
+                        property at the last radius; the same report as tools/check.jl
+  --stats FILE          write a JSON record of the run: input, radii, options, counts, time
+                        and every statistic
   --sample N            for mesh inputs, sample N points uniformly on the surface instead
                         of using the mesh vertices
   --seed SEED           random seed for sampling and spacing estimation (default 1)
@@ -71,6 +76,8 @@ struct CLIOptions
     orient_normals::Bool
     knn::Int
     fill_loops::Int
+    check::Bool
+    stats::String
     sample::Int
     seed::Int
     write_points::String
@@ -87,7 +94,7 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     input = ""; scans = String[]; scan_dir = ""; listfile = ""; output = ""
     radii = Float64[]; progress = 0; save_colored = false
     max_seeds = -1; seed_neighbors = DEFAULT_SEED_NEIGHBORS; min_component = 0
-    estimate = false; orient = false; knn = 10; fill_loops = 0
+    estimate = false; orient = false; knn = 10; fill_loops = 0; check = false; stats = ""
     sample = 0; seed = 1; write_points = ""; verbose = false
     k = 1
     value(flag) = (k + 1 <= length(args) || throw(ArgumentError("$flag needs a value")); k += 1; args[k])
@@ -139,6 +146,10 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
         elseif a == "--fill-loops"
             fill_loops = parse(Int, value(a))
             fill_loops == 0 || fill_loops >= 3 || throw(ArgumentError("--fill-loops needs 0 or at least 3"))
+        elseif a == "--check"
+            check = true
+        elseif a == "--stats"
+            stats = value(a)
         elseif a == "--sample"
             sample = parse(Int, value(a))
             sample > 0 || throw(ArgumentError("--sample needs a positive count"))
@@ -167,8 +178,8 @@ function parse_cli(args::AbstractVector{<:AbstractString}; io::IO = stdout)
     ext = lowercase(splitext(output)[2])
     ext in (".off", ".obj", ".ply") || throw(ArgumentError("output must be .off, .obj or .ply"))
     CLIOptions(input, scans, scan_dir, output, radii, progress, save_colored, max_seeds,
-               seed_neighbors, min_component, estimate, orient, knn, fill_loops, sample, seed,
-               write_points, verbose)
+               seed_neighbors, min_component, estimate, orient, knn, fill_loops, check, stats,
+               sample, seed, write_points, verbose)
 end
 
 """
@@ -318,29 +329,20 @@ color_bucket(npoints::Integer) =
     clamp(2 * npoints ÷ (2 * length(PROGRESS_PALETTE)), 1000, 100_000)
 
 """
-    main(args = ARGS; io = stdout) -> exit code
+    prepare_cloud(opts; io) -> PointCloud or nothing
 
-Entry point of the command-line tool. Prints a summary of the reconstruction and returns 0
-on success, 1 on a usage or input error.
+Load the input of `opts`, report it, estimate or orient its normals when asked, refuse a
+cloud without normals otherwise, and write the points if `--write-points` was given.
+Returns `nothing` after printing the error when the input cannot be used.
 """
-function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
-    opts = try
-        parse_cli(args; io = io)
-    catch err
-        err isa ArgumentError || rethrow()
-        println(io, "error: ", err.msg, "\n")
-        print(io, CLI_USAGE)
-        return 1
-    end
-    opts === nothing && return 0
-
+function prepare_cloud(opts::CLIOptions; io::IO = stdout)
     isempty(opts.scans) || println(io, "scans from ", opts.scan_dir, ":")
     cloud = try
         load_input(opts; io = io)
     catch err
         (err isa ArgumentError || err isa SystemError || err isa ErrorException) || rethrow()
         println(io, "error: ", sprint(showerror, err))
-        return 1
+        return nothing
     end
     if isempty(opts.scans)
         println(io, "input: ", opts.input, " (", length(cloud), " points)")
@@ -361,9 +363,31 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
                 " components, ", flipped, " flipped, ", round(t; digits = 2), " s")
     elseif all(iszero, cloud.normals)
         println(io, "error: the input has no normals; pass --estimate-normals to compute them from the positions")
-        return 1
+        return nothing
     end
     isempty(opts.write_points) || write_xyz(opts.write_points, cloud)
+    cloud
+end
+
+"""
+    main(args = ARGS; io = stdout) -> exit code
+
+Entry point of the command-line tool. Prints a summary of the reconstruction and returns 0
+on success, 1 on a usage or input error.
+"""
+function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
+    opts = try
+        parse_cli(args; io = io)
+    catch err
+        err isa ArgumentError || rethrow()
+        println(io, "error: ", err.msg, "\n")
+        print(io, CLI_USAGE)
+        return 1
+    end
+    opts === nothing && return 0
+
+    cloud = prepare_cloud(opts; io = io)
+    cloud === nothing && return 1
 
     radii = opts.radii
     if isempty(radii)
@@ -412,6 +436,14 @@ function main(args::AbstractVector{<:AbstractString} = ARGS; io::IO = stdout)
         println(io, "filled: ", s.filled_loops, " boundary loops of at most ", opts.fill_loops, " edges with ",
                 s.filled_triangles, " triangles (appended after the BPA triangles), ",
                 s.boundary_edges, " boundary edges left, ", round(t; digits = 2), " s")
+    end
+    if opts.check
+        println(io, "check:")
+        report_mesh(io, mesh.triangles; cloud = cloud, rho = radii[end])
+    end
+    if !isempty(opts.stats)
+        write_stats(opts.stats, opts, cloud, radii, mesh, t)
+        println(io, "wrote ", opts.stats)
     end
 
     write_mesh(opts.output, mesh)
