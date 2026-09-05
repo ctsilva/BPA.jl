@@ -148,6 +148,28 @@ seeds: 157, pivots: 79046, boundary edges: 3816
 rejected: no hit 3416, normal 394, interior vertex 7, manifold 4
 ```
 
+**A cloud without normals, or with unsigned ones.** Positions alone (an OFF or `.xyz` with
+three numbers per line, a PLY without `nx ny nz`) need `--estimate-normals`; a cloud whose
+normals point to either side at random needs `--orient-normals`; `--knn` sets the
+neighbourhood of both. Neither is part of the paper; see
+[What is implemented](#what-is-implemented) for what they do and where they fail:
+
+```
+$ julia bpa.jl -i bunny_o3d.off --estimate-normals -r 0.0033
+normals: estimated from the positions (10 nearest neighbours) and oriented: 1 components, 4893 flipped, 0.11 s
+triangles: 19189 in 0.03 s
+```
+
+**Filling small holes.** `--fill-loops N` closes boundary loops of at most N edges by ear
+clipping after the reconstruction. The added triangles have no empty ball, so this is not
+the BPA and is off by default; they are appended after the BPA triangles:
+
+```
+$ julia bpa.jl -i eagle.off -r 0.02 --fill-loops 10
+...
+filled: 1277 boundary loops of at most 10 edges with 4221 triangles (appended after the BPA triangles), 38448 boundary edges left, 0.7 s
+```
+
 **Several radii** (Section 4.6 of the paper) and **sampling a mesh**. `--sample N` draws N
 random points on the faces of a mesh input instead of using its vertices, which gives an
 uneven sampling; a second, larger radius then fills what the first one left. With `-v`
@@ -265,6 +287,12 @@ All options:
 | `--max-seeds N` | stop after N seed triangles (`-1`: unlimited) |
 | `--seed-neighbors N` | when searching for a seed triangle, pair only the N nearest neighbours of the candidate point (default 100; `-1` pairs every point within 2ρ, as the paper describes) |
 | `--min-component N` | drop connected components with fewer than N triangles at the end (default 0: keep everything) |
+| `--estimate-normals` | ignore the input normals and estimate them from the positions, oriented (Hoppe et al. 1992); required for inputs without normals |
+| `--orient-normals` | keep the input normals' directions, make their signs consistent |
+| `--knn K` | neighbours used by the two options above (default 10) |
+| `--fill-loops N` | close boundary loops of at most N edges by ear clipping afterwards (default 0: off); not BPA triangles, appended after them |
+| `--check` | report the topology of the result and audit every triangle for the empty-ball property (the report of `tools/check.jl`) |
+| `--stats FILE` | write a JSON record of the run: input, radii, options, counts, time and every statistic |
 | `--sample N` | for mesh inputs, sample N points on the surface instead of using the vertices |
 | `--seed S` | random seed for sampling and the spacing estimate |
 | `--write-points FILE` | save the point cloud that was reconstructed as `.xyz` |
@@ -290,6 +318,12 @@ All options:
   rejection leaves a boundary edge, so these counts explain where holes come from.
 - **dropped**: with `--min-component N`, the components and triangles removed at the end;
   the boundary edge count above it is that of the remaining mesh.
+- **filled**: with `--fill-loops N`, the loops closed and the triangles appended, and the
+  boundary edges left.
+- **check**: with `--check`, the topology (orientable, manifold, Euler characteristic),
+  the components, the boundary loops by size and the empty-ball audit of the result; the
+  same report `tools/check.jl` gives for any mesh file, and `tools/sweep.jl` prints one
+  line of it per radius. `--stats FILE` keeps all the counts as JSON.
 
 ## Library examples
 
@@ -326,6 +360,19 @@ cloud = read_xyz("scan.xyz")                # or read_ply("scan.ply")
 mesh  = reconstruct(cloud, [0.3, 0.5, 1.0]; verbose = true)
 write_ply("scan.ply", mesh)
 write_off("scan.off", mesh)
+```
+
+**Normals from positions, and filling holes afterwards:**
+
+```julia
+using BPA
+
+cloud = read_xyz("points.xyz")              # x y z per line, no normals
+N     = estimate_normals(cloud.positions; k = 10)   # least-variance directions, signs propagated
+mesh  = reconstruct(PointCloud(cloud.positions, N), 0.005)
+
+orient_normals!(cloud; k = 10)              # for a cloud whose normals have random signs
+mesh  = fill_small_loops(mesh; max_edges = 10)      # not BPA triangles: see stats.filled_triangles
 ```
 
 **From a mesh without normals.** `read_off` returns positions, faces and (for NOFF files)
@@ -380,8 +427,11 @@ each pass fills the holes the previous one left where it can (Section 4.6 of the
 
 The automatic radius is based on the nearest-neighbour distance, which underestimates the
 spacing of anisotropic samplings (a lattice much finer in one direction than the other, as
-the torus and knot meshes are). Use the *points used* line as the guide: if many points
-were unreached, pass a larger radius, or a list of radii.
+the torus and knot meshes are) and of random samplings, whose gaps are much larger than
+their median spacing: points drawn uniformly from a surface (`--sample`, or Open3D's
+`sample_points_uniformly`) want about 3 times the estimate, or two passes at 1.5 and 3
+times. Use the *points used* line as the guide: if many points were unreached, pass a
+larger radius, or a list of radii.
 
 ## Data, results and scripts
 
@@ -395,7 +445,7 @@ were unreached, pass a larger radius, or a list of radii.
 | `data/dragon/` | Stanford's vripped reconstruction (`dragon_vrip.ply`/`.off` and lower resolutions) and the scan lists: `dragon_scans.txt` (all 71), `dragon_scans_clean.txt` (62 surface scans, without the backdrop and clear-space carvers), `dragon_subset.txt` (10 scans) |
 | `results/` | default output directory of `bpa.jl`; regenerable, see `results/README.md` |
 | `scripts/` | shell scripts that generate the meshes and download and convert the Stanford scans; they need trimesh2 (see `scripts/README.md`) |
-| `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers (see `tools/README.md`) |
+| `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers; `check.jl`: topology report and empty-ball audit of any mesh file; `sweep.jl`: one reconstruction per radius, as a table (see `tools/README.md`) |
 | `compare/` | the cross-check harness: runs BPA.jl, Open3D, MeshLab and any implementation you register on the same inputs, audits every output and renders them side by side (see `compare/README.md`; findings in `compare/REPORT.md`) |
 | `examples/` | `sphere.jl` and `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) |
 
@@ -403,13 +453,16 @@ were unreached, pass a larger radius, or a list of radii.
 
 - Every exported and internal function has a docstring (`?BPA.ball_pivot` etc. in the REPL).
 - [`tools/README.md`](tools/README.md) explains how to read the depth and signed images of
-  `tools/render.jl`.
+  `tools/render.jl`, the report of `tools/check.jl` and the table of `tools/sweep.jl`.
 - [`compare/README.md`](compare/README.md) explains the comparison harness and how to add an
   implementation to it; [`compare/REPORT.md`](compare/REPORT.md) is the comparison itself.
 - [`docs/algorithm.md`](docs/algorithm.md) explains the design: data flow, orientation
   conventions, the data structures and their invariants, the pivot geometry, the join/glue
   cases, why the output is an orientable manifold, complexity, and a table mapping every
   construct of the paper to the code.
+- [`docs/LITERATE.md`](docs/LITERATE.md) is the core source read in the paper's order, each
+  chapter opening with the passage of the paper it implements. It is generated from the
+  docstrings and code by `docs/literate.jl`, and a test keeps it in step with the source.
 
 ## What is implemented
 
@@ -451,6 +504,29 @@ Decisions where the paper leaves room:
   reproduces the unbounded output on every dataset in `data/`.
 - **Small components** are kept, as in the paper, unless `--min-component` is given.
 
+Beyond the paper, two optional steps, both off unless asked for:
+
+- **Normals from positions** (`--estimate-normals`, `--orient-normals`; `estimate_normals`,
+  `orient_normals!`). The BPA assumes oriented normals, and inconsistently signed ones
+  fragment the output: a bunny sampled by Open3D with unoriented normals came out in 19
+  pieces with 3,205 boundary edges, and in one piece with 79 after orientation. The method
+  is Hoppe et al. (SIGGRAPH 1992): the normal at a point is the direction of least variance
+  of its k nearest neighbours, and the signs are propagated over the minimum spanning tree
+  of the neighbour graph weighted by `1 - |n_i · n_j|`, from the highest point of each
+  connected piece. The weighting matters: a plain breadth-first walk over the neighbours
+  crosses between the two sides of thin structures and made the eagle and living-room
+  clouds of the Open3D data sets worse, while the spanning tree left them unchanged. On
+  797,000 points the neighbour search takes 3 s and the orientation under a second. See
+  `src/normals.jl`.
+- **Hole filling** (`--fill-loops N`; `fill_small_loops`). Boundary loops of at most N
+  edges are closed by greedy ear clipping, each ear checked against the vertex normals, for
+  other loop vertices inside it, and for edges it would duplicate, so the result stays
+  orientable and edge-manifold. The triangles it adds are not BPA triangles (their ball is
+  not empty, which is why the hole was there) and are appended after the BPA triangles and
+  counted separately, so a result can always be split back. On the eagle it closes about
+  half of the 2,400 loops of ten edges or fewer; the large holes, where the data is missing,
+  stay. See `src/fill.jl`.
+
 ## Tests and performance
 
 ```
@@ -459,8 +535,12 @@ julia --project=BPA.jl -e 'using Pkg; Pkg.test()'
 
 The tests check the geometric primitives against brute force, the trigonometry-free
 first contact against the angle formulation on random pivots, the glue cases of Fig. 7 on
-hand-built fronts, the OFF/PLY/XYZ readers and writers, the command-line tool, and full
-reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
+hand-built fronts, the OFF/PLY/XYZ readers and writers, the command-line tool, the
+nearest-neighbour search and the closed-form eigenvector against brute force and
+LinearAlgebra, normal estimation and orientation on a sphere, a torus with half its normals
+flipped and two separate spheres, hole filling on a sphere with a triangle or a vertex fan
+removed, the empty-ball audit on valid, reversed, oversized and intruded triangles, the
+check and sweep tools and the JSON run record, and full reconstructions of a sphere (closed, orientable, manifold, χ = 2, all points used), a torus
 (χ = 0), a plane patch (χ = 1, one clean boundary loop), exact lattices (cospherical
 quads), a plane sampled at two densities where one radius leaves the sparse half
 uncovered and two radii cover it, a pivot whose ball returns to the starting triangle's
