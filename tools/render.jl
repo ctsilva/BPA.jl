@@ -1,12 +1,14 @@
 # Minimal flat-shaded painter's-algorithm renderer: OFF -> PPM, plus depth-complexity images.
 #
-#   julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--size WxH]
+#   julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--size WxH]
 #   julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]
 #
 # A COFF mesh (per-vertex colours, as bpa.jl writes with --save-colored or -p) is shaded in
 # its own colours, each triangle taking the colour of its first vertex; --no-edges leaves the
-# boundary edges undrawn, for pictures rather than diagnosis; --size sets the image size
-# (default 1400x1000), for instance to crop a detail at full resolution afterwards.
+# boundary edges undrawn, for pictures rather than diagnosis; --wire draws every triangle
+# edge in dark grey, for meshes small enough that the triangles can be told apart; --size
+# sets the image size (default 1400x1000), for instance to crop a detail at full resolution
+# afterwards.
 # The second form renders the range scans named in the list file (one per line, # comments)
 # as one mesh: each <name>.off is read from DIR (default: the list file's directory) with its
 # faces and moved by <name>.xf when that exists, so the depth-complexity images show how
@@ -116,19 +118,33 @@ function signed_color(s)
     s > 0 ? lerp((160, 190, 255), (5, 25, 120), t) : lerp((255, 180, 160), (120, 5, 5), t)
 end
 
+"Draw the segment in colour `col`, `2 * halfwidth + 1` pixels wide, clipped to the image."
+function draw_line!(img, x1, y1, x2, y2, col, halfwidth, W, H)
+    nsteps = max(2, ceil(Int, 2 * hypot(x2 - x1, y2 - y1)))
+    for t in range(0, 1, length = nsteps)
+        x = round(Int, x1 + t * (x2 - x1)); y = round(Int, y1 + t * (y2 - y1))
+        for dx in -halfwidth:halfwidth, dy in -halfwidth:halfwidth
+            xx, yy = x + dx, y + dy
+            (1 <= xx <= W && 1 <= yy <= H) || continue
+            img[1, xx, yy] = col[1]; img[2, xx, yy] = col[2]; img[3, xx, yy] = col[3]
+        end
+    end
+end
+
 function main(args)
-    list = ""; dir = ""; positional = String[]; edges = true; W, H = 1400, 1000
+    list = ""; dir = ""; positional = String[]; edges = true; wire = false; W, H = 1400, 1000
     i = 1
     while i <= length(args)
         if args[i] == "-f" && i < length(args); list = args[i+1]; i += 2
         elseif args[i] == "-d" && i < length(args); dir = args[i+1]; i += 2
         elseif args[i] == "--no-edges"; edges = false; i += 1
+        elseif args[i] == "--wire"; wire = true; i += 1
         elseif args[i] == "--size" && i < length(args); W, H = parse.(Int, split(args[i+1], 'x')); i += 2
         else push!(positional, args[i]); i += 1
         end
     end
     if isempty(list) && isempty(positional)
-        println(stderr, "usage: julia render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--size WxH]\n       julia render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]")
+        println(stderr, "usage: julia render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--size WxH]\n       julia render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]")
         exit(1)
     end
     if isempty(list)
@@ -170,6 +186,13 @@ function main(args)
             cover[x,y] += 1
             signed[x,y] += facing
         end
+        # --wire: the triangle's own edges, drawn right after it so that nearer triangles,
+        # painted later, cover them like any other part of it
+        if wire
+            for (p, q) in ((a, b), (b, c), (c, a))
+                draw_line!(img, sx(p), sy(p), sx(q), sy(q), (40, 40, 40), 0, W, H)
+            end
+        end
     end
     # Draw boundary edges in red on top
     ec = Dict{Tuple{Int,Int},Int}()
@@ -177,16 +200,7 @@ function main(args)
     for ((p,q),c) in ec
         (edges && c == 1) || continue
         a, b = P[p], P[q]
-        x1,y1,x2,y2 = sx(a),sy(a),sx(b),sy(b)
-        nsteps = max(2, ceil(Int, 2*hypot(x2-x1,y2-y1)))
-        for t in range(0,1,length=nsteps)
-            x = round(Int, x1 + t*(x2-x1)); y = round(Int, y1 + t*(y2-y1))
-            for dx in -1:1, dy in -1:1
-                xx, yy = x+dx, y+dy
-                (1 <= xx <= W && 1 <= yy <= H) || continue
-                img[1,xx,yy] = 220; img[2,xx,yy] = 20; img[3,xx,yy] = 20
-            end
-        end
+        draw_line!(img, sx(a), sy(a), sx(b), sy(b), (220, 20, 20), 1, W, H)
     end
     write_ppm(out, img)
 

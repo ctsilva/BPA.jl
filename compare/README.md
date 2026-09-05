@@ -144,7 +144,8 @@ Synthetic, with a known answer (generated into `results/inputs/`):
 Unevenly sampled, 1 mm spacing on one half and 4 mm on the other, run with two radii, 1.5 mm
 then 6 mm (group `uneven`): the small ball cannot cover the coarse half, so these check the
 multi-radius passes of section 4.6. Tools that take one radius show n/a; the report adds a
-row with the triangles each pass built and a rendering coloured by pass.
+row with the triangles each pass built, a rendering coloured by pass, and, these meshes
+being small, the same with every triangle edge drawn (`render.jl --wire`).
 
 | case | input | expected |
 |---|---|---|

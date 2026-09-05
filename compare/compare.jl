@@ -80,10 +80,11 @@ struct Case
     angle::Float64              # render.jl rotation about the vertical axis, degrees
     scan_list::Vector{String}   # scan names, to render the input coverage of a scan list
     scan_dir::String
+    wire::Bool                  # also render with every triangle edge drawn (small meshes)
 end
 
-Case(name, group, description, input, rho; angle = 30.0, scans = String[], dir = "") =
-    Case(name, group, description, input, sort(Float64[rho...]), angle, scans, dir)
+Case(name, group, description, input, rho; angle = 30.0, scans = String[], dir = "", wire = false) =
+    Case(name, group, description, input, sort(Float64[rho...]), angle, scans, dir, wire)
 
 "The radii of a case as bpa.jl's -r takes them: comma-separated."
 rho_arg(c::Case) = join(c.radii, ",")
@@ -193,13 +194,13 @@ function cases()
              ["-i", knot], 0.03),
         Case("plane_uneven", "uneven",
              "jittered plane, 50 x 100 points at 1 mm spacing on the left half and 12 x 25 at 4 mm on the right ($n_plane_u points), radii 1.5 mm then 6 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.",
-             ["-i", plane_u], radii_u),
+             ["-i", plane_u], radii_u; wire = true),
         Case("sphere_uneven", "uneven",
              "Fibonacci sphere of radius 25 mm, 1 mm spacing for y >= 0 and a 4 mm Fibonacci sampling for y < 0 ($n_sphere_u points), radii 1.5 mm then 6 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.",
-             ["-i", sphere_u], radii_u),
+             ["-i", sphere_u], radii_u; wire = true),
         Case("torus_uneven", "uneven",
              "jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y >= 0 and 32 x 13 at 4 mm for y < 0 ($n_torus_u points), radii 1.5 mm then 6 mm. Expected: closed, chi = 0, every point used, but for a triangle or two missing on the seam where the passes meet: the large ball's first contact next to the fine mesh is often a vertex already interior to it, and no choice of lattice seed avoids that at 4:1 on a curved tube.",
-             ["-i", torus_u], radii_u),
+             ["-i", torus_u], radii_u; wire = true),
         Case("bun000", "scans",
              "a single Stanford bunny range scan (40256 points, normals from the scan's own triangles), rho = 1.25 mm: real data without overlapping layers. Expected: one open sheet with the scan's outline as boundary.",
              scans(["bun000"], bunny_dir), 0.00125; scans = ["bun000"], dir = bunny_dir),
@@ -386,8 +387,8 @@ function render_passes(c::Case, outs, faces, passes, cloud)
     procs = Pair{String,Base.Process}[]
     for (k, t) in enumerate(TOOLS[])
         (outs[k] === nothing || faces[k] === nothing || passes[k] === nothing) && continue
-        png = joinpath(rdir, t.stem * "_passes.png")
-        !(t.stem in ONLY[]) && isfile(png) && continue
+        kinds = c.wire ? ("_passes", "_wire") : ("_passes",)
+        !(t.stem in ONLY[]) && all(kind -> isfile(joinpath(rdir, t.stem * kind * ".png")), kinds) && continue
         tris = faces[k]
         pass = passes[k]
         vpass = zeros(Int, length(P))
@@ -409,16 +410,19 @@ function render_passes(c::Case, outs, faces, passes, cloud)
                 println(io, "3 ", t[1] - 1, " ", t[2] - 1, " ", t[3] - 1)
             end
         end
-        ppm = joinpath(rdir, t.stem * "_passes.ppm")
-        log = joinpath(rdir, t.stem * "_passes.log")
-        push!(procs, t.stem => run(pipeline(`$(Base.julia_cmd()) $RENDER $coff $ppm $(c.angle)`; stdout = log, stderr = log); wait = false))
+        for (kind, flag) in (("_passes", ``), ("_wire", `--wire`))
+            kind in kinds || continue
+            ppm = joinpath(rdir, t.stem * kind * ".ppm")
+            log = joinpath(rdir, t.stem * kind * ".log")
+            push!(procs, t.stem * kind => run(pipeline(`$(Base.julia_cmd()) $RENDER $coff $ppm $(c.angle) $flag`; stdout = log, stderr = log); wait = false))
+        end
     end
-    for (stem, p) in procs
+    for (name, p) in procs
         wait(p)
-        ppm = joinpath(rdir, stem * "_passes.ppm")
+        ppm = joinpath(rdir, name * ".ppm")
         isfile(ppm) && to_png(ppm)
-        for suffix in ("_passes_depth", "_passes_signed")               # the renderer's other images: not needed
-            rm(joinpath(rdir, stem * suffix * ".ppm"); force = true)
+        for suffix in ("_depth", "_signed")                            # the renderer's other images: not needed
+            rm(joinpath(rdir, name * suffix * ".ppm"); force = true)
         end
     end
 end
@@ -630,9 +634,14 @@ const IMAGE_KINDS = [("", "shaded, boundary edges in red"),
                      ("_signed", "front-facing minus back-facing: grey 0, blue +, red −")]
 
 "The image rows of a case: the three above, plus the pass colouring when it has several radii."
-image_kinds(c::Case) = length(c.radii) < 2 ? IMAGE_KINDS :
-    vcat(IMAGE_KINDS, [("_passes", "coloured by the pass that built the triangle: blue rho = " *
-                        join(c.radii, ", orange ", ", green "))])
+function image_kinds(c::Case)
+    kinds = copy(IMAGE_KINDS)
+    if length(c.radii) >= 2
+        push!(kinds, ("_passes", "coloured by the pass that built the triangle: blue rho = " * join(c.radii, ", orange ", ", green ")))
+        c.wire && push!(kinds, ("_wire", "the same, with every triangle edge drawn"))
+    end
+    kinds
+end
 
 "Write results/<case>/report.md and report.html, the fragments the assembled report is built from."
 function write_case_report(c::Case, cloud, an, diffs, times, rstats)
