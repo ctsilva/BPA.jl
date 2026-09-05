@@ -45,14 +45,14 @@ ext(name, stem, exe; multi = false) = Tool(name, stem,
     ext("Digne", "digne", "ipol_digne/BallPivoting/build/ballpivoting"; multi = true),   # IPOL 2014, serial
     ext("Digne -p", "digne_par", "ipol_digne/BallPivoting/build/ballpivoting"; multi = true),  # the same, OpenMP
     ext("Gruber", "gruber", "bernhardmgruber_bpa/build/gruber_noff2off"),                # C++20
-    ext("Gruber reseeded", "gruber_reseed", "bernhardmgruber_bpa/build/gruber_reseed_noff2off"),  # + ext/gruber_reseed.patch
     ext("bpa_rs", "bpa_rs", "martinfrances107_bpa_rs/target/release/bpa_rs_noff2off"),   # Rust port of Gruber
     ext("Schmehla", "schmehla", "schmehla_ball-pivoting-algorithm/build/BPA"),           # thesis, "modified" BPA
     ext("Giaccari", "giaccari", "LuigiGiaccari_Surface-Reconstruction-Toolbox/build/ballpivoting"),  # no normals
 
-    # The fork of Gruber's C++ at ~/src/bpa (BPA_FORK to point elsewhere): reads the NOFF and
-    # writes the OFF itself, so no wrapper is needed. n/a until it is built.
-    Tool("bpa fork", "bpafork",
+    # Extended Gruber, the fork of Gruber's C++ at ~/src/bpa (github.com/ctsilva/bpa; BPA_FORK
+    # points elsewhere): reads the NOFF and writes the OFF itself, so no wrapper is needed.
+    # n/a until it is built.
+    Tool("Extended Gruber", "gruber_ext",
          (input, radii, output) -> isfile(FORK) ? `$FORK $input $(rho_arg(radii)) $output` : nothing,
          r"time: ([\d.]+) s"),
 

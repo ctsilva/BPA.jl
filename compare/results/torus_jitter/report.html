@@ -1,28 +1,28 @@
 <section id="torus_jitter"><h2>torus_jitter</h2>
 <p>parametric torus (R = 1, r = 0.4) on a 120 x 80 grid jittered by 30 % of the spacing, so no four points are cospherical and the answer is unique. rho = 0.06 (2 x the median spacing). Expected: closed, chi = 0, 19200 triangles.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_jitter.off`, rho = 0.06, 9600 points</code></p>
 <div class="tables">
-<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
-<tr><td>triangles</td><td>19200</td><td>19200</td><td>19196</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.03</td><td>0.067</td><td>0.046</td><td>0.094</td><td>0.022</td><td>0.024</td><td>0.023</td><td>0.028</td><td>0.96</td><td>0.011</td><td>0.02</td></tr>
-<tr><td>vertices used</td><td>9600</td><td>9600</td><td>9598</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td></tr>
-<tr><td>boundary edges</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>boundary loops</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>components</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td>largest component (triangles)</td><td>19200</td><td>19200</td><td>19196</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td></tr>
-<tr><td>Euler characteristic</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>orientable</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
-<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
-<tr><td>vertex-manifold</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
-<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>valid</td><td>19200</td><td>19200</td><td>19189</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td></tr>
-<tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>7</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>degenerate</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>2.90e-01</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td></tr>
-<tr><td>render: odd-parity pixels (holes seen through)</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td></tr>
-<tr><td>render: pixels with front ≠ back</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td></tr>
+<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>Extended Gruber</th></tr></thead><tbody>
+<tr><td>triangles</td><td>19200</td><td>19200</td><td>19196</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.03</td><td>0.067</td><td>0.046</td><td>0.094</td><td>0.022</td><td>0.024</td><td>0.028</td><td>0.96</td><td>0.011</td><td>0.02</td></tr>
+<tr><td>vertices used</td><td>9600</td><td>9600</td><td>9598</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td><td>9600</td></tr>
+<tr><td>boundary edges</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>boundary loops</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>components</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>largest component (triangles)</td><td>19200</td><td>19200</td><td>19196</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td></tr>
+<tr><td>Euler characteristic</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>orientable</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>vertex-manifold</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>valid</td><td>19200</td><td>19200</td><td>19189</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td><td>19200</td></tr>
+<tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>7</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>degenerate</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>2.90e-01</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td></tr>
+<tr><td>render: odd-parity pixels (holes seen through)</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td></tr>
+<tr><td>render: pixels with front ≠ back</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td><td>0.00%</td></tr>
 </tbody></table>
 <div><p>triangle sets against BPA.jl</p>
 <table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
@@ -31,11 +31,10 @@
 <tr><td>Digne</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>Digne -p</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>Gruber</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>Gruber reseeded</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>bpa_rs</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>Schmehla</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>Giaccari</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>bpa fork</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Extended Gruber</td><td>19200</td><td>19200</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 </tbody></table>
 </div></div>
 <p class="kind">shaded, boundary edges in red (view 40.0°)</p><div class="grid">
@@ -45,11 +44,10 @@
 <figure><a href="torus_jitter/render/digne.png"><img src="torus_jitter/render/digne.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
 <figure><a href="torus_jitter/render/digne_par.png"><img src="torus_jitter/render/digne_par.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
 <figure><a href="torus_jitter/render/gruber.png"><img src="torus_jitter/render/gruber.png" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
-<figure><a href="torus_jitter/render/gruber_reseed.png"><img src="torus_jitter/render/gruber_reseed.png" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
 <figure><a href="torus_jitter/render/bpa_rs.png"><img src="torus_jitter/render/bpa_rs.png" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
 <figure><a href="torus_jitter/render/schmehla.png"><img src="torus_jitter/render/schmehla.png" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="torus_jitter/render/giaccari.png"><img src="torus_jitter/render/giaccari.png" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
-<figure><a href="torus_jitter/render/bpafork.png"><img src="torus_jitter/render/bpafork.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+<figure><a href="torus_jitter/render/gruber_ext.png"><img src="torus_jitter/render/gruber_ext.png" loading="lazy"></a><figcaption>Extended Gruber</figcaption></figure>
 </div>
 <p class="kind">triangles behind each pixel: warm = odd (a hole is seen through), cool = even (view 40.0°)</p><div class="grid">
 <figure><a href="torus_jitter/render/bpa_depth.png"><img src="torus_jitter/render/bpa_depth.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
@@ -58,11 +56,10 @@
 <figure><a href="torus_jitter/render/digne_depth.png"><img src="torus_jitter/render/digne_depth.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
 <figure><a href="torus_jitter/render/digne_par_depth.png"><img src="torus_jitter/render/digne_par_depth.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
 <figure><a href="torus_jitter/render/gruber_depth.png"><img src="torus_jitter/render/gruber_depth.png" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
-<figure><a href="torus_jitter/render/gruber_reseed_depth.png"><img src="torus_jitter/render/gruber_reseed_depth.png" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
 <figure><a href="torus_jitter/render/bpa_rs_depth.png"><img src="torus_jitter/render/bpa_rs_depth.png" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
 <figure><a href="torus_jitter/render/schmehla_depth.png"><img src="torus_jitter/render/schmehla_depth.png" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="torus_jitter/render/giaccari_depth.png"><img src="torus_jitter/render/giaccari_depth.png" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
-<figure><a href="torus_jitter/render/bpafork_depth.png"><img src="torus_jitter/render/bpafork_depth.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+<figure><a href="torus_jitter/render/gruber_ext_depth.png"><img src="torus_jitter/render/gruber_ext_depth.png" loading="lazy"></a><figcaption>Extended Gruber</figcaption></figure>
 </div>
 <p class="kind">front-facing minus back-facing: grey 0, blue +, red − (view 40.0°)</p><div class="grid">
 <figure><a href="torus_jitter/render/bpa_signed.png"><img src="torus_jitter/render/bpa_signed.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
@@ -71,10 +68,9 @@
 <figure><a href="torus_jitter/render/digne_signed.png"><img src="torus_jitter/render/digne_signed.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
 <figure><a href="torus_jitter/render/digne_par_signed.png"><img src="torus_jitter/render/digne_par_signed.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
 <figure><a href="torus_jitter/render/gruber_signed.png"><img src="torus_jitter/render/gruber_signed.png" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
-<figure><a href="torus_jitter/render/gruber_reseed_signed.png"><img src="torus_jitter/render/gruber_reseed_signed.png" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
 <figure><a href="torus_jitter/render/bpa_rs_signed.png"><img src="torus_jitter/render/bpa_rs_signed.png" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
 <figure><a href="torus_jitter/render/schmehla_signed.png"><img src="torus_jitter/render/schmehla_signed.png" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="torus_jitter/render/giaccari_signed.png"><img src="torus_jitter/render/giaccari_signed.png" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
-<figure><a href="torus_jitter/render/bpafork_signed.png"><img src="torus_jitter/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+<figure><a href="torus_jitter/render/gruber_ext_signed.png"><img src="torus_jitter/render/gruber_ext_signed.png" loading="lazy"></a><figcaption>Extended Gruber</figcaption></figure>
 </div>
 </section>

@@ -1,28 +1,28 @@
 <section id="dragon62_r0.0007"><h2>dragon62_r0.0007</h2>
 <p>the 62 Stanford dragon surface scans (1.83 million points), rho = 0.7 mm: the largest input, with up to 98 overlapping layers.</p><p><code>input: `-l dragonBottomFill1_0,dragonBottomFill2_0,dragonKnee_0,dragonMouth1_0,dragonMouth2_0,dragonMouth3_0,dragonMouth4_0,dragonMouth5_0,dragonMouth6_0,dragonMouth7_0,dragonMouth8_0,dragonNook1_0,dragonNook2_0,dragonSideRight_0,dragonSideRight_120,dragonSideRight_144,dragonSideRight_168,dragonSideRight_192,dragonSideRight_216,dragonSideRight_24,dragonSideRight_240,dragonSideRight_264,dragonSideRight_288,dragonSideRight_312,dragonSideRight_336,dragonSideRight_48,dragonSideRight_72,dragonSideRight_96,dragonStandRight_0,dragonStandRight_120,dragonStandRight_144,dragonStandRight_168,dragonStandRight_192,dragonStandRight_216,dragonStandRight_24,dragonStandRight_240,dragonStandRight_264,dragonStandRight_288,dragonStandRight_312,dragonStandRight_336,dragonStandRight_48,dragonStandRight_72,dragonStandRight_96,dragonToes_0,dragonToes3_0,dragonTopFill1_0,dragonTopFill2_0,dragonUpRight_0,dragonUpRight_120,dragonUpRight_144,dragonUpRight_168,dragonUpRight_192,dragonUpRight_216,dragonUpRight_24,dragonUpRight_240,dragonUpRight_264,dragonUpRight_288,dragonUpRight_312,dragonUpRight_336,dragonUpRight_48,dragonUpRight_72,dragonUpRight_96 -d /Users/csilva/src/BPA.jl/data/dragon/scans`, rho = 0.0007, 1826038 points</code></p>
 <div class="tables">
-<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
-<tr><td>triangles</td><td>649518</td><td>624851</td><td>2545632</td><td>631174</td><td>631171</td><td>1</td><td>639668</td><td>1</td><td>5</td><td>1368343</td><td>649459</td></tr>
-<tr><td>reconstruction time (s)</td><td>6.59</td><td>830.594</td><td>19355.382</td><td>1986.91</td><td>1382.47</td><td>0.086</td><td>4.906</td><td>0.48</td><td>9.38</td><td>4.315</td><td>4.51</td></tr>
-<tr><td>vertices used</td><td>329013</td><td>328647</td><td>1376106</td><td>329732</td><td>329736</td><td>3</td><td>329247</td><td>3</td><td>6</td><td>690586</td><td>329005</td></tr>
-<tr><td>boundary edges</td><td>13434</td><td>53205</td><td>1707330</td><td>47656</td><td>47687</td><td>3</td><td>24103</td><td>3</td><td>5</td><td>16195</td><td>13757</td></tr>
-<tr><td>boundary loops</td><td>2257</td><td>6804</td><td>398</td><td>6459</td><td>6454</td><td>1</td><td>3011</td><td>1</td><td>1</td><td>1383</td><td>2320</td></tr>
-<tr><td>components</td><td>101</td><td>536</td><td>34</td><td>549</td><td>550</td><td>1</td><td>291</td><td>1</td><td>1</td><td>69</td><td>103</td></tr>
-<tr><td>largest component (triangles)</td><td>617351</td><td>592274</td><td>2513633</td><td>598551</td><td>598544</td><td>1</td><td>607187</td><td>1</td><td>5</td><td>1368184</td><td>617285</td></tr>
-<tr><td>Euler characteristic</td><td>-2463</td><td>-10381</td><td>-750375</td><td>-9683</td><td>-9693</td><td>1</td><td>-2632</td><td>1</td><td>1</td><td>-1683</td><td>-2603</td></tr>
-<tr><td>orientable</td><td>yes</td><td>no</td><td>yes</td><td>no</td><td>no</td><td>yes</td><td>no</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
-<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>no</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
-<tr><td>vertex-manifold</td><td>no</td><td>no</td><td>no</td><td>no</td><td>no</td><td>yes</td><td>no</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr>
-<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>valid</td><td>649518</td><td>624774</td><td>112449</td><td>631160</td><td>631157</td><td>1</td><td>639164</td><td>1</td><td>5</td><td>611502</td><td>649459</td></tr>
-<tr><td>valid_reversed_winding</td><td>0</td><td>77</td><td>20840</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>817</td><td>0</td></tr>
-<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>6</td><td>0</td><td>0</td><td>0</td><td>19</td><td>0</td><td>0</td><td>7</td><td>0</td></tr>
-<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>2412337</td><td>0</td><td>0</td><td>0</td><td>485</td><td>0</td><td>0</td><td>755987</td><td>0</td></tr>
-<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>0</td><td>14</td><td>14</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30</td><td>0</td></tr>
-<tr><td>degenerate</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>9.97e-01</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>8.81e-01</td><td>0.00e+00</td><td>0.00e+00</td><td>9.94e-01</td><td>0.00e+00</td></tr>
-<tr><td>render: odd-parity pixels (holes seen through)</td><td>22.21%</td><td>29.60%</td><td>59.08%</td><td>27.59%</td><td>27.60%</td><td>100.00%</td><td>25.10%</td><td>100.00%</td><td>100.00%</td><td>10.78%</td><td>22.28%</td></tr>
-<tr><td>render: pixels with front ≠ back</td><td>22.31%</td><td>30.04%</td><td>83.89%</td><td>27.94%</td><td>27.94%</td><td>100.00%</td><td>25.30%</td><td>100.00%</td><td>100.00%</td><td>11.12%</td><td>22.39%</td></tr>
+<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>Extended Gruber</th></tr></thead><tbody>
+<tr><td>triangles</td><td>649518</td><td>624851</td><td>2545632</td><td>631174</td><td>631171</td><td>1</td><td>1</td><td>5</td><td>1368343</td><td>649459</td></tr>
+<tr><td>reconstruction time (s)</td><td>6.59</td><td>830.594</td><td>19355.382</td><td>1986.91</td><td>1382.47</td><td>0.086</td><td>0.48</td><td>9.38</td><td>4.315</td><td>4.51</td></tr>
+<tr><td>vertices used</td><td>329013</td><td>328647</td><td>1376106</td><td>329732</td><td>329736</td><td>3</td><td>3</td><td>6</td><td>690586</td><td>329005</td></tr>
+<tr><td>boundary edges</td><td>13434</td><td>53205</td><td>1707330</td><td>47656</td><td>47687</td><td>3</td><td>3</td><td>5</td><td>16195</td><td>13757</td></tr>
+<tr><td>boundary loops</td><td>2257</td><td>6804</td><td>398</td><td>6459</td><td>6454</td><td>1</td><td>1</td><td>1</td><td>1383</td><td>2320</td></tr>
+<tr><td>components</td><td>101</td><td>536</td><td>34</td><td>549</td><td>550</td><td>1</td><td>1</td><td>1</td><td>69</td><td>103</td></tr>
+<tr><td>largest component (triangles)</td><td>617351</td><td>592274</td><td>2513633</td><td>598551</td><td>598544</td><td>1</td><td>1</td><td>5</td><td>1368184</td><td>617285</td></tr>
+<tr><td>Euler characteristic</td><td>-2463</td><td>-10381</td><td>-750375</td><td>-9683</td><td>-9693</td><td>1</td><td>1</td><td>1</td><td>-1683</td><td>-2603</td></tr>
+<tr><td>orientable</td><td>yes</td><td>no</td><td>yes</td><td>no</td><td>no</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td></tr>
+<tr><td>vertex-manifold</td><td>no</td><td>no</td><td>no</td><td>no</td><td>no</td><td>yes</td><td>yes</td><td>yes</td><td>yes</td><td>no</td></tr>
+<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>valid</td><td>649518</td><td>624774</td><td>112449</td><td>631160</td><td>631157</td><td>1</td><td>1</td><td>5</td><td>611502</td><td>649459</td></tr>
+<tr><td>valid_reversed_winding</td><td>0</td><td>77</td><td>20840</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>817</td><td>0</td></tr>
+<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>6</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7</td><td>0</td></tr>
+<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>2412337</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>755987</td><td>0</td></tr>
+<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>0</td><td>14</td><td>14</td><td>0</td><td>0</td><td>0</td><td>30</td><td>0</td></tr>
+<tr><td>degenerate</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>9.97e-01</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>0.00e+00</td><td>9.94e-01</td><td>0.00e+00</td></tr>
+<tr><td>render: odd-parity pixels (holes seen through)</td><td>22.21%</td><td>29.60%</td><td>59.08%</td><td>27.59%</td><td>27.60%</td><td>100.00%</td><td>100.00%</td><td>100.00%</td><td>10.78%</td><td>22.28%</td></tr>
+<tr><td>render: pixels with front ≠ back</td><td>22.31%</td><td>30.04%</td><td>83.89%</td><td>27.94%</td><td>27.94%</td><td>100.00%</td><td>100.00%</td><td>100.00%</td><td>11.12%</td><td>22.39%</td></tr>
 </tbody></table>
 <div><p>triangle sets against BPA.jl</p>
 <table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
@@ -31,11 +31,10 @@
 <tr><td>Digne</td><td>629747</td><td>629746</td><td>19771</td><td>1427</td><td>1208/5975/7011/5577</td><td>508/187/713/19</td></tr>
 <tr><td>Digne -p</td><td>629703</td><td>629702</td><td>19815</td><td>1468</td><td>1205/5983/7021/5606</td><td>511/182/756/19</td></tr>
 <tr><td>Gruber</td><td>1</td><td>1</td><td>649517</td><td>0</td><td>649517/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>Gruber reseeded</td><td>637819</td><td>637791</td><td>11699</td><td>1849</td><td>1147/6446/3559/547</td><td>270/294/1113/172</td></tr>
 <tr><td>bpa_rs</td><td>1</td><td>1</td><td>649517</td><td>0</td><td>649517/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>Schmehla</td><td>5</td><td>5</td><td>649513</td><td>0</td><td>649513/0/0/0</td><td>0/0/0/0</td></tr>
 <tr><td>Giaccari</td><td>603829</td><td>603041</td><td>45689</td><td>764514</td><td>35742/8317/1555/75</td><td>754865/5426/2943/1280</td></tr>
-<tr><td>bpa fork</td><td>648371</td><td>648311</td><td>1147</td><td>1088</td><td>21/157/911/58</td><td>24/196/843/25</td></tr>
+<tr><td>Extended Gruber</td><td>648371</td><td>648311</td><td>1147</td><td>1088</td><td>21/157/911/58</td><td>24/196/843/25</td></tr>
 </tbody></table>
 </div></div>
 <p class="kind">shaded, boundary edges in red (view 30.0°)</p><div class="grid">
@@ -45,11 +44,10 @@
 <figure><a href="dragon62_r0.0007/render/digne.png"><img src="dragon62_r0.0007/render/digne.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/digne_par.png"><img src="dragon62_r0.0007/render/digne_par.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/gruber.png"><img src="dragon62_r0.0007/render/gruber.png" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
-<figure><a href="dragon62_r0.0007/render/gruber_reseed.png"><img src="dragon62_r0.0007/render/gruber_reseed.png" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/bpa_rs.png"><img src="dragon62_r0.0007/render/bpa_rs.png" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/schmehla.png"><img src="dragon62_r0.0007/render/schmehla.png" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/giaccari.png"><img src="dragon62_r0.0007/render/giaccari.png" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
-<figure><a href="dragon62_r0.0007/render/bpafork.png"><img src="dragon62_r0.0007/render/bpafork.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+<figure><a href="dragon62_r0.0007/render/gruber_ext.png"><img src="dragon62_r0.0007/render/gruber_ext.png" loading="lazy"></a><figcaption>Extended Gruber</figcaption></figure>
 </div>
 <p class="kind">triangles behind each pixel: warm = odd (a hole is seen through), cool = even (view 30.0°)</p><div class="grid">
 <figure><a href="dragon62_r0.0007/render/bpa_depth.png"><img src="dragon62_r0.0007/render/bpa_depth.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
@@ -58,11 +56,10 @@
 <figure><a href="dragon62_r0.0007/render/digne_depth.png"><img src="dragon62_r0.0007/render/digne_depth.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/digne_par_depth.png"><img src="dragon62_r0.0007/render/digne_par_depth.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/gruber_depth.png"><img src="dragon62_r0.0007/render/gruber_depth.png" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
-<figure><a href="dragon62_r0.0007/render/gruber_reseed_depth.png"><img src="dragon62_r0.0007/render/gruber_reseed_depth.png" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/bpa_rs_depth.png"><img src="dragon62_r0.0007/render/bpa_rs_depth.png" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/schmehla_depth.png"><img src="dragon62_r0.0007/render/schmehla_depth.png" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/giaccari_depth.png"><img src="dragon62_r0.0007/render/giaccari_depth.png" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
-<figure><a href="dragon62_r0.0007/render/bpafork_depth.png"><img src="dragon62_r0.0007/render/bpafork_depth.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+<figure><a href="dragon62_r0.0007/render/gruber_ext_depth.png"><img src="dragon62_r0.0007/render/gruber_ext_depth.png" loading="lazy"></a><figcaption>Extended Gruber</figcaption></figure>
 </div>
 <p class="kind">front-facing minus back-facing: grey 0, blue +, red − (view 30.0°)</p><div class="grid">
 <figure><a href="dragon62_r0.0007/render/bpa_signed.png"><img src="dragon62_r0.0007/render/bpa_signed.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
@@ -71,11 +68,10 @@
 <figure><a href="dragon62_r0.0007/render/digne_signed.png"><img src="dragon62_r0.0007/render/digne_signed.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/digne_par_signed.png"><img src="dragon62_r0.0007/render/digne_par_signed.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/gruber_signed.png"><img src="dragon62_r0.0007/render/gruber_signed.png" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
-<figure><a href="dragon62_r0.0007/render/gruber_reseed_signed.png"><img src="dragon62_r0.0007/render/gruber_reseed_signed.png" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/bpa_rs_signed.png"><img src="dragon62_r0.0007/render/bpa_rs_signed.png" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/schmehla_signed.png"><img src="dragon62_r0.0007/render/schmehla_signed.png" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="dragon62_r0.0007/render/giaccari_signed.png"><img src="dragon62_r0.0007/render/giaccari_signed.png" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
-<figure><a href="dragon62_r0.0007/render/bpafork_signed.png"><img src="dragon62_r0.0007/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+<figure><a href="dragon62_r0.0007/render/gruber_ext_signed.png"><img src="dragon62_r0.0007/render/gruber_ext_signed.png" loading="lazy"></a><figcaption>Extended Gruber</figcaption></figure>
 </div>
 <p class="kind">input scans, with their boundaries</p><div class="grid">
 <figure><a href="dragon62_r0.0007/render/input.png"><img src="dragon62_r0.0007/render/input.png" loading="lazy"></a><figcaption>input</figcaption></figure>

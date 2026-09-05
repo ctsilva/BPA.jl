@@ -9,7 +9,7 @@ input into each tool's format and its output back into an OFF with the input ver
 ```
 cd BPA.jl/compare
 sh ext/build.sh                          # clones, patches, builds into external/
-julia -t 9 --project=.. compare.jl synthetic --tools digne,digne_par,gruber,gruber_reseed,bpa_rs,schmehla,giaccari
+julia -t 9 --project=.. compare.jl synthetic --tools digne,digne_par,gruber,bpa_rs,schmehla,giaccari
 ```
 
 Needs cmake, a C++20 compiler, `cargo` (rustup.rs), Homebrew `glm`, and Homebrew `gcc` for
@@ -26,7 +26,6 @@ empty-ball test is enforced, how the front is managed, and whether it builds. Ve
 |---|---|---|---|
 | [Digne, IPOL 2014](https://www.ipol.im/pub/art/2014/81/) | C++, GPL-3 | Octree; every orphan vertex is a seed candidate; exact reach radius for pivot candidates; smallest angle with the empty-ball test on each improving candidate (`rho^2 - 1e-16`); normals must agree; multi-radius; OpenMP over octree cells with a merge step. Always fills 3-cycles of border edges afterwards (no ball test), which the wrapper switches off. | **faithful, benchmarked** |
 | [bernhardmgruber/bpa](https://github.com/bernhardmgruber/bpa) | C++20, BSL-1.0 | Uniform grid of 2ρ cells; the paper's front with join/glue; smallest angle, but the empty-ball test runs only on the winner (a non-empty winner makes the edge a boundary); one seed only, so one connected component; float32; the emptiness tolerance is an absolute `rho^2 - 1e-4`, vacuous below ρ = 0.01; far-side angles reflected as α+π instead of 2π−α. | runs, benchmarked with caveats |
-| Gruber, reseeded (`gruber_reseed.patch`) | the same, patched here | Gruber's library with the seed search resumed after each front is exhausted, so that it grows one component per seed as the paper does. The search probes as BPA.jl's does: cells holding a used point are skipped (the paper's fig. 4c heuristic), one candidate per cell, nearest 100 neighbours paired. The pivot, the front and the float32 emptiness test are upstream's. | **faithful, benchmarked** |
 | [martinfrances107/bpa_rs](https://github.com/martinfrances107/bpa_rs) | Rust, MIT | Port of Gruber, same behaviour and the same caveats. | runs, benchmarked with caveats |
 | [schmehla/ball-pivoting-algorithm](https://github.com/schmehla/ball-pivoting-algorithm) | C++, MIT | Thesis code. The pivot intersects the circle of ball centres around the edge with a sphere of radius ρ about each neighbour and keeps the first contact over the full turn, which is the paper's pivot done geometrically; cospherical ties are kept together ("multi-rolling"); the empty-ball test is only an assertion, the neighbourhood (2ρ) makes it hold; the vertex-normal filter is commented out. Its post-processing overruns a stack buffer and is skipped by the build. | faithful pivot, no normal test, benchmarked |
 | [Giaccari, Surface Reconstruction Toolbox](https://github.com/LuigiGiaccari/Surface-Reconstruction-Toolbox) | C++, GPL-3 | The author's mesh-growing framework (Di Angelo, Di Stefano, Giaccari 2011) in a "classical ball pivoting without point normals" mode: a priority-queue front; the candidate with the largest ball-centre angle inside a window around the current ball wins, among points inside the pivot torus; a dihedral cap (dot > −0.5) and a manifold-vertex check; points closer than mean spacing / 20 are removed first; post-processing (3-cycle filling, non-manifold repair) on by default. See "How Giaccari's code works" below. Its stopwatch ignored whole seconds, so `build.sh` patches it. | runs, benchmarked, not the paper's algorithm |
@@ -65,24 +64,16 @@ Silicon laptop as the rest of the comparison, one tool at a time. What they show
   only gains 1.4× on the dragon because the merge and the border re-pivoting are serial.
   Like Open3D it fragments the scans into hundreds of components (1899 on the ten-scan
   bunny, 549 on the dragon) where BPA.jl has 17 and 101.
-- **Gruber, reseeded, is the second faithful implementation and the closest to BPA.jl.**
-  With the seed search resumed after every front (`gruber_reseed.patch`) it grows
-  78 093 triangles on the single bunny scan against BPA.jl's 78 152, 323 224 against
-  323 934 on the ten-scan bunny and 639 668 against 649 518 on the dragon, in the same
-  time as upstream and as BPA.jl (1.4 s and 4.9 s against 1.6 s and 6.6 s). It leaves
-  about twice the boundary edges of BPA.jl on the scans (1 718 against 806 on the
-  ten-scan bunny, 24 103 against 13 434 on the dragon) and two to three times the
-  components (35 against 17, 291 against 101), where Open3D and Digne leave ten times
-  the edges and hundreds or thousands of components. Its non-empty balls, 52 on the
-  ten-scan bunny and 485 on the dragon, are upstream's float32 absolute emptiness
-  tolerance and shallow: BPA.jl, Open3D and Digne have none or single digits.
-- **The fork of Gruber's code** (`~/src/bpa`, the "bpa fork" column; see its README for
-  what changed: reseeding, the paper's pivot, seeds oriented by their vertex normals,
-  double precision) matches BPA.jl on every case: identical triangle sets on the eight
-  synthetic inputs, within 0.1 % on the scans (649 459 against 649 518 on the dragon),
-  no non-empty ball anywhere, the same components on the ten-scan bunny and 103
-  against 101 on the dragon, boundary edges within 6 %, and 4.4 s against 6.6 s on the
-  dragon.
+- **Extended Gruber** ([github.com/ctsilva/bpa](https://github.com/ctsilva/bpa), the
+  fork of Gruber's code that grew out of this survey; its README lists the changes:
+  reseeding after each front, the paper's pivot, seeds oriented by their vertex normals,
+  double precision, several radii) matches BPA.jl on every case: identical triangle sets
+  on the synthetic inputs, within 0.1 % on the scans (649 459 against 649 518 on the
+  dragon), no non-empty ball anywhere, the same components on the ten-scan bunny and 103
+  against 101 on the dragon, boundary edges within 6 %, and 4.5 s against 6.6 s on the
+  dragon. The first step towards it, a patch of upstream that only resumed the seed search
+  after each front, already brought Gruber's counts within 2 % of BPA.jl's at the same
+  speed; it was dropped from the harness once the fork existed.
 - **Several radii** (the `uneven` cases: 1 mm spacing on one half of a plane, a sphere and
   a torus and 4 mm on the other, radii 1.5 mm then 6 mm). Only BPA.jl, Open3D, Digne and
   the fork take a radius list; the others show n/a. All four give the same triangles on
@@ -140,9 +131,8 @@ emptiness at all.
 
 ## Licenses
 
-This repository is MIT-licensed, but the patch files here inherit the license of the code
-they modify, since they quote it: `digne_main.patch` is GPL-3 like Digne's IPOL code, and
-`gruber_reseed.patch` is BSL-1.0 like Gruber's. The wrappers (`run_ext.py`,
+This repository is MIT-licensed, but `digne_main.patch` inherits the license of the code it
+modifies, since it quotes it: GPL-3 like Digne's IPOL code. The wrappers (`run_ext.py`,
 `gruber_noff2off.cpp`, `bpa_rs_noff2off/`) are ours and MIT. No third-party source is
 committed: `build.sh` fetches it into the gitignored `external/`, and the outputs in
 `../results/` are data, not covered by the tools' licenses.
@@ -160,14 +150,6 @@ committed: `build.sh` fetches it into the gitignored `external/`, and the output
   library and map the returned positions to input indices by their float bit patterns.
   Both are given the input scaled so that ρ = 1, because their emptiness tolerance is
   absolute (`rho^2 - 1e-4` in float32).
-- **gruber_reseed**: the same driver linked against a copy of `bpa.cpp` with
-  `gruber_reseed.patch` applied (`build.sh` makes the copy; the upstream binary is
-  untouched). The patch replaces `findSeedTriangle` and wraps the main loop of
-  `reconstruct` in `while (seed = findSeedTriangle(...))`; nothing else changes. The
-  first version of the patch kept upstream's seed probe (every unused point of every
-  cell, all pairs of its 2ρ neighbourhood) and took 34.5 s on the ten-scan bunny, all of
-  it in probes of points under already reconstructed sheets; bounding the pairs to the
-  nearest 100 halved that, and skipping cells with used points brought it to 1.4 s.
 - **schmehla**: OBJ with `v`, `vn` and `p i//i` lines; its output OBJ keeps the input
   vertices in order. Its timer prints whole seconds, so the wall time is used.
 - **giaccari**: `.cgo` (a count, then `x y z` lines; normals are not read); binary STL

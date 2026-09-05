@@ -3,7 +3,7 @@
 
     python run_ext.py TOOL input.noff radius output.off
 
-TOOL is one of digne, digne_par, gruber, gruber_reseed, bpa_rs, schmehla, giaccari. Each tool is
+TOOL is one of digne, digne_par, gruber, bpa_rs, schmehla, giaccari. Each tool is
 converted to and from its own file format here, so that compare.jl sees the contract it
 expects: the output OFF has the input vertices in the input order and 0-based triangles.
 The binaries are built by build.sh into $BPA_EXTERNAL (default compare/external); the
@@ -161,16 +161,6 @@ def run_gruber(P, N, rho, work):
     return read_off_faces(off), t if t is not None else wall
 
 
-def run_gruber_reseed(P, N, rho, work):
-    """The same library patched to seed again after each front is exhausted
-    (gruber_reseed.patch), built by build.sh as gruber_reseed_noff2off."""
-    exe = need(os.path.join(EXT, "bernhardmgruber_bpa", "build", "gruber_reseed_noff2off"))
-    off = temp(os.path.join(work, "gruber_reseed_out.off"))
-    out, wall = run([exe, scaled_noff(P, N, rho, work), "1.0", off])
-    t = grab(out, "time:")
-    return read_off_faces(off), t if t is not None else wall
-
-
 def run_bpa_rs(P, N, rho, work):
     """martinfrances107/bpa_rs (Rust port of Gruber). bpa_rs_noff2off does the same as the
     Gruber driver."""
@@ -238,7 +228,6 @@ TOOLS = {
     "digne": lambda P, N, rho, w: run_digne(P, N, rho, w, False),
     "digne_par": lambda P, N, rho, w: run_digne(P, N, rho, w, True),
     "gruber": run_gruber,
-    "gruber_reseed": run_gruber_reseed,
     "bpa_rs": run_bpa_rs,
     "schmehla": run_schmehla,
     "giaccari": run_giaccari,

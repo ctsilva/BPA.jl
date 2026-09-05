@@ -38,16 +38,6 @@ if [ ! -x bernhardmgruber_bpa/build/gruber_noff2off ]; then
         -o bernhardmgruber_bpa/build/gruber_noff2off "$HERE/gruber_noff2off.cpp" bernhardmgruber_bpa/src/lib/bpa.cpp
 fi
 
-# The same library with the seed search resumed after each front is exhausted, so that it
-# grows one component per seed like the paper (upstream seeds once). The patch is applied to
-# a copy; the upstream binary above is unchanged.
-if [ ! -x bernhardmgruber_bpa/build/gruber_reseed_noff2off ]; then
-    cp bernhardmgruber_bpa/src/lib/bpa.cpp bernhardmgruber_bpa/build/bpa_reseed.cpp
-    patch -p0 -s bernhardmgruber_bpa/build/bpa_reseed.cpp < "$HERE/gruber_reseed.patch"
-    c++ -std=c++20 -O2 -w -DGLM_ENABLE_EXPERIMENTAL -I/opt/homebrew/include -Ibernhardmgruber_bpa/src/lib \
-        -o bernhardmgruber_bpa/build/gruber_reseed_noff2off "$HERE/gruber_noff2off.cpp" bernhardmgruber_bpa/build/bpa_reseed.cpp
-fi
-
 # --- martinfrances107/bpa_rs (MIT) ------------------------------------------------------
 clone martinfrances107/bpa_rs martinfrances107_bpa_rs
 if [ ! -x martinfrances107_bpa_rs/target/release/bpa_rs_noff2off ]; then
@@ -84,6 +74,5 @@ fi
 
 echo "built:"
 ls -l ipol_digne/BallPivoting/build/ballpivoting bernhardmgruber_bpa/build/gruber_noff2off \
-      bernhardmgruber_bpa/build/gruber_reseed_noff2off \
       martinfrances107_bpa_rs/target/release/bpa_rs_noff2off schmehla_ball-pivoting-algorithm/build/BPA \
       LuigiGiaccari_Surface-Reconstruction-Toolbox/build/ballpivoting
