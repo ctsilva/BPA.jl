@@ -127,24 +127,26 @@ function cases()
     plane = synthetic_file("plane40", PointCloud(Pp, Np))
     Pt, Nt = torus(120, 80; jitter = 0.3, rng = Xoshiro(1))
     torus_j = synthetic_file("torus_jitter", PointCloud(Pt, Nt))
-    # unevenly sampled: 1 mm spacing on one half, 2 mm on the other, so that one radius
-    # cannot cover both halves and the multi-radius passes (section 4.6) are exercised
+    # unevenly sampled: 1 mm spacing on one half, 4 mm on the other, so that the small ball
+    # cannot cover the coarse half and the multi-radius passes (section 4.6) are exercised
     h = 0.001
     Pd, Nd = plane_patch(50, 100; spacing = h, jitter = 0.3, rng = Xoshiro(5))
-    Pc, Nc = plane_patch(25, 50; spacing = 2h, jitter = 0.3, rng = Xoshiro(6), origin = (50h, 0.0))
+    Pc, Nc = plane_patch(12, 25; spacing = 4h, jitter = 0.3, rng = Xoshiro(6), origin = (50h, 0.0))
     plane_u = synthetic_file("plane_uneven", PointCloud(vcat(Pd, Pc), vcat(Nd, Nc)))
     r_s = 0.025                                        # sphere radius: 7854 points at 1 mm
-    Ps8, Ns8 = fibonacci_sphere(round(Int, 4π * r_s^2 / h^2); r = r_s)
-    keep = [Ps8[i][3] >= 0 || i % 4 == 0 for i in eachindex(Ps8)]   # every 4th below the equator: 2 mm
-    sphere_u = synthetic_file("sphere_uneven", PointCloud(Ps8[keep], Ns8[keep]))
-    R_t, r_t = 0.02, 0.008                             # torus: 126 x 50 at 1 mm, 63 x 25 at 2 mm
+    Psd, Nsd = fibonacci_sphere(round(Int, 4π * r_s^2 / h^2); r = r_s)
+    Psc, Nsc = fibonacci_sphere(round(Int, 4π * r_s^2 / (4h)^2); r = r_s)   # 491 points at 4 mm
+    upper = [p[2] >= 0 for p in Psd]                   # the hemisphere y >= 0 at 1 mm, the other at 4 mm
+    lower = [p[2] < 0 for p in Psc]
+    sphere_u = synthetic_file("sphere_uneven", PointCloud(vcat(Psd[upper], Psc[lower]), vcat(Nsd[upper], Nsc[lower])))
+    R_t, r_t = 0.02, 0.008                             # torus: 126 x 50 at 1 mm, 32 x 13 at 4 mm
     Ptd, Ntd = torus(126, 50; R = R_t, r = r_t, jitter = 0.3, rng = Xoshiro(3))
-    Ptc, Ntc = torus(63, 25; R = R_t, r = r_t, jitter = 0.3, rng = Xoshiro(4))
-    dense = [p[2] >= 0 for p in Ptd]                   # the half y >= 0 at 1 mm, the other at 2 mm
+    Ptc, Ntc = torus(32, 13; R = R_t, r = r_t, jitter = 0.3, rng = Xoshiro(4))
+    dense = [p[2] >= 0 for p in Ptd]                   # the half y >= 0 at 1 mm, the other at 4 mm
     coarse = [p[2] < 0 for p in Ptc]
     torus_u = synthetic_file("torus_uneven", PointCloud(vcat(Ptd[dense], Ptc[coarse]), vcat(Ntd[dense], Ntc[coarse])))
-    radii_u = [1.5h, 3h]
-    n_plane_u, n_sphere_u, n_torus_u = length(Pd) + length(Pc), count(keep), count(dense) + count(coarse)
+    radii_u = [1.5h, 6h]
+    n_plane_u, n_sphere_u, n_torus_u = length(Pd) + length(Pc), count(upper) + count(lower), count(dense) + count(coarse)
     # from data/ of the package
     torus_file = joinpath(DATA, "torus-120-80.off")
     knot = joinpath(DATA, "knot-300-100.off")
@@ -190,13 +192,13 @@ function cases()
              "the same knot at rho = 0.03, the radius the package recommends: nearly closed, with small holes where the tube almost touches itself.",
              ["-i", knot], 0.03),
         Case("plane_uneven", "uneven",
-             "jittered plane, 50 x 100 points at 1 mm spacing on the left half and 25 x 50 at 2 mm on the right ($n_plane_u points), radii 1.5 mm then 3 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.",
+             "jittered plane, 50 x 100 points at 1 mm spacing on the left half and 12 x 25 at 4 mm on the right ($n_plane_u points), radii 1.5 mm then 6 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.",
              ["-i", plane_u], radii_u),
         Case("sphere_uneven", "uneven",
-             "Fibonacci sphere of radius 25 mm, 1 mm spacing above the equator and every fourth point below it (2 mm; $n_sphere_u points), radii 1.5 mm then 3 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.",
+             "Fibonacci sphere of radius 25 mm, 1 mm spacing for y >= 0 and a 4 mm Fibonacci sampling for y < 0 ($n_sphere_u points), radii 1.5 mm then 6 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.",
              ["-i", sphere_u], radii_u),
         Case("torus_uneven", "uneven",
-             "jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y >= 0 and 63 x 25 at 2 mm for y < 0 ($n_torus_u points), radii 1.5 mm then 3 mm. Expected: closed, chi = 0, every point used.",
+             "jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y >= 0 and 32 x 13 at 4 mm for y < 0 ($n_torus_u points), radii 1.5 mm then 6 mm. Expected: closed, chi = 0, every point used, but for a triangle or two missing on the seam where the passes meet: the large ball's first contact next to the fine mesh is often a vertex already interior to it, and no choice of lattice seed avoids that at 4:1 on a curved tube.",
              ["-i", torus_u], radii_u),
         Case("bun000", "scans",
              "a single Stanford bunny range scan (40256 points, normals from the scan's own triangles), rho = 1.25 mm: real data without overlapping layers. Expected: one open sheet with the scan's outline as boundary.",

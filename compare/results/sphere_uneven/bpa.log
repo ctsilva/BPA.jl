@@ -1,7 +1,7 @@
-input: /Users/csilva/src/BPA.jl/compare/results/sphere_uneven/input.off (4909 points)
-triangles: 9814 in 0.02 s
-points used: 4909 of 4909
-seeds: 1, pivots: 9973, boundary edges: 0
-rejected: no hit 160, normal 0, interior vertex 0, manifold 0
-triangles per pass: [8300, 1514], reactivated edges: [0, 160]
+input: /Users/csilva/src/BPA.jl/compare/results/sphere_uneven/input.off (4172 points)
+triangles: 8340 in 0.01 s
+points used: 4172 of 4172
+seeds: 1, pivots: 8451, boundary edges: 0
+rejected: no hit 112, normal 0, interior vertex 0, manifold 0
+triangles per pass: [7786, 554], reactivated edges: [0, 112]
 wrote /Users/csilva/src/BPA.jl/compare/results/sphere_uneven/bpa.off

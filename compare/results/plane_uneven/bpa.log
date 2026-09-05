@@ -1,7 +1,7 @@
-input: /Users/csilva/src/BPA.jl/compare/results/plane_uneven/input.off (6250 points)
-triangles: 12214 in 0.01 s
-points used: 6250 of 6250
-seeds: 1, pivots: 13189, boundary edges: 284
-rejected: no hit 976, normal 0, interior vertex 0, manifold 0
-triangles per pass: [11982, 232], reactivated edges: [0, 692]
+input: /Users/csilva/src/BPA.jl/compare/results/plane_uneven/input.off (5300 points)
+triangles: 10405 in 0.01 s
+points used: 5300 of 5300
+seeds: 1, pivots: 10874, boundary edges: 193
+rejected: no hit 470, normal 0, interior vertex 0, manifold 0
+triangles per pass: [9771, 634], reactivated edges: [0, 277]
 wrote /Users/csilva/src/BPA.jl/compare/results/plane_uneven/bpa.off

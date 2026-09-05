@@ -1,22 +1,22 @@
-3942 points read
+3362 points read
 Octree with depth 6 created.
-Octree contains 3942 points. The bounding box size is 0.096
-Reading and sorting points in this octree took 0.010801 s.
+Octree contains 3362 points. The bounding box size is 0.096
+Reading and sorting points in this octree took 0.009274 s.
 Octree statistics
-level 5 : 0.096 ; mean number of points: 985.5
-level 4 : 0.048 ; mean number of points: 164.25
-level 3 : 0.024 ; mean number of points: 71.6727
-level 2 : 0.012 ; mean number of points: 15.5197
-level 1 : 0.006 ; mean number of points: 4.5
-level 0 : 0.003 ; mean number of points: 1.72971
-****** Reconstructing with radii 0.0015; 0.003; ******
+level 5 : 0.096 ; mean number of points: 840.5
+level 4 : 0.048 ; mean number of points: 140.083
+level 3 : 0.024 ; mean number of points: 60.0357
+level 2 : 0.012 ; mean number of points: 14.3675
+level 1 : 0.006 ; mean number of points: 5.01043
+level 0 : 0.003 ; mean number of points: 1.93107
+****** Reconstructing with radii 0.0015; 0.006; ******
 single threaded reconstruction
 ***********Ball radius 0.0015 ***********
-***********Ball radius 0.003 ***********
-Reconstructed mesh: 3942 vertices; 7878 facets. 
-18 border edges
-Reconstructing the mesh took 0.03791s.
+***********Ball radius 0.006 ***********
+Reconstructed mesh: 3362 vertices; 6716 facets. 
+24 border edges
+Reconstructing the mesh took 0.043253s.
 Filling the holes... 0 s.
-Final mesh: 3942 vertices; 7878 facets. 
-18 border edges
-digne: 3942 vertices, 7878 triangles, time: 0.038 s
+Final mesh: 3362 vertices; 6716 facets. 
+24 border edges
+digne: 3362 vertices, 6716 triangles, time: 0.043 s

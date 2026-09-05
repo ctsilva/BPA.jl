@@ -1,37 +1,37 @@
-3942 points read
+3362 points read
 Octree with depth 6 created.
-Octree contains 3942 points. The bounding box size is 0.096
-Reading and sorting points in this octree took 0.011053 s.
+Octree contains 3362 points. The bounding box size is 0.096
+Reading and sorting points in this octree took 0.009294 s.
 Octree statistics
-level 5 : 0.096 ; mean number of points: 985.5
-level 4 : 0.048 ; mean number of points: 164.25
-level 3 : 0.024 ; mean number of points: 71.6727
-level 2 : 0.012 ; mean number of points: 15.5197
-level 1 : 0.006 ; mean number of points: 4.5
-level 0 : 0.003 ; mean number of points: 1.72971
-****** Reconstructing with radii 0.0015; 0.003; ******
-Processing depth 3 ; size 0.012 ; dilatation radius 0.0063
-Nodes 0/7 ; Nvertices: 3026 ; Nfacets 5602 ; Front 408.
-Nodes 1/7 ; Nvertices: 3501 ; Nfacets 6558 ; Front 334.
-Nodes 2/7 ; Nvertices: 3713 ; Nfacets 7028 ; Front 249.
-Nodes 3/7 ; Nvertices: 3738 ; Nfacets 7114 ; Front 203.
-Nodes 4/7 ; Nvertices: 3787 ; Nfacets 7231 ; Front 114.
-Nodes 5/7 ; Nvertices: 3817 ; Nfacets 7303 ; Front 66.
-Nodes 6/7 ; Nvertices: 3821 ; Nfacets 7337 ; Front 22.
-Nodes 7/7 ; Nvertices: 3833 ; Nfacets 7360 ; Front 0.
-Nodes 0/7 ; Nvertices: 3897 ; Nfacets 7523 ; Front 12.
-Nodes 1/7 ; Nvertices: 3902 ; Nfacets 7571 ; Front 12.
-Nodes 2/7 ; Nvertices: 3933 ; Nfacets 7679 ; Front 16.
-Nodes 3/7 ; Nvertices: 3933 ; Nfacets 7697 ; Front 14.
-Nodes 4/7 ; Nvertices: 3942 ; Nfacets 7753 ; Front 8.
-Nodes 5/7 ; Nvertices: 3942 ; Nfacets 7779 ; Front 6.
-Nodes 6/7 ; Nvertices: 3942 ; Nfacets 7828 ; Front 1.
-Nodes 7/7 ; Nvertices: 3942 ; Nfacets 7874 ; Front 0.
-Remaining front edges 0
-Reconstructed mesh: 3942 vertices; 7874 facets. 
-503 border edges
-Reconstructing the mesh took 0.021228s.
+level 5 : 0.096 ; mean number of points: 840.5
+level 4 : 0.048 ; mean number of points: 140.083
+level 3 : 0.024 ; mean number of points: 60.0357
+level 2 : 0.012 ; mean number of points: 14.3675
+level 1 : 0.006 ; mean number of points: 5.01043
+level 0 : 0.003 ; mean number of points: 1.93107
+****** Reconstructing with radii 0.0015; 0.006; ******
+Processing depth 4 ; size 0.024 ; dilatation radius 0.0126
+Nodes 0/7 ; Nvertices: 3172 ; Nfacets 6257 ; Front 9.
+Nodes 1/7 ; Nvertices: 3172 ; Nfacets 6257 ; Front 9.
+Nodes 2/7 ; Nvertices: 3172 ; Nfacets 6257 ; Front 9.
+Nodes 3/7 ; Nvertices: 3172 ; Nfacets 6257 ; Front 9.
+Nodes 4/7 ; Nvertices: 3172 ; Nfacets 6259 ; Front 5.
+Nodes 5/7 ; Nvertices: 3172 ; Nfacets 6262 ; Front 0.
+Nodes 6/7 ; Nvertices: 3172 ; Nfacets 6262 ; Front 0.
+Nodes 7/7 ; Nvertices: 3172 ; Nfacets 6262 ; Front 0.
+Nodes 0/7 ; Nvertices: 3172 ; Nfacets 6262 ; Front 0.
+Nodes 1/7 ; Nvertices: 3172 ; Nfacets 6262 ; Front 0.
+Nodes 2/7 ; Nvertices: 3362 ; Nfacets 6652 ; Front 32.
+Nodes 3/7 ; Nvertices: 3362 ; Nfacets 6671 ; Front 32.
+Nodes 4/7 ; Nvertices: 3362 ; Nfacets 6671 ; Front 32.
+Nodes 5/7 ; Nvertices: 3362 ; Nfacets 6671 ; Front 32.
+Nodes 6/7 ; Nvertices: 3362 ; Nfacets 6681 ; Front 32.
+Nodes 7/7 ; Nvertices: 3362 ; Nfacets 6694 ; Front 32.
+Remaining front edges 32
+Reconstructed mesh: 3362 vertices; 6716 facets. 
+155 border edges
+Reconstructing the mesh took 0.033956s.
 Filling the holes... 0 s.
-Final mesh: 3942 vertices; 7874 facets. 
-503 border edges
-digne_par: 3942 vertices, 7874 triangles, time: 0.021 s
+Final mesh: 3362 vertices; 6716 facets. 
+155 border edges
+digne_par: 3362 vertices, 6716 triangles, time: 0.034 s

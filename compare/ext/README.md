@@ -83,12 +83,14 @@ Silicon laptop as the rest of the comparison, one tool at a time. What they show
   no non-empty ball anywhere, the same components on the ten-scan bunny and 103
   against 101 on the dragon, boundary edges within 6 %, and 4.4 s against 6.6 s on the
   dragon.
-- **Several radii** (the `uneven` cases, 1 mm spacing on one half of a plane, a sphere and
-  a torus and 2 mm on the other, radii 1.5 mm then 3 mm). Only BPA.jl, Open3D, Digne and
-  the fork take a radius list; the others show n/a. All four close the sphere and cover
-  the plane as one disk. On the torus BPA.jl and the fork close it with every point used,
-  while Open3D and Digne leave 18 boundary edges along the seam and Digne's parallel mode
-  30: their second pass does not resume everywhere the first one stopped.
+- **Several radii** (the `uneven` cases: 1 mm spacing on one half of a plane, a sphere and
+  a torus and 4 mm on the other, radii 1.5 mm then 6 mm). Only BPA.jl, Open3D, Digne and
+  the fork take a radius list; the others show n/a. All four give the same triangles on
+  the plane (one disk, 9771 from the first pass and 634 from the second) and the sphere
+  (closed, 7786 and 554). On the torus BPA.jl and the fork leave one triangle missing on
+  the seam where the passes meet (3 boundary edges), Open3D and Digne 24: their second
+  pass does not resume everywhere the first one stopped. The report colours each
+  triangle by the pass that built it, from the tool's own run with the first radius alone.
 - **Gruber and bpa_rs as published are as fast as BPA.jl but seed once.** On the synthetic surfaces
   and the four-scan bunny their single front reaches nearly everything and the output
   matches; on the single bunny scan it stops at 1631 triangles and on the dragon at one.

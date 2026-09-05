@@ -141,15 +141,16 @@ Synthetic, with a known answer (generated into `results/inputs/`):
 | `knot_r0.0188` | `data/knot-300-100.off`, 30000 points | 1.5 × estimated spacing, too small | many boundaries: seeding and stopping behaviour |
 | `knot_r0.03` | the same knot | 0.03 | nearly closed; small holes where the tube touches itself |
 
-Unevenly sampled, 1 mm spacing on one half and 2 mm on the other, run with two radii, 1.5 mm
-then 3 mm (group `uneven`): one radius cannot cover both halves, so these check the
-multi-radius passes of section 4.6. Tools that take one radius show n/a.
+Unevenly sampled, 1 mm spacing on one half and 4 mm on the other, run with two radii, 1.5 mm
+then 6 mm (group `uneven`): the small ball cannot cover the coarse half, so these check the
+multi-radius passes of section 4.6. Tools that take one radius show n/a; the report adds a
+row with the triangles each pass built and a rendering coloured by pass.
 
 | case | input | expected |
 |---|---|---|
-| `plane_uneven` | jittered plane, 50 × 100 points at 1 mm beside 25 × 50 at 2 mm | disk, χ = 1, one boundary loop, every point used |
-| `sphere_uneven` | Fibonacci sphere of radius 25 mm, 1 mm above the equator, 2 mm below | closed, χ = 2, every point used |
-| `torus_uneven` | jittered torus (R = 20 mm, r = 8 mm), 1 mm for y ≥ 0, 2 mm for y < 0 | closed, χ = 0, every point used |
+| `plane_uneven` | jittered plane, 50 × 100 points at 1 mm beside 12 × 25 at 4 mm | disk, χ = 1, one boundary loop, every point used |
+| `sphere_uneven` | Fibonacci sphere of radius 25 mm, 1 mm for y ≥ 0, 4 mm for y < 0 | closed, χ = 2, every point used |
+| `torus_uneven` | jittered torus (R = 20 mm, r = 8 mm), 1 mm for y ≥ 0, 4 mm for y < 0 | closed but for a triangle or two on the seam, every point used |
 
 Stanford range scans (normals from each scan's own triangles, moved by its `.xf`):
 

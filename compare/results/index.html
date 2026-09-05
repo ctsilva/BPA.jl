@@ -671,23 +671,23 @@ code{font-size:12px}
 </div>
 </section>
 <section id="plane_uneven"><h2>plane_uneven</h2>
-<p>jittered plane, 50 x 100 points at 1 mm spacing on the left half and 25 x 50 at 2 mm on the right (6250 points), radii 1.5 mm then 3 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/plane_uneven.off`, rho = 0.0015,0.003, 6250 points</code></p>
+<p>jittered plane, 50 x 100 points at 1 mm spacing on the left half and 12 x 25 at 4 mm on the right (5300 points), radii 1.5 mm then 6 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/plane_uneven.off`, rho = 0.0015,0.006, 5300 points</code></p>
 <div class="tables">
 <table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
-<tr><td>triangles</td><td>12214</td><td>12214</td><td>n/a</td><td>12214</td><td>12213</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>12214</td></tr>
-<tr><td>triangles per pass (one radius, then each further one)</td><td>11982 + 232</td><td>11982 + 232</td><td>n/a</td><td>11982 + 232</td><td>11982 + 231</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>11982 + 232</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.032</td><td>n/a</td><td>0.047</td><td>0.023</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.009</td></tr>
-<tr><td>vertices used</td><td>6250</td><td>6250</td><td>n/a</td><td>6250</td><td>6250</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>6250</td></tr>
-<tr><td>boundary edges</td><td>284</td><td>284</td><td>n/a</td><td>284</td><td>287</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>284</td></tr>
-<tr><td>boundary loops</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>2</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
+<tr><td>triangles</td><td>10405</td><td>10405</td><td>n/a</td><td>10405</td><td>10405</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>10405</td></tr>
+<tr><td>triangles per pass (one radius, then each further one)</td><td>9771 + 634</td><td>9771 + 634</td><td>n/a</td><td>9771 + 634</td><td>9771 + 634</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>9771 + 634</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.032</td><td>n/a</td><td>0.058</td><td>0.033</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
+<tr><td>vertices used</td><td>5300</td><td>5300</td><td>n/a</td><td>5300</td><td>5300</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>5300</td></tr>
+<tr><td>boundary edges</td><td>193</td><td>193</td><td>n/a</td><td>193</td><td>193</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>193</td></tr>
+<tr><td>boundary loops</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
 <tr><td>components</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
-<tr><td>largest component (triangles)</td><td>12214</td><td>12214</td><td>n/a</td><td>12214</td><td>12213</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>12214</td></tr>
-<tr><td>Euler characteristic</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
+<tr><td>largest component (triangles)</td><td>10405</td><td>10405</td><td>n/a</td><td>10405</td><td>10405</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>10405</td></tr>
+<tr><td>Euler characteristic</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
 <tr><td>orientable</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>vertex-manifold</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>duplicate triangles</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
-<tr><td>valid</td><td>12214</td><td>12214</td><td>n/a</td><td>12214</td><td>12213</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>12214</td></tr>
+<tr><td>valid</td><td>10405</td><td>10405</td><td>n/a</td><td>10405</td><td>10405</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>10405</td></tr>
 <tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>ball_not_empty</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
@@ -699,10 +699,10 @@ code{font-size:12px}
 </tbody></table>
 <div><p>triangle sets against BPA.jl</p>
 <table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
-<tr><td>Open3D</td><td>12214</td><td>12214</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>Digne</td><td>12214</td><td>12214</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>Digne -p</td><td>12213</td><td>12213</td><td>1</td><td>0</td><td>0/0/0/1</td><td>0/0/0/0</td></tr>
-<tr><td>bpa fork</td><td>12214</td><td>12214</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Open3D</td><td>10405</td><td>10405</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Digne</td><td>10405</td><td>10405</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Digne -p</td><td>10405</td><td>10405</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>bpa fork</td><td>10405</td><td>10405</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 </tbody></table>
 </div></div>
 <p class="kind">shaded, boundary edges in red (view 30.0°)</p><div class="grid">
@@ -744,7 +744,7 @@ code{font-size:12px}
 <figure><a href="plane_uneven/render/giaccari_signed.ppm"><img src="plane_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
 <figure><a href="plane_uneven/render/bpafork_signed.png"><img src="plane_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
 </div>
-<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 (view 30.0°)</p><div class="grid">
+<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.006 (view 30.0°)</p><div class="grid">
 <figure><a href="plane_uneven/render/bpa_passes.png"><img src="plane_uneven/render/bpa_passes.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
 <figure><a href="plane_uneven/render/open3d_passes.png"><img src="plane_uneven/render/open3d_passes.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
 <figure><a href="plane_uneven/render/meshlab_passes.ppm"><img src="plane_uneven/render/meshlab_passes.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
@@ -759,23 +759,23 @@ code{font-size:12px}
 </div>
 </section>
 <section id="sphere_uneven"><h2>sphere_uneven</h2>
-<p>Fibonacci sphere of radius 25 mm, 1 mm spacing above the equator and every fourth point below it (2 mm; 4909 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/sphere_uneven.off`, rho = 0.0015,0.003, 4909 points</code></p>
+<p>Fibonacci sphere of radius 25 mm, 1 mm spacing for y &gt;= 0 and a 4 mm Fibonacci sampling for y &lt; 0 (4172 points), radii 1.5 mm then 6 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/sphere_uneven.off`, rho = 0.0015,0.006, 4172 points</code></p>
 <div class="tables">
 <table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
-<tr><td>triangles</td><td>9814</td><td>9814</td><td>n/a</td><td>9814</td><td>9814</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>9814</td></tr>
-<tr><td>triangles per pass (one radius, then each further one)</td><td>8300 + 1514</td><td>8300 + 1514</td><td>n/a</td><td>8300 + 1514</td><td>8300 + 1514</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>8300 + 1514</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.02</td><td>0.031</td><td>n/a</td><td>0.048</td><td>0.03</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.01</td></tr>
-<tr><td>vertices used</td><td>4909</td><td>4909</td><td>n/a</td><td>4909</td><td>4909</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>4909</td></tr>
+<tr><td>triangles</td><td>8340</td><td>8340</td><td>n/a</td><td>8340</td><td>8340</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>8340</td></tr>
+<tr><td>triangles per pass (one radius, then each further one)</td><td>7786 + 554</td><td>7786 + 554</td><td>n/a</td><td>7786 + 554</td><td>7786 + 554</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7786 + 554</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.028</td><td>n/a</td><td>0.049</td><td>0.032</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.009</td></tr>
+<tr><td>vertices used</td><td>4172</td><td>4172</td><td>n/a</td><td>4172</td><td>4172</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>4172</td></tr>
 <tr><td>boundary edges</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>boundary loops</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>components</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
-<tr><td>largest component (triangles)</td><td>9814</td><td>9814</td><td>n/a</td><td>9814</td><td>9814</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>9814</td></tr>
+<tr><td>largest component (triangles)</td><td>8340</td><td>8340</td><td>n/a</td><td>8340</td><td>8340</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>8340</td></tr>
 <tr><td>Euler characteristic</td><td>2</td><td>2</td><td>n/a</td><td>2</td><td>2</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>2</td></tr>
 <tr><td>orientable</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>vertex-manifold</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>duplicate triangles</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
-<tr><td>valid</td><td>9814</td><td>9814</td><td>n/a</td><td>9814</td><td>9814</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>9814</td></tr>
+<tr><td>valid</td><td>8340</td><td>8340</td><td>n/a</td><td>8340</td><td>8340</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>8340</td></tr>
 <tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>ball_not_empty</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
@@ -787,10 +787,10 @@ code{font-size:12px}
 </tbody></table>
 <div><p>triangle sets against BPA.jl</p>
 <table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
-<tr><td>Open3D</td><td>9814</td><td>9814</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>Digne</td><td>9814</td><td>9814</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>Digne -p</td><td>9814</td><td>9814</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
-<tr><td>bpa fork</td><td>9814</td><td>9814</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Open3D</td><td>8340</td><td>8340</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Digne</td><td>8340</td><td>8340</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Digne -p</td><td>8340</td><td>8340</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>bpa fork</td><td>8340</td><td>8340</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 </tbody></table>
 </div></div>
 <p class="kind">shaded, boundary edges in red (view 30.0°)</p><div class="grid">
@@ -832,7 +832,7 @@ code{font-size:12px}
 <figure><a href="sphere_uneven/render/giaccari_signed.ppm"><img src="sphere_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
 <figure><a href="sphere_uneven/render/bpafork_signed.png"><img src="sphere_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
 </div>
-<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 (view 30.0°)</p><div class="grid">
+<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.006 (view 30.0°)</p><div class="grid">
 <figure><a href="sphere_uneven/render/bpa_passes.png"><img src="sphere_uneven/render/bpa_passes.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
 <figure><a href="sphere_uneven/render/open3d_passes.png"><img src="sphere_uneven/render/open3d_passes.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
 <figure><a href="sphere_uneven/render/meshlab_passes.ppm"><img src="sphere_uneven/render/meshlab_passes.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
@@ -847,38 +847,38 @@ code{font-size:12px}
 </div>
 </section>
 <section id="torus_uneven"><h2>torus_uneven</h2>
-<p>jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y &gt;= 0 and 63 x 25 at 2 mm for y &lt; 0 (3942 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 0, every point used.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_uneven.off`, rho = 0.0015,0.003, 3942 points</code></p>
+<p>jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y &gt;= 0 and 32 x 13 at 4 mm for y &lt; 0 (3362 points), radii 1.5 mm then 6 mm. Expected: closed, chi = 0, every point used, but for a triangle or two missing on the seam where the passes meet: the large ball's first contact next to the fine mesh is often a vertex already interior to it, and no choice of lattice seed avoids that at 4:1 on a curved tube.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_uneven.off`, rho = 0.0015,0.006, 3362 points</code></p>
 <div class="tables">
 <table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
-<tr><td>triangles</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
-<tr><td>triangles per pass (one radius, then each further one)</td><td>7364 + 520</td><td>7360 + 518</td><td>n/a</td><td>7362 + 516</td><td>7360 + 514</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7360 + 524</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.025</td><td>n/a</td><td>0.038</td><td>0.021</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
-<tr><td>vertices used</td><td>3942</td><td>3942</td><td>n/a</td><td>3942</td><td>3942</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>3942</td></tr>
-<tr><td>boundary edges</td><td>0</td><td>18</td><td>n/a</td><td>18</td><td>30</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
-<tr><td>boundary loops</td><td>0</td><td>2</td><td>n/a</td><td>2</td><td>6</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>triangles</td><td>6723</td><td>6716</td><td>n/a</td><td>6716</td><td>6716</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>6723</td></tr>
+<tr><td>triangles per pass (one radius, then each further one)</td><td>6262 + 461</td><td>6262 + 454</td><td>n/a</td><td>6262 + 454</td><td>6262 + 454</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>6262 + 461</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.027</td><td>n/a</td><td>0.043</td><td>0.034</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
+<tr><td>vertices used</td><td>3362</td><td>3362</td><td>n/a</td><td>3362</td><td>3362</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>3362</td></tr>
+<tr><td>boundary edges</td><td>3</td><td>24</td><td>n/a</td><td>24</td><td>24</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>3</td></tr>
+<tr><td>boundary loops</td><td>1</td><td>7</td><td>n/a</td><td>7</td><td>7</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
 <tr><td>components</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
-<tr><td>largest component (triangles)</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
-<tr><td>Euler characteristic</td><td>0</td><td>-6</td><td>n/a</td><td>-6</td><td>-10</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>largest component (triangles)</td><td>6723</td><td>6716</td><td>n/a</td><td>6716</td><td>6716</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>6723</td></tr>
+<tr><td>Euler characteristic</td><td>-1</td><td>-8</td><td>n/a</td><td>-8</td><td>-8</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>-1</td></tr>
 <tr><td>orientable</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>vertex-manifold</td><td>yes</td><td>no</td><td>n/a</td><td>no</td><td>no</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
 <tr><td>duplicate triangles</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
-<tr><td>valid</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
+<tr><td>valid</td><td>6723</td><td>6716</td><td>n/a</td><td>6716</td><td>6716</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>6723</td></tr>
 <tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>ball_not_empty</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>degenerate</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>n/a</td><td>0.00e+00</td><td>0.00e+00</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.00e+00</td></tr>
-<tr><td>render: odd-parity pixels (holes seen through)</td><td>0.00%</td><td>0.50%</td><td>n/a</td><td>0.50%</td><td>0.81%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.00%</td></tr>
-<tr><td>render: pixels with front ≠ back</td><td>0.00%</td><td>0.50%</td><td>n/a</td><td>0.50%</td><td>0.81%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.00%</td></tr>
+<tr><td>render: odd-parity pixels (holes seen through)</td><td>0.03%</td><td>0.53%</td><td>n/a</td><td>0.53%</td><td>0.53%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.03%</td></tr>
+<tr><td>render: pixels with front ≠ back</td><td>0.03%</td><td>0.53%</td><td>n/a</td><td>0.53%</td><td>0.53%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.03%</td></tr>
 </tbody></table>
 <div><p>triangle sets against BPA.jl</p>
 <table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
-<tr><td>Open3D</td><td>7878</td><td>7878</td><td>6</td><td>0</td><td>0/0/0/6</td><td>0/0/0/0</td></tr>
-<tr><td>Digne</td><td>7878</td><td>7878</td><td>6</td><td>0</td><td>0/0/0/6</td><td>0/0/0/0</td></tr>
-<tr><td>Digne -p</td><td>7874</td><td>7874</td><td>10</td><td>0</td><td>0/0/0/10</td><td>0/0/0/0</td></tr>
-<tr><td>bpa fork</td><td>7884</td><td>7884</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+<tr><td>Open3D</td><td>6716</td><td>6716</td><td>7</td><td>0</td><td>0/0/0/7</td><td>0/0/0/0</td></tr>
+<tr><td>Digne</td><td>6716</td><td>6716</td><td>7</td><td>0</td><td>0/0/0/7</td><td>0/0/0/0</td></tr>
+<tr><td>Digne -p</td><td>6716</td><td>6716</td><td>7</td><td>0</td><td>0/0/0/7</td><td>0/0/0/0</td></tr>
+<tr><td>bpa fork</td><td>6723</td><td>6723</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
 </tbody></table>
 </div></div>
 <p class="kind">shaded, boundary edges in red (view 30.0°)</p><div class="grid">
@@ -920,7 +920,7 @@ code{font-size:12px}
 <figure><a href="torus_uneven/render/giaccari_signed.ppm"><img src="torus_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
 <figure><a href="torus_uneven/render/bpafork_signed.png"><img src="torus_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
 </div>
-<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 (view 30.0°)</p><div class="grid">
+<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.006 (view 30.0°)</p><div class="grid">
 <figure><a href="torus_uneven/render/bpa_passes.png"><img src="torus_uneven/render/bpa_passes.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
 <figure><a href="torus_uneven/render/open3d_passes.png"><img src="torus_uneven/render/open3d_passes.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
 <figure><a href="torus_uneven/render/meshlab_passes.ppm"><img src="torus_uneven/render/meshlab_passes.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
