@@ -615,10 +615,21 @@ function write_case_report(c::Case, cloud, an, diffs, times, rstats)
         println(io, "triangle sets against ", ref, ":\n")
         md_table(io, vcat([""], diff_header(ref)), drows)
         if !NO_RENDER[]
+            # figure grids in HTML, which GitHub renders inside Markdown at a readable size,
+            # rather than a table of thumbnails: four per row, the tool's name under each
             println(io, "renderings (`", c.name, "/render/`, view $(c.angle)°):\n")
-            imgs = [["![](" * image(c, s, suffix) * ")" for s in stems()] for (suffix, _) in image_kinds(c)]
-            md_table(io, vcat([""], names()), [vcat([label], row) for ((_, label), row) in zip(image_kinds(c), imgs)])
-            isempty(c.scan_list) || println(io, "input scans: ![](", image(c, "input", ""), ")\n")
+            shown = [t for (t, a) in zip(TOOLS[], an) if a !== nothing]
+            for (suffix, label) in image_kinds(c)
+                println(io, "**", label, "**\n\n<table>")
+                for row in Iterators.partition(shown, 4)
+                    cells = ("<td align=\"center\"><a href=\"" * image(c, t.stem, suffix) * "\"><img src=\"" * image(c, t.stem, suffix) *
+                             "\" width=\"260\"></a><br><sub>" * html_escape(t.name) * "</sub></td>" for t in row)
+                    println(io, "<tr>", join(cells), "</tr>")
+                end
+                println(io, "</table>\n")
+            end
+            isempty(c.scan_list) || println(io, "input scans, with their boundaries:\n\n<a href=\"", image(c, "input", ""), "\"><img src=\"",
+                                            image(c, "input", ""), "\" width=\"260\"></a>\n")
         end
     end
     open(joinpath(dir, "report.html"), "w") do io

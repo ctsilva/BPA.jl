@@ -41,11 +41,38 @@ triangle sets against BPA.jl:
 
 renderings (`plane_uneven/render/`, view 30.0°):
 
-|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | bpa_rs | Schmehla | Giaccari | Extended Gruber |
-|---|---|---|---|---|---|---|---|---|---|---|
-| shaded, boundary edges in red | ![](plane_uneven/render/bpa.png) | ![](plane_uneven/render/open3d.png) | ![](plane_uneven/render/meshlab.ppm) | ![](plane_uneven/render/digne.png) | ![](plane_uneven/render/digne_par.png) | ![](plane_uneven/render/gruber.ppm) | ![](plane_uneven/render/bpa_rs.ppm) | ![](plane_uneven/render/schmehla.ppm) | ![](plane_uneven/render/giaccari.ppm) | ![](plane_uneven/render/gruber_ext.png) |
-| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](plane_uneven/render/bpa_depth.png) | ![](plane_uneven/render/open3d_depth.png) | ![](plane_uneven/render/meshlab_depth.ppm) | ![](plane_uneven/render/digne_depth.png) | ![](plane_uneven/render/digne_par_depth.png) | ![](plane_uneven/render/gruber_depth.ppm) | ![](plane_uneven/render/bpa_rs_depth.ppm) | ![](plane_uneven/render/schmehla_depth.ppm) | ![](plane_uneven/render/giaccari_depth.ppm) | ![](plane_uneven/render/gruber_ext_depth.png) |
-| front-facing minus back-facing: grey 0, blue +, red − | ![](plane_uneven/render/bpa_signed.png) | ![](plane_uneven/render/open3d_signed.png) | ![](plane_uneven/render/meshlab_signed.ppm) | ![](plane_uneven/render/digne_signed.png) | ![](plane_uneven/render/digne_par_signed.png) | ![](plane_uneven/render/gruber_signed.ppm) | ![](plane_uneven/render/bpa_rs_signed.ppm) | ![](plane_uneven/render/schmehla_signed.ppm) | ![](plane_uneven/render/giaccari_signed.ppm) | ![](plane_uneven/render/gruber_ext_signed.png) |
-| coloured by the pass that built the triangle: blue rho = 0.0015, green 0.006 | ![](plane_uneven/render/bpa_passes.png) | ![](plane_uneven/render/open3d_passes.png) | ![](plane_uneven/render/meshlab_passes.ppm) | ![](plane_uneven/render/digne_passes.png) | ![](plane_uneven/render/digne_par_passes.png) | ![](plane_uneven/render/gruber_passes.ppm) | ![](plane_uneven/render/bpa_rs_passes.ppm) | ![](plane_uneven/render/schmehla_passes.ppm) | ![](plane_uneven/render/giaccari_passes.ppm) | ![](plane_uneven/render/gruber_ext_passes.png) |
-| the same, with every triangle edge drawn | ![](plane_uneven/render/bpa_wire.png) | ![](plane_uneven/render/open3d_wire.png) | ![](plane_uneven/render/meshlab_wire.ppm) | ![](plane_uneven/render/digne_wire.png) | ![](plane_uneven/render/digne_par_wire.png) | ![](plane_uneven/render/gruber_wire.ppm) | ![](plane_uneven/render/bpa_rs_wire.ppm) | ![](plane_uneven/render/schmehla_wire.ppm) | ![](plane_uneven/render/giaccari_wire.ppm) | ![](plane_uneven/render/gruber_ext_wire.png) |
+**shaded, boundary edges in red**
+
+<table>
+<tr><td align="center"><a href="plane_uneven/render/bpa.png"><img src="plane_uneven/render/bpa.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane_uneven/render/open3d.png"><img src="plane_uneven/render/open3d.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane_uneven/render/digne.png"><img src="plane_uneven/render/digne.png" width="260"></a><br><sub>Digne</sub></td><td align="center"><a href="plane_uneven/render/digne_par.png"><img src="plane_uneven/render/digne_par.png" width="260"></a><br><sub>Digne -p</sub></td></tr>
+<tr><td align="center"><a href="plane_uneven/render/gruber_ext.png"><img src="plane_uneven/render/gruber_ext.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**triangles behind each pixel: warm = odd (a hole is seen through), cool = even**
+
+<table>
+<tr><td align="center"><a href="plane_uneven/render/bpa_depth.png"><img src="plane_uneven/render/bpa_depth.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane_uneven/render/open3d_depth.png"><img src="plane_uneven/render/open3d_depth.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane_uneven/render/digne_depth.png"><img src="plane_uneven/render/digne_depth.png" width="260"></a><br><sub>Digne</sub></td><td align="center"><a href="plane_uneven/render/digne_par_depth.png"><img src="plane_uneven/render/digne_par_depth.png" width="260"></a><br><sub>Digne -p</sub></td></tr>
+<tr><td align="center"><a href="plane_uneven/render/gruber_ext_depth.png"><img src="plane_uneven/render/gruber_ext_depth.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**front-facing minus back-facing: grey 0, blue +, red −**
+
+<table>
+<tr><td align="center"><a href="plane_uneven/render/bpa_signed.png"><img src="plane_uneven/render/bpa_signed.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane_uneven/render/open3d_signed.png"><img src="plane_uneven/render/open3d_signed.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane_uneven/render/digne_signed.png"><img src="plane_uneven/render/digne_signed.png" width="260"></a><br><sub>Digne</sub></td><td align="center"><a href="plane_uneven/render/digne_par_signed.png"><img src="plane_uneven/render/digne_par_signed.png" width="260"></a><br><sub>Digne -p</sub></td></tr>
+<tr><td align="center"><a href="plane_uneven/render/gruber_ext_signed.png"><img src="plane_uneven/render/gruber_ext_signed.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**coloured by the pass that built the triangle: blue rho = 0.0015, green 0.006**
+
+<table>
+<tr><td align="center"><a href="plane_uneven/render/bpa_passes.png"><img src="plane_uneven/render/bpa_passes.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane_uneven/render/open3d_passes.png"><img src="plane_uneven/render/open3d_passes.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane_uneven/render/digne_passes.png"><img src="plane_uneven/render/digne_passes.png" width="260"></a><br><sub>Digne</sub></td><td align="center"><a href="plane_uneven/render/digne_par_passes.png"><img src="plane_uneven/render/digne_par_passes.png" width="260"></a><br><sub>Digne -p</sub></td></tr>
+<tr><td align="center"><a href="plane_uneven/render/gruber_ext_passes.png"><img src="plane_uneven/render/gruber_ext_passes.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**the same, with every triangle edge drawn**
+
+<table>
+<tr><td align="center"><a href="plane_uneven/render/bpa_wire.png"><img src="plane_uneven/render/bpa_wire.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane_uneven/render/open3d_wire.png"><img src="plane_uneven/render/open3d_wire.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane_uneven/render/digne_wire.png"><img src="plane_uneven/render/digne_wire.png" width="260"></a><br><sub>Digne</sub></td><td align="center"><a href="plane_uneven/render/digne_par_wire.png"><img src="plane_uneven/render/digne_par_wire.png" width="260"></a><br><sub>Digne -p</sub></td></tr>
+<tr><td align="center"><a href="plane_uneven/render/gruber_ext_wire.png"><img src="plane_uneven/render/gruber_ext_wire.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
 

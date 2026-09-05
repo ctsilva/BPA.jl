@@ -45,11 +45,31 @@ triangle sets against BPA.jl:
 
 renderings (`bunny10_r0.00125/render/`, view 30.0°):
 
-|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | bpa_rs | Schmehla | Giaccari | Extended Gruber |
-|---|---|---|---|---|---|---|---|---|---|---|
-| shaded, boundary edges in red | ![](bunny10_r0.00125/render/bpa.png) | ![](bunny10_r0.00125/render/open3d.png) | ![](bunny10_r0.00125/render/meshlab.png) | ![](bunny10_r0.00125/render/digne.png) | ![](bunny10_r0.00125/render/digne_par.png) | ![](bunny10_r0.00125/render/gruber.png) | ![](bunny10_r0.00125/render/bpa_rs.png) | ![](bunny10_r0.00125/render/schmehla.png) | ![](bunny10_r0.00125/render/giaccari.png) | ![](bunny10_r0.00125/render/gruber_ext.png) |
-| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](bunny10_r0.00125/render/bpa_depth.png) | ![](bunny10_r0.00125/render/open3d_depth.png) | ![](bunny10_r0.00125/render/meshlab_depth.png) | ![](bunny10_r0.00125/render/digne_depth.png) | ![](bunny10_r0.00125/render/digne_par_depth.png) | ![](bunny10_r0.00125/render/gruber_depth.png) | ![](bunny10_r0.00125/render/bpa_rs_depth.png) | ![](bunny10_r0.00125/render/schmehla_depth.png) | ![](bunny10_r0.00125/render/giaccari_depth.png) | ![](bunny10_r0.00125/render/gruber_ext_depth.png) |
-| front-facing minus back-facing: grey 0, blue +, red − | ![](bunny10_r0.00125/render/bpa_signed.png) | ![](bunny10_r0.00125/render/open3d_signed.png) | ![](bunny10_r0.00125/render/meshlab_signed.png) | ![](bunny10_r0.00125/render/digne_signed.png) | ![](bunny10_r0.00125/render/digne_par_signed.png) | ![](bunny10_r0.00125/render/gruber_signed.png) | ![](bunny10_r0.00125/render/bpa_rs_signed.png) | ![](bunny10_r0.00125/render/schmehla_signed.png) | ![](bunny10_r0.00125/render/giaccari_signed.png) | ![](bunny10_r0.00125/render/gruber_ext_signed.png) |
+**shaded, boundary edges in red**
 
-input scans: ![](bunny10_r0.00125/render/input.png)
+<table>
+<tr><td align="center"><a href="bunny10_r0.00125/render/bpa.png"><img src="bunny10_r0.00125/render/bpa.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="bunny10_r0.00125/render/open3d.png"><img src="bunny10_r0.00125/render/open3d.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="bunny10_r0.00125/render/meshlab.png"><img src="bunny10_r0.00125/render/meshlab.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="bunny10_r0.00125/render/digne.png"><img src="bunny10_r0.00125/render/digne.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="bunny10_r0.00125/render/digne_par.png"><img src="bunny10_r0.00125/render/digne_par.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="bunny10_r0.00125/render/gruber.png"><img src="bunny10_r0.00125/render/gruber.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="bunny10_r0.00125/render/bpa_rs.png"><img src="bunny10_r0.00125/render/bpa_rs.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="bunny10_r0.00125/render/schmehla.png"><img src="bunny10_r0.00125/render/schmehla.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="bunny10_r0.00125/render/giaccari.png"><img src="bunny10_r0.00125/render/giaccari.png" width="260"></a><br><sub>Giaccari</sub></td><td align="center"><a href="bunny10_r0.00125/render/gruber_ext.png"><img src="bunny10_r0.00125/render/gruber_ext.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**triangles behind each pixel: warm = odd (a hole is seen through), cool = even**
+
+<table>
+<tr><td align="center"><a href="bunny10_r0.00125/render/bpa_depth.png"><img src="bunny10_r0.00125/render/bpa_depth.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="bunny10_r0.00125/render/open3d_depth.png"><img src="bunny10_r0.00125/render/open3d_depth.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="bunny10_r0.00125/render/meshlab_depth.png"><img src="bunny10_r0.00125/render/meshlab_depth.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="bunny10_r0.00125/render/digne_depth.png"><img src="bunny10_r0.00125/render/digne_depth.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="bunny10_r0.00125/render/digne_par_depth.png"><img src="bunny10_r0.00125/render/digne_par_depth.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="bunny10_r0.00125/render/gruber_depth.png"><img src="bunny10_r0.00125/render/gruber_depth.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="bunny10_r0.00125/render/bpa_rs_depth.png"><img src="bunny10_r0.00125/render/bpa_rs_depth.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="bunny10_r0.00125/render/schmehla_depth.png"><img src="bunny10_r0.00125/render/schmehla_depth.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="bunny10_r0.00125/render/giaccari_depth.png"><img src="bunny10_r0.00125/render/giaccari_depth.png" width="260"></a><br><sub>Giaccari</sub></td><td align="center"><a href="bunny10_r0.00125/render/gruber_ext_depth.png"><img src="bunny10_r0.00125/render/gruber_ext_depth.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**front-facing minus back-facing: grey 0, blue +, red −**
+
+<table>
+<tr><td align="center"><a href="bunny10_r0.00125/render/bpa_signed.png"><img src="bunny10_r0.00125/render/bpa_signed.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="bunny10_r0.00125/render/open3d_signed.png"><img src="bunny10_r0.00125/render/open3d_signed.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="bunny10_r0.00125/render/meshlab_signed.png"><img src="bunny10_r0.00125/render/meshlab_signed.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="bunny10_r0.00125/render/digne_signed.png"><img src="bunny10_r0.00125/render/digne_signed.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="bunny10_r0.00125/render/digne_par_signed.png"><img src="bunny10_r0.00125/render/digne_par_signed.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="bunny10_r0.00125/render/gruber_signed.png"><img src="bunny10_r0.00125/render/gruber_signed.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="bunny10_r0.00125/render/bpa_rs_signed.png"><img src="bunny10_r0.00125/render/bpa_rs_signed.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="bunny10_r0.00125/render/schmehla_signed.png"><img src="bunny10_r0.00125/render/schmehla_signed.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="bunny10_r0.00125/render/giaccari_signed.png"><img src="bunny10_r0.00125/render/giaccari_signed.png" width="260"></a><br><sub>Giaccari</sub></td><td align="center"><a href="bunny10_r0.00125/render/gruber_ext_signed.png"><img src="bunny10_r0.00125/render/gruber_ext_signed.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+input scans, with their boundaries:
+
+<a href="bunny10_r0.00125/render/input.png"><img src="bunny10_r0.00125/render/input.png" width="260"></a>
 

@@ -44,9 +44,27 @@ triangle sets against BPA.jl:
 
 renderings (`plane40/render/`, view 20.0°):
 
-|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | bpa_rs | Schmehla | Giaccari | Extended Gruber |
-|---|---|---|---|---|---|---|---|---|---|---|
-| shaded, boundary edges in red | ![](plane40/render/bpa.png) | ![](plane40/render/open3d.png) | ![](plane40/render/meshlab.png) | ![](plane40/render/digne.png) | ![](plane40/render/digne_par.png) | ![](plane40/render/gruber.png) | ![](plane40/render/bpa_rs.png) | ![](plane40/render/schmehla.png) | ![](plane40/render/giaccari.ppm) | ![](plane40/render/gruber_ext.png) |
-| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](plane40/render/bpa_depth.png) | ![](plane40/render/open3d_depth.png) | ![](plane40/render/meshlab_depth.png) | ![](plane40/render/digne_depth.png) | ![](plane40/render/digne_par_depth.png) | ![](plane40/render/gruber_depth.png) | ![](plane40/render/bpa_rs_depth.png) | ![](plane40/render/schmehla_depth.png) | ![](plane40/render/giaccari_depth.ppm) | ![](plane40/render/gruber_ext_depth.png) |
-| front-facing minus back-facing: grey 0, blue +, red − | ![](plane40/render/bpa_signed.png) | ![](plane40/render/open3d_signed.png) | ![](plane40/render/meshlab_signed.png) | ![](plane40/render/digne_signed.png) | ![](plane40/render/digne_par_signed.png) | ![](plane40/render/gruber_signed.png) | ![](plane40/render/bpa_rs_signed.png) | ![](plane40/render/schmehla_signed.png) | ![](plane40/render/giaccari_signed.ppm) | ![](plane40/render/gruber_ext_signed.png) |
+**shaded, boundary edges in red**
+
+<table>
+<tr><td align="center"><a href="plane40/render/bpa.png"><img src="plane40/render/bpa.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane40/render/open3d.png"><img src="plane40/render/open3d.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane40/render/meshlab.png"><img src="plane40/render/meshlab.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="plane40/render/digne.png"><img src="plane40/render/digne.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="plane40/render/digne_par.png"><img src="plane40/render/digne_par.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="plane40/render/gruber.png"><img src="plane40/render/gruber.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="plane40/render/bpa_rs.png"><img src="plane40/render/bpa_rs.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="plane40/render/schmehla.png"><img src="plane40/render/schmehla.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="plane40/render/gruber_ext.png"><img src="plane40/render/gruber_ext.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**triangles behind each pixel: warm = odd (a hole is seen through), cool = even**
+
+<table>
+<tr><td align="center"><a href="plane40/render/bpa_depth.png"><img src="plane40/render/bpa_depth.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane40/render/open3d_depth.png"><img src="plane40/render/open3d_depth.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane40/render/meshlab_depth.png"><img src="plane40/render/meshlab_depth.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="plane40/render/digne_depth.png"><img src="plane40/render/digne_depth.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="plane40/render/digne_par_depth.png"><img src="plane40/render/digne_par_depth.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="plane40/render/gruber_depth.png"><img src="plane40/render/gruber_depth.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="plane40/render/bpa_rs_depth.png"><img src="plane40/render/bpa_rs_depth.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="plane40/render/schmehla_depth.png"><img src="plane40/render/schmehla_depth.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="plane40/render/gruber_ext_depth.png"><img src="plane40/render/gruber_ext_depth.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**front-facing minus back-facing: grey 0, blue +, red −**
+
+<table>
+<tr><td align="center"><a href="plane40/render/bpa_signed.png"><img src="plane40/render/bpa_signed.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="plane40/render/open3d_signed.png"><img src="plane40/render/open3d_signed.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="plane40/render/meshlab_signed.png"><img src="plane40/render/meshlab_signed.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="plane40/render/digne_signed.png"><img src="plane40/render/digne_signed.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="plane40/render/digne_par_signed.png"><img src="plane40/render/digne_par_signed.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="plane40/render/gruber_signed.png"><img src="plane40/render/gruber_signed.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="plane40/render/bpa_rs_signed.png"><img src="plane40/render/bpa_rs_signed.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="plane40/render/schmehla_signed.png"><img src="plane40/render/schmehla_signed.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="plane40/render/gruber_ext_signed.png"><img src="plane40/render/gruber_ext_signed.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
 

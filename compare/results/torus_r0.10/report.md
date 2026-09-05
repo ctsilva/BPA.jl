@@ -25,7 +25,7 @@ input: `-i /Users/csilva/src/BPA.jl/data/torus-120-80.off`, rho = 0.1, 9600 poin
 | ball_not_empty | 0 | 0 | 9600 | 0 | 0 | 0 | 0 | n/a | 2 | 0 |
 | circumradius_too_large | 0 | 0 | 0 | 0 | 0 | 0 | 0 | n/a | 2 | 0 |
 | degenerate | 0 | 0 | 0 | 0 | 0 | 0 | 0 | n/a | 0 | 0 |
-| deepest intrusion / rho | 5.51e-08 | 0.00e+00 | 2.71e-02 | 0.00e+00 | 0.00e+00 | 5.51e-06 | 5.51e-06 | n/a | 2.71e-02 | 5.28e-08 |
+| deepest intrusion / rho | 0.00e+00 | 0.00e+00 | 2.71e-02 | 0.00e+00 | 0.00e+00 | 0.00e+00 | 0.00e+00 | n/a | 2.71e-02 | 0.00e+00 |
 | render: odd-parity pixels (holes seen through) | 0.00% | 0.00% | 0.00% | 0.00% | 0.00% | 1.37% | 0.69% | n/a | 0.00% | 0.00% |
 | render: pixels with front ≠ back | 0.00% | 0.00% | 0.00% | 0.00% | 0.00% | 1.37% | 0.69% | n/a | 0.00% | 0.00% |
 
@@ -44,9 +44,27 @@ triangle sets against BPA.jl:
 
 renderings (`torus_r0.10/render/`, view 40.0°):
 
-|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | bpa_rs | Schmehla | Giaccari | Extended Gruber |
-|---|---|---|---|---|---|---|---|---|---|---|
-| shaded, boundary edges in red | ![](torus_r0.10/render/bpa.png) | ![](torus_r0.10/render/open3d.png) | ![](torus_r0.10/render/meshlab.png) | ![](torus_r0.10/render/digne.png) | ![](torus_r0.10/render/digne_par.png) | ![](torus_r0.10/render/gruber.png) | ![](torus_r0.10/render/bpa_rs.png) | ![](torus_r0.10/render/schmehla.ppm) | ![](torus_r0.10/render/giaccari.png) | ![](torus_r0.10/render/gruber_ext.png) |
-| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](torus_r0.10/render/bpa_depth.png) | ![](torus_r0.10/render/open3d_depth.png) | ![](torus_r0.10/render/meshlab_depth.png) | ![](torus_r0.10/render/digne_depth.png) | ![](torus_r0.10/render/digne_par_depth.png) | ![](torus_r0.10/render/gruber_depth.png) | ![](torus_r0.10/render/bpa_rs_depth.png) | ![](torus_r0.10/render/schmehla_depth.ppm) | ![](torus_r0.10/render/giaccari_depth.png) | ![](torus_r0.10/render/gruber_ext_depth.png) |
-| front-facing minus back-facing: grey 0, blue +, red − | ![](torus_r0.10/render/bpa_signed.png) | ![](torus_r0.10/render/open3d_signed.png) | ![](torus_r0.10/render/meshlab_signed.png) | ![](torus_r0.10/render/digne_signed.png) | ![](torus_r0.10/render/digne_par_signed.png) | ![](torus_r0.10/render/gruber_signed.png) | ![](torus_r0.10/render/bpa_rs_signed.png) | ![](torus_r0.10/render/schmehla_signed.ppm) | ![](torus_r0.10/render/giaccari_signed.png) | ![](torus_r0.10/render/gruber_ext_signed.png) |
+**shaded, boundary edges in red**
+
+<table>
+<tr><td align="center"><a href="torus_r0.10/render/bpa.png"><img src="torus_r0.10/render/bpa.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="torus_r0.10/render/open3d.png"><img src="torus_r0.10/render/open3d.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="torus_r0.10/render/meshlab.png"><img src="torus_r0.10/render/meshlab.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="torus_r0.10/render/digne.png"><img src="torus_r0.10/render/digne.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="torus_r0.10/render/digne_par.png"><img src="torus_r0.10/render/digne_par.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="torus_r0.10/render/gruber.png"><img src="torus_r0.10/render/gruber.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="torus_r0.10/render/bpa_rs.png"><img src="torus_r0.10/render/bpa_rs.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="torus_r0.10/render/giaccari.png"><img src="torus_r0.10/render/giaccari.png" width="260"></a><br><sub>Giaccari</sub></td></tr>
+<tr><td align="center"><a href="torus_r0.10/render/gruber_ext.png"><img src="torus_r0.10/render/gruber_ext.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**triangles behind each pixel: warm = odd (a hole is seen through), cool = even**
+
+<table>
+<tr><td align="center"><a href="torus_r0.10/render/bpa_depth.png"><img src="torus_r0.10/render/bpa_depth.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="torus_r0.10/render/open3d_depth.png"><img src="torus_r0.10/render/open3d_depth.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="torus_r0.10/render/meshlab_depth.png"><img src="torus_r0.10/render/meshlab_depth.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="torus_r0.10/render/digne_depth.png"><img src="torus_r0.10/render/digne_depth.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="torus_r0.10/render/digne_par_depth.png"><img src="torus_r0.10/render/digne_par_depth.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="torus_r0.10/render/gruber_depth.png"><img src="torus_r0.10/render/gruber_depth.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="torus_r0.10/render/bpa_rs_depth.png"><img src="torus_r0.10/render/bpa_rs_depth.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="torus_r0.10/render/giaccari_depth.png"><img src="torus_r0.10/render/giaccari_depth.png" width="260"></a><br><sub>Giaccari</sub></td></tr>
+<tr><td align="center"><a href="torus_r0.10/render/gruber_ext_depth.png"><img src="torus_r0.10/render/gruber_ext_depth.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**front-facing minus back-facing: grey 0, blue +, red −**
+
+<table>
+<tr><td align="center"><a href="torus_r0.10/render/bpa_signed.png"><img src="torus_r0.10/render/bpa_signed.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="torus_r0.10/render/open3d_signed.png"><img src="torus_r0.10/render/open3d_signed.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="torus_r0.10/render/meshlab_signed.png"><img src="torus_r0.10/render/meshlab_signed.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="torus_r0.10/render/digne_signed.png"><img src="torus_r0.10/render/digne_signed.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="torus_r0.10/render/digne_par_signed.png"><img src="torus_r0.10/render/digne_par_signed.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="torus_r0.10/render/gruber_signed.png"><img src="torus_r0.10/render/gruber_signed.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="torus_r0.10/render/bpa_rs_signed.png"><img src="torus_r0.10/render/bpa_rs_signed.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="torus_r0.10/render/giaccari_signed.png"><img src="torus_r0.10/render/giaccari_signed.png" width="260"></a><br><sub>Giaccari</sub></td></tr>
+<tr><td align="center"><a href="torus_r0.10/render/gruber_ext_signed.png"><img src="torus_r0.10/render/gruber_ext_signed.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
 

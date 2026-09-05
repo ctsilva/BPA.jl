@@ -45,9 +45,27 @@ triangle sets against BPA.jl:
 
 renderings (`knot_r0.03/render/`, view 30.0°):
 
-|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | bpa_rs | Schmehla | Giaccari | Extended Gruber |
-|---|---|---|---|---|---|---|---|---|---|---|
-| shaded, boundary edges in red | ![](knot_r0.03/render/bpa.png) | ![](knot_r0.03/render/open3d.png) | ![](knot_r0.03/render/meshlab.png) | ![](knot_r0.03/render/digne.png) | ![](knot_r0.03/render/digne_par.png) | ![](knot_r0.03/render/gruber.png) | ![](knot_r0.03/render/bpa_rs.png) | ![](knot_r0.03/render/schmehla.png) | ![](knot_r0.03/render/giaccari.png) | ![](knot_r0.03/render/gruber_ext.png) |
-| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](knot_r0.03/render/bpa_depth.png) | ![](knot_r0.03/render/open3d_depth.png) | ![](knot_r0.03/render/meshlab_depth.png) | ![](knot_r0.03/render/digne_depth.png) | ![](knot_r0.03/render/digne_par_depth.png) | ![](knot_r0.03/render/gruber_depth.png) | ![](knot_r0.03/render/bpa_rs_depth.png) | ![](knot_r0.03/render/schmehla_depth.png) | ![](knot_r0.03/render/giaccari_depth.png) | ![](knot_r0.03/render/gruber_ext_depth.png) |
-| front-facing minus back-facing: grey 0, blue +, red − | ![](knot_r0.03/render/bpa_signed.png) | ![](knot_r0.03/render/open3d_signed.png) | ![](knot_r0.03/render/meshlab_signed.png) | ![](knot_r0.03/render/digne_signed.png) | ![](knot_r0.03/render/digne_par_signed.png) | ![](knot_r0.03/render/gruber_signed.png) | ![](knot_r0.03/render/bpa_rs_signed.png) | ![](knot_r0.03/render/schmehla_signed.png) | ![](knot_r0.03/render/giaccari_signed.png) | ![](knot_r0.03/render/gruber_ext_signed.png) |
+**shaded, boundary edges in red**
+
+<table>
+<tr><td align="center"><a href="knot_r0.03/render/bpa.png"><img src="knot_r0.03/render/bpa.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="knot_r0.03/render/open3d.png"><img src="knot_r0.03/render/open3d.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="knot_r0.03/render/meshlab.png"><img src="knot_r0.03/render/meshlab.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="knot_r0.03/render/digne.png"><img src="knot_r0.03/render/digne.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="knot_r0.03/render/digne_par.png"><img src="knot_r0.03/render/digne_par.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="knot_r0.03/render/gruber.png"><img src="knot_r0.03/render/gruber.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="knot_r0.03/render/bpa_rs.png"><img src="knot_r0.03/render/bpa_rs.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="knot_r0.03/render/schmehla.png"><img src="knot_r0.03/render/schmehla.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="knot_r0.03/render/giaccari.png"><img src="knot_r0.03/render/giaccari.png" width="260"></a><br><sub>Giaccari</sub></td><td align="center"><a href="knot_r0.03/render/gruber_ext.png"><img src="knot_r0.03/render/gruber_ext.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**triangles behind each pixel: warm = odd (a hole is seen through), cool = even**
+
+<table>
+<tr><td align="center"><a href="knot_r0.03/render/bpa_depth.png"><img src="knot_r0.03/render/bpa_depth.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="knot_r0.03/render/open3d_depth.png"><img src="knot_r0.03/render/open3d_depth.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="knot_r0.03/render/meshlab_depth.png"><img src="knot_r0.03/render/meshlab_depth.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="knot_r0.03/render/digne_depth.png"><img src="knot_r0.03/render/digne_depth.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="knot_r0.03/render/digne_par_depth.png"><img src="knot_r0.03/render/digne_par_depth.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="knot_r0.03/render/gruber_depth.png"><img src="knot_r0.03/render/gruber_depth.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="knot_r0.03/render/bpa_rs_depth.png"><img src="knot_r0.03/render/bpa_rs_depth.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="knot_r0.03/render/schmehla_depth.png"><img src="knot_r0.03/render/schmehla_depth.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="knot_r0.03/render/giaccari_depth.png"><img src="knot_r0.03/render/giaccari_depth.png" width="260"></a><br><sub>Giaccari</sub></td><td align="center"><a href="knot_r0.03/render/gruber_ext_depth.png"><img src="knot_r0.03/render/gruber_ext_depth.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
+
+**front-facing minus back-facing: grey 0, blue +, red −**
+
+<table>
+<tr><td align="center"><a href="knot_r0.03/render/bpa_signed.png"><img src="knot_r0.03/render/bpa_signed.png" width="260"></a><br><sub>BPA.jl</sub></td><td align="center"><a href="knot_r0.03/render/open3d_signed.png"><img src="knot_r0.03/render/open3d_signed.png" width="260"></a><br><sub>Open3D</sub></td><td align="center"><a href="knot_r0.03/render/meshlab_signed.png"><img src="knot_r0.03/render/meshlab_signed.png" width="260"></a><br><sub>MeshLab</sub></td><td align="center"><a href="knot_r0.03/render/digne_signed.png"><img src="knot_r0.03/render/digne_signed.png" width="260"></a><br><sub>Digne</sub></td></tr>
+<tr><td align="center"><a href="knot_r0.03/render/digne_par_signed.png"><img src="knot_r0.03/render/digne_par_signed.png" width="260"></a><br><sub>Digne -p</sub></td><td align="center"><a href="knot_r0.03/render/gruber_signed.png"><img src="knot_r0.03/render/gruber_signed.png" width="260"></a><br><sub>Gruber</sub></td><td align="center"><a href="knot_r0.03/render/bpa_rs_signed.png"><img src="knot_r0.03/render/bpa_rs_signed.png" width="260"></a><br><sub>bpa_rs</sub></td><td align="center"><a href="knot_r0.03/render/schmehla_signed.png"><img src="knot_r0.03/render/schmehla_signed.png" width="260"></a><br><sub>Schmehla</sub></td></tr>
+<tr><td align="center"><a href="knot_r0.03/render/giaccari_signed.png"><img src="knot_r0.03/render/giaccari_signed.png" width="260"></a><br><sub>Giaccari</sub></td><td align="center"><a href="knot_r0.03/render/gruber_ext_signed.png"><img src="knot_r0.03/render/gruber_ext_signed.png" width="260"></a><br><sub>Extended Gruber</sub></td></tr>
+</table>
 
