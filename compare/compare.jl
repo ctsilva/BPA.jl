@@ -15,9 +15,10 @@
 #   --reference STEM       the tool the others are compared with (default: the first in tools.jl)
 #   --tools-file FILE      tool registry (default: tools.jl next to this script)
 #   --out DIR              results directory (default: compare/results)
-#   --input FILE --rho R [--name NAME] [--angle DEG]
+#   --input FILE --rho R[,R..] [--name NAME] [--angle DEG]
 #                          an ad-hoc case: FILE is anything bpa.jl -i reads (NOFF, .xyz, .ply,
-#                          or a mesh whose vertex normals are derived from its faces)
+#                          or a mesh whose vertex normals are derived from its faces); several
+#                          radii give one pass each, for the tools that support that
 #   --no-render            skip the renderings
 #   --parallel             run the tools of a case at once (single-threaded tools contend for
 #                          memory bandwidth; the timings come out 2 to 4 times larger)
@@ -42,10 +43,12 @@ const OUT_DIR = Ref(joinpath(@__DIR__, "results"))
 # ---------------------------------------------------------------- tools
 
 """
-A command-line reconstruction tool. `command(input, rho, output)` returns the `Cmd` that
-reads the NOFF point cloud `input` (x y z nx ny nz per vertex), reconstructs it with ball
-radius `rho` and writes `output`, an OFF whose vertices are exactly the input points in the
-same order (indices are compared across tools); or `nothing` if the tool is not installed.
+A command-line reconstruction tool. `command(input, radii, output)` returns the `Cmd` that
+reads the NOFF point cloud `input` (x y z nx ny nz per vertex), reconstructs it with the ball
+radii `radii` (a `Vector{Float64}`, increasing; one pass per radius, section 4.6 of the
+paper) and writes `output`, an OFF whose vertices are exactly the input points in the same
+order (indices are compared across tools); or `nothing` if the tool is not installed, or
+cannot take several radii when given more than one.
 `time_pattern` captures, from the tool's log, its own reconstruction time in seconds
 (excluding start-up and file loading); the wall time is used when it does not match.
 """
@@ -73,14 +76,19 @@ struct Case
     group::String               # "synthetic", "scans" or "adhoc"
     description::String
     input::Vector{String}       # bpa.jl input arguments: -i FILE, or -l NAMES -d DIR
-    rho::Float64
+    radii::Vector{Float64}      # one pass per radius, increasing
     angle::Float64              # render.jl rotation about the vertical axis, degrees
     scan_list::Vector{String}   # scan names, to render the input coverage of a scan list
     scan_dir::String
 end
 
 Case(name, group, description, input, rho; angle = 30.0, scans = String[], dir = "") =
-    Case(name, group, description, input, rho, angle, scans, dir)
+    Case(name, group, description, input, sort(Float64[rho...]), angle, scans, dir)
+
+"The radii of a case as bpa.jl's -r takes them: comma-separated."
+rho_arg(c::Case) = join(c.radii, ",")
+"The largest radius: the grid spacing for the checks, and the ball of the last pass."
+rho_max(c::Case) = maximum(c.radii)
 
 "The files a case needs; all must exist for the case to run."
 function input_files(c::Case)
@@ -93,7 +101,7 @@ end
 available(c::Case) = all(isfile, input_files(c))
 
 function load_cloud(c::Case)
-    opts = BPA.parse_cli(vcat(c.input, ["-r", string(c.rho)]))
+    opts = BPA.parse_cli(vcat(c.input, ["-r", rho_arg(c)]))
     BPA.load_input(opts; io = devnull)
 end
 
@@ -119,6 +127,24 @@ function cases()
     plane = synthetic_file("plane40", PointCloud(Pp, Np))
     Pt, Nt = torus(120, 80; jitter = 0.3, rng = Xoshiro(1))
     torus_j = synthetic_file("torus_jitter", PointCloud(Pt, Nt))
+    # unevenly sampled: 1 mm spacing on one half, 2 mm on the other, so that one radius
+    # cannot cover both halves and the multi-radius passes (section 4.6) are exercised
+    h = 0.001
+    Pd, Nd = plane_patch(50, 100; spacing = h, jitter = 0.3, rng = Xoshiro(5))
+    Pc, Nc = plane_patch(25, 50; spacing = 2h, jitter = 0.3, rng = Xoshiro(6), origin = (50h, 0.0))
+    plane_u = synthetic_file("plane_uneven", PointCloud(vcat(Pd, Pc), vcat(Nd, Nc)))
+    r_s = 0.025                                        # sphere radius: 7854 points at 1 mm
+    Ps8, Ns8 = fibonacci_sphere(round(Int, 4π * r_s^2 / h^2); r = r_s)
+    keep = [Ps8[i][3] >= 0 || i % 4 == 0 for i in eachindex(Ps8)]   # every 4th below the equator: 2 mm
+    sphere_u = synthetic_file("sphere_uneven", PointCloud(Ps8[keep], Ns8[keep]))
+    R_t, r_t = 0.02, 0.008                             # torus: 126 x 50 at 1 mm, 63 x 25 at 2 mm
+    Ptd, Ntd = torus(126, 50; R = R_t, r = r_t, jitter = 0.3, rng = Xoshiro(3))
+    Ptc, Ntc = torus(63, 25; R = R_t, r = r_t, jitter = 0.3, rng = Xoshiro(4))
+    dense = [p[2] >= 0 for p in Ptd]                   # the half y >= 0 at 1 mm, the other at 2 mm
+    coarse = [p[2] < 0 for p in Ptc]
+    torus_u = synthetic_file("torus_uneven", PointCloud(vcat(Ptd[dense], Ptc[coarse]), vcat(Ntd[dense], Ntc[coarse])))
+    radii_u = [1.5h, 3h]
+    n_plane_u, n_sphere_u, n_torus_u = length(Pd) + length(Pc), count(keep), count(dense) + count(coarse)
     # from data/ of the package
     torus_file = joinpath(DATA, "torus-120-80.off")
     knot = joinpath(DATA, "knot-300-100.off")
@@ -163,6 +189,15 @@ function cases()
         Case("knot_r0.03", "synthetic",
              "the same knot at rho = 0.03, the radius the package recommends: nearly closed, with small holes where the tube almost touches itself.",
              ["-i", knot], 0.03),
+        Case("plane_uneven", "uneven",
+             "jittered plane, 50 x 100 points at 1 mm spacing on the left half and 25 x 50 at 2 mm on the right ($n_plane_u points), radii 1.5 mm then 3 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.",
+             ["-i", plane_u], radii_u),
+        Case("sphere_uneven", "uneven",
+             "Fibonacci sphere of radius 25 mm, 1 mm spacing above the equator and every fourth point below it (2 mm; $n_sphere_u points), radii 1.5 mm then 3 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.",
+             ["-i", sphere_u], radii_u),
+        Case("torus_uneven", "uneven",
+             "jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y >= 0 and 63 x 25 at 2 mm for y < 0 ($n_torus_u points), radii 1.5 mm then 3 mm. Expected: closed, chi = 0, every point used.",
+             ["-i", torus_u], radii_u),
         Case("bun000", "scans",
              "a single Stanford bunny range scan (40256 points, normals from the scan's own triangles), rho = 1.25 mm: real data without overlapping layers. Expected: one open sheet with the scan's outline as boundary.",
              scans(["bun000"], bunny_dir), 0.00125; scans = ["bun000"], dir = bunny_dir),
@@ -200,7 +235,7 @@ function run_case(c::Case, cloud)
     write_off(input, BPAMesh(cloud, Tri[], BPAStats()))
     times = Vector{Union{Nothing,Float64}}(nothing, length(tools))
     function start(k)
-        cmd = Base.invokelatest(tools[k].command, input, c.rho, outs[k])   # tools.jl is included at run time
+        cmd = Base.invokelatest(tools[k].command, input, c.radii, outs[k])   # tools.jl is included at run time
         cmd === nothing && return nothing
         p = try
             run(pipeline(Cmd(cmd; dir = dir, ignorestatus = true); stdout = logs[k], stderr = logs[k]); wait = false)
@@ -324,7 +359,20 @@ name the side, so both are tried: the winding side first, which is where a pivot
 sits, then the reverse. Returns the class and, for `:ball_not_empty`, how deep (relative to
 rho) the most intruding point sits in the ball (the shallower side when both were tried).
 """
-function classify(P, N, grid, rho, t)
+function classify(P, N, grid, radii::Vector{Float64}, t)
+    # With several radii (one pass each) a triangle is valid if the ball of any of them is
+    # empty; otherwise the least bad verdict is reported (a ball that fits but is not empty
+    # rather than one that does not fit, and the shallowest intrusion).
+    best = (:circumradius_too_large, Inf)
+    for rho in radii
+        k, d = classify(P, N, grid, rho, t)
+        (k == :valid || k == :valid_reversed_winding || k == :degenerate) && return k, d
+        k == :ball_not_empty && d < best[2] && (best = (k, d))
+    end
+    return best[1], best[2] == Inf ? 0.0 : best[2]
+end
+
+function classify(P, N, grid, rho::Float64, t)
     a, b, c = t
     (a == b || b == c || a == c) && return :degenerate, 0.0
     n = triangle_normal(P[a], P[b], P[c])
@@ -381,14 +429,14 @@ function largest_component(tris)
     maximum(size)
 end
 
-function analyze(cloud, grid, rho, tris)
+function analyze(cloud, grid, radii, tris)
     P, N = cloud.positions, cloud.normals
     classes = Dict{Symbol,Int}()
     max_depth = 0.0
     seen = Set{NTuple{3,Int}}()
     dup = 0
     for t in tris
-        k, d = classify(P, N, grid, rho, t)
+        k, d = classify(P, N, grid, radii, t)
         k == :ball_not_empty && d <= TIE && (k = :ball_not_empty_tie)
         classes[k] = get(classes, k, 0) + 1
         max_depth = max(max_depth, d)
@@ -506,7 +554,7 @@ function write_case_report(c::Case, cloud, an, diffs, times, rstats)
     others = [t.name for t in TOOLS[] if t.stem != REFERENCE[]]
     rows = summary_rows(an, times, rstats)
     drows = [vcat([tool], diff_row(d)) for (tool, d) in zip(others, diffs) if d !== nothing]
-    intro = "input: `" * join(c.input, " ") * "`, rho = $(c.rho), $(length(cloud)) points"
+    intro = "input: `" * join(c.input, " ") * "`, rho = $(rho_arg(c)), $(length(cloud)) points"
     open(joinpath(dir, "report.md"), "w") do io
         println(io, "\n## ", c.name, "\n\n", c.description, "\n\n", intro, "\n")
         md_table(io, vcat([""], names()), [vcat([k], v) for (k, v) in rows])
@@ -604,7 +652,7 @@ function run_and_check(c::Case)
     outs, times = run_case(c, cloud)
     println("  reconstruction times: ", join((na(t, t -> @sprintf("%.2f", t)) for t in times), " / "))
     rstats = render_case(c, outs)
-    grid = VoxelGrid(cloud.positions, 2 * c.rho)
+    grid = VoxelGrid(cloud.positions, 2 * rho_max(c))
     scale = 1 + maximum(norm.(cloud.positions))
     n = length(TOOLS[])
     faces = Vector{Union{Nothing,Vector{Tri}}}(nothing, n)
@@ -617,7 +665,7 @@ function run_and_check(c::Case)
         maximum(norm.(P .- cloud.positions)) < 1e-5 * scale ||
             error("$(c.name): $(TOOLS[][k].name) output vertices differ from the input")
         faces[k] = F
-        an[k] = analyze(cloud, grid, c.rho, F)
+        an[k] = analyze(cloud, grid, c.radii, F)
     end
     r = findfirst(t -> t.stem == REFERENCE[], TOOLS[])
     others = [k for k in 1:n if k != r]
@@ -677,7 +725,7 @@ function setup!(args)
         file = abspath(adhoc["--input"])
         isfile(file) || error("no such input: $file")
         name = get(adhoc, "--name", splitext(basename(file))[1])
-        case = Case(name, "adhoc", "ad-hoc case", ["-i", file], parse(Float64, adhoc["--rho"]);
+        case = Case(name, "adhoc", "ad-hoc case", ["-i", file], parse.(Float64, split(adhoc["--rho"], ','));
                     angle = parse(Float64, get(adhoc, "--angle", "30")))
     end
     rest, case
@@ -688,7 +736,7 @@ function main(args = ARGS)
     cs = cases()
     if "--list" in rest
         for c in cs
-            println(rpad(c.name, 20), rpad(c.group, 11), "rho = ", rpad(c.rho, 8), available(c) ? "" : "(data missing)")
+            println(rpad(c.name, 20), rpad(c.group, 11), "rho = ", rpad(rho_arg(c), 14), available(c) ? "" : "(data missing)")
         end
         println("tools: ", join(("$(t.name) [$(t.stem)]" for t in TOOLS[]), ", "), "; reference: ", reference().name)
         return

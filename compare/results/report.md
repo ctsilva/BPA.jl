@@ -433,6 +433,150 @@ renderings (`knot_r0.03/render/`, view 30.0°):
 | front-facing minus back-facing: grey 0, blue +, red − | ![](knot_r0.03/render/bpa_signed.png) | ![](knot_r0.03/render/open3d_signed.png) | ![](knot_r0.03/render/meshlab_signed.png) | ![](knot_r0.03/render/digne_signed.png) | ![](knot_r0.03/render/digne_par_signed.png) | ![](knot_r0.03/render/gruber_signed.png) | ![](knot_r0.03/render/gruber_reseed_signed.png) | ![](knot_r0.03/render/bpa_rs_signed.png) | ![](knot_r0.03/render/schmehla_signed.png) | ![](knot_r0.03/render/giaccari_signed.png) | ![](knot_r0.03/render/bpafork_signed.png) |
 
 
+## plane_uneven
+
+jittered plane, 50 x 100 points at 1 mm spacing on the left half and 25 x 50 at 2 mm on the right (6250 points), radii 1.5 mm then 3 mm. Expected: one disk, chi = 1, one boundary loop, every point used; a tool without multi-radius passes shows n/a.
+
+input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/plane_uneven.off`, rho = 0.0015,0.003, 6250 points
+
+|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| triangles | 12214 | 12214 | n/a | 12214 | 12213 | n/a | n/a | n/a | n/a | n/a | 12214 |
+| reconstruction time (s) | 0.01 | 0.031 | n/a | 0.046 | 0.024 | n/a | n/a | n/a | n/a | n/a | 0.008 |
+| vertices used | 6250 | 6250 | n/a | 6250 | 6250 | n/a | n/a | n/a | n/a | n/a | 6250 |
+| boundary edges | 284 | 284 | n/a | 284 | 287 | n/a | n/a | n/a | n/a | n/a | 284 |
+| boundary loops | 1 | 1 | n/a | 1 | 2 | n/a | n/a | n/a | n/a | n/a | 1 |
+| components | 1 | 1 | n/a | 1 | 1 | n/a | n/a | n/a | n/a | n/a | 1 |
+| largest component (triangles) | 12214 | 12214 | n/a | 12214 | 12213 | n/a | n/a | n/a | n/a | n/a | 12214 |
+| Euler characteristic | 1 | 1 | n/a | 1 | 0 | n/a | n/a | n/a | n/a | n/a | 1 |
+| orientable | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| edge-manifold | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| vertex-manifold | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| duplicate triangles | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| valid | 12214 | 12214 | n/a | 12214 | 12213 | n/a | n/a | n/a | n/a | n/a | 12214 |
+| valid_reversed_winding | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| ball_not_empty_tie | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| ball_not_empty | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| circumradius_too_large | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| degenerate | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| deepest intrusion / rho | 0.00e+00 | 0.00e+00 | n/a | 0.00e+00 | 0.00e+00 | n/a | n/a | n/a | n/a | n/a | 0.00e+00 |
+| render: odd-parity pixels (holes seen through) | 100.00% | 100.00% | n/a | 100.00% | 100.00% | n/a | n/a | n/a | n/a | n/a | 100.00% |
+| render: pixels with front ≠ back | 100.00% | 100.00% | n/a | 100.00% | 100.00% | n/a | n/a | n/a | n/a | n/a | 100.00% |
+
+triangle sets against BPA.jl:
+
+|  | common | same winding | only in BPA.jl | only in the other | edges of only-in-BPA.jl triangles present in the other (0/1/2/3) | edges of only-in-other triangles present in BPA.jl (0/1/2/3) |
+|---|---|---|---|---|---|---|
+| Open3D | 12214 | 12214 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+| Digne | 12214 | 12214 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+| Digne -p | 12213 | 12213 | 1 | 0 | 0/0/0/1 | 0/0/0/0 |
+| bpa fork | 12214 | 12214 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+
+renderings (`plane_uneven/render/`, view 30.0°):
+
+|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| shaded, boundary edges in red | ![](plane_uneven/render/bpa.png) | ![](plane_uneven/render/open3d.png) | ![](plane_uneven/render/meshlab.ppm) | ![](plane_uneven/render/digne.png) | ![](plane_uneven/render/digne_par.png) | ![](plane_uneven/render/gruber.ppm) | ![](plane_uneven/render/gruber_reseed.ppm) | ![](plane_uneven/render/bpa_rs.ppm) | ![](plane_uneven/render/schmehla.ppm) | ![](plane_uneven/render/giaccari.ppm) | ![](plane_uneven/render/bpafork.png) |
+| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](plane_uneven/render/bpa_depth.png) | ![](plane_uneven/render/open3d_depth.png) | ![](plane_uneven/render/meshlab_depth.ppm) | ![](plane_uneven/render/digne_depth.png) | ![](plane_uneven/render/digne_par_depth.png) | ![](plane_uneven/render/gruber_depth.ppm) | ![](plane_uneven/render/gruber_reseed_depth.ppm) | ![](plane_uneven/render/bpa_rs_depth.ppm) | ![](plane_uneven/render/schmehla_depth.ppm) | ![](plane_uneven/render/giaccari_depth.ppm) | ![](plane_uneven/render/bpafork_depth.png) |
+| front-facing minus back-facing: grey 0, blue +, red − | ![](plane_uneven/render/bpa_signed.png) | ![](plane_uneven/render/open3d_signed.png) | ![](plane_uneven/render/meshlab_signed.ppm) | ![](plane_uneven/render/digne_signed.png) | ![](plane_uneven/render/digne_par_signed.png) | ![](plane_uneven/render/gruber_signed.ppm) | ![](plane_uneven/render/gruber_reseed_signed.ppm) | ![](plane_uneven/render/bpa_rs_signed.ppm) | ![](plane_uneven/render/schmehla_signed.ppm) | ![](plane_uneven/render/giaccari_signed.ppm) | ![](plane_uneven/render/bpafork_signed.png) |
+
+
+## sphere_uneven
+
+Fibonacci sphere of radius 25 mm, 1 mm spacing above the equator and every fourth point below it (2 mm; 4909 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.
+
+input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/sphere_uneven.off`, rho = 0.0015,0.003, 4909 points
+
+|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| triangles | 9814 | 9814 | n/a | 9814 | 9814 | n/a | n/a | n/a | n/a | n/a | 9814 |
+| reconstruction time (s) | 0.02 | 0.03 | n/a | 0.095 | 0.029 | n/a | n/a | n/a | n/a | n/a | 0.01 |
+| vertices used | 4909 | 4909 | n/a | 4909 | 4909 | n/a | n/a | n/a | n/a | n/a | 4909 |
+| boundary edges | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| boundary loops | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| components | 1 | 1 | n/a | 1 | 1 | n/a | n/a | n/a | n/a | n/a | 1 |
+| largest component (triangles) | 9814 | 9814 | n/a | 9814 | 9814 | n/a | n/a | n/a | n/a | n/a | 9814 |
+| Euler characteristic | 2 | 2 | n/a | 2 | 2 | n/a | n/a | n/a | n/a | n/a | 2 |
+| orientable | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| edge-manifold | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| vertex-manifold | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| duplicate triangles | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| valid | 9814 | 9814 | n/a | 9814 | 9814 | n/a | n/a | n/a | n/a | n/a | 9814 |
+| valid_reversed_winding | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| ball_not_empty_tie | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| ball_not_empty | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| circumradius_too_large | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| degenerate | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| deepest intrusion / rho | 0.00e+00 | 0.00e+00 | n/a | 0.00e+00 | 0.00e+00 | n/a | n/a | n/a | n/a | n/a | 0.00e+00 |
+| render: odd-parity pixels (holes seen through) | 0.00% | 0.00% | n/a | 0.00% | 0.00% | n/a | n/a | n/a | n/a | n/a | 0.00% |
+| render: pixels with front ≠ back | 0.00% | 0.00% | n/a | 0.00% | 0.00% | n/a | n/a | n/a | n/a | n/a | 0.00% |
+
+triangle sets against BPA.jl:
+
+|  | common | same winding | only in BPA.jl | only in the other | edges of only-in-BPA.jl triangles present in the other (0/1/2/3) | edges of only-in-other triangles present in BPA.jl (0/1/2/3) |
+|---|---|---|---|---|---|---|
+| Open3D | 9814 | 9814 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+| Digne | 9814 | 9814 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+| Digne -p | 9814 | 9814 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+| bpa fork | 9814 | 9814 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+
+renderings (`sphere_uneven/render/`, view 30.0°):
+
+|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| shaded, boundary edges in red | ![](sphere_uneven/render/bpa.png) | ![](sphere_uneven/render/open3d.png) | ![](sphere_uneven/render/meshlab.ppm) | ![](sphere_uneven/render/digne.png) | ![](sphere_uneven/render/digne_par.png) | ![](sphere_uneven/render/gruber.ppm) | ![](sphere_uneven/render/gruber_reseed.ppm) | ![](sphere_uneven/render/bpa_rs.ppm) | ![](sphere_uneven/render/schmehla.ppm) | ![](sphere_uneven/render/giaccari.ppm) | ![](sphere_uneven/render/bpafork.png) |
+| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](sphere_uneven/render/bpa_depth.png) | ![](sphere_uneven/render/open3d_depth.png) | ![](sphere_uneven/render/meshlab_depth.ppm) | ![](sphere_uneven/render/digne_depth.png) | ![](sphere_uneven/render/digne_par_depth.png) | ![](sphere_uneven/render/gruber_depth.ppm) | ![](sphere_uneven/render/gruber_reseed_depth.ppm) | ![](sphere_uneven/render/bpa_rs_depth.ppm) | ![](sphere_uneven/render/schmehla_depth.ppm) | ![](sphere_uneven/render/giaccari_depth.ppm) | ![](sphere_uneven/render/bpafork_depth.png) |
+| front-facing minus back-facing: grey 0, blue +, red − | ![](sphere_uneven/render/bpa_signed.png) | ![](sphere_uneven/render/open3d_signed.png) | ![](sphere_uneven/render/meshlab_signed.ppm) | ![](sphere_uneven/render/digne_signed.png) | ![](sphere_uneven/render/digne_par_signed.png) | ![](sphere_uneven/render/gruber_signed.ppm) | ![](sphere_uneven/render/gruber_reseed_signed.ppm) | ![](sphere_uneven/render/bpa_rs_signed.ppm) | ![](sphere_uneven/render/schmehla_signed.ppm) | ![](sphere_uneven/render/giaccari_signed.ppm) | ![](sphere_uneven/render/bpafork_signed.png) |
+
+
+## torus_uneven
+
+jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y >= 0 and 63 x 25 at 2 mm for y < 0 (3942 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 0, every point used.
+
+input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_uneven.off`, rho = 0.0015,0.003, 3942 points
+
+|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| triangles | 7884 | 7878 | n/a | 7878 | 7874 | n/a | n/a | n/a | n/a | n/a | 7884 |
+| reconstruction time (s) | 0.01 | 0.025 | n/a | 0.037 | 0.021 | n/a | n/a | n/a | n/a | n/a | 0.008 |
+| vertices used | 3942 | 3942 | n/a | 3942 | 3942 | n/a | n/a | n/a | n/a | n/a | 3942 |
+| boundary edges | 0 | 18 | n/a | 18 | 30 | n/a | n/a | n/a | n/a | n/a | 0 |
+| boundary loops | 0 | 2 | n/a | 2 | 6 | n/a | n/a | n/a | n/a | n/a | 0 |
+| components | 1 | 1 | n/a | 1 | 1 | n/a | n/a | n/a | n/a | n/a | 1 |
+| largest component (triangles) | 7884 | 7878 | n/a | 7878 | 7874 | n/a | n/a | n/a | n/a | n/a | 7884 |
+| Euler characteristic | 0 | -6 | n/a | -6 | -10 | n/a | n/a | n/a | n/a | n/a | 0 |
+| orientable | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| edge-manifold | yes | yes | n/a | yes | yes | n/a | n/a | n/a | n/a | n/a | yes |
+| vertex-manifold | yes | no | n/a | no | no | n/a | n/a | n/a | n/a | n/a | yes |
+| duplicate triangles | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| valid | 7884 | 7878 | n/a | 7878 | 7874 | n/a | n/a | n/a | n/a | n/a | 7884 |
+| valid_reversed_winding | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| ball_not_empty_tie | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| ball_not_empty | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| circumradius_too_large | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| degenerate | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
+| deepest intrusion / rho | 0.00e+00 | 0.00e+00 | n/a | 0.00e+00 | 0.00e+00 | n/a | n/a | n/a | n/a | n/a | 0.00e+00 |
+| render: odd-parity pixels (holes seen through) | 0.00% | 0.50% | n/a | 0.50% | 0.81% | n/a | n/a | n/a | n/a | n/a | 0.00% |
+| render: pixels with front ≠ back | 0.00% | 0.50% | n/a | 0.50% | 0.81% | n/a | n/a | n/a | n/a | n/a | 0.00% |
+
+triangle sets against BPA.jl:
+
+|  | common | same winding | only in BPA.jl | only in the other | edges of only-in-BPA.jl triangles present in the other (0/1/2/3) | edges of only-in-other triangles present in BPA.jl (0/1/2/3) |
+|---|---|---|---|---|---|---|
+| Open3D | 7878 | 7878 | 6 | 0 | 0/0/0/6 | 0/0/0/0 |
+| Digne | 7878 | 7878 | 6 | 0 | 0/0/0/6 | 0/0/0/0 |
+| Digne -p | 7874 | 7874 | 10 | 0 | 0/0/0/10 | 0/0/0/0 |
+| bpa fork | 7884 | 7884 | 0 | 0 | 0/0/0/0 | 0/0/0/0 |
+
+renderings (`torus_uneven/render/`, view 30.0°):
+
+|  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| shaded, boundary edges in red | ![](torus_uneven/render/bpa.png) | ![](torus_uneven/render/open3d.png) | ![](torus_uneven/render/meshlab.ppm) | ![](torus_uneven/render/digne.png) | ![](torus_uneven/render/digne_par.png) | ![](torus_uneven/render/gruber.ppm) | ![](torus_uneven/render/gruber_reseed.ppm) | ![](torus_uneven/render/bpa_rs.ppm) | ![](torus_uneven/render/schmehla.ppm) | ![](torus_uneven/render/giaccari.ppm) | ![](torus_uneven/render/bpafork.png) |
+| triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](torus_uneven/render/bpa_depth.png) | ![](torus_uneven/render/open3d_depth.png) | ![](torus_uneven/render/meshlab_depth.ppm) | ![](torus_uneven/render/digne_depth.png) | ![](torus_uneven/render/digne_par_depth.png) | ![](torus_uneven/render/gruber_depth.ppm) | ![](torus_uneven/render/gruber_reseed_depth.ppm) | ![](torus_uneven/render/bpa_rs_depth.ppm) | ![](torus_uneven/render/schmehla_depth.ppm) | ![](torus_uneven/render/giaccari_depth.ppm) | ![](torus_uneven/render/bpafork_depth.png) |
+| front-facing minus back-facing: grey 0, blue +, red − | ![](torus_uneven/render/bpa_signed.png) | ![](torus_uneven/render/open3d_signed.png) | ![](torus_uneven/render/meshlab_signed.ppm) | ![](torus_uneven/render/digne_signed.png) | ![](torus_uneven/render/digne_par_signed.png) | ![](torus_uneven/render/gruber_signed.ppm) | ![](torus_uneven/render/gruber_reseed_signed.ppm) | ![](torus_uneven/render/bpa_rs_signed.ppm) | ![](torus_uneven/render/schmehla_signed.ppm) | ![](torus_uneven/render/giaccari_signed.ppm) | ![](torus_uneven/render/bpafork_signed.png) |
+
+
 ## bun000
 
 a single Stanford bunny range scan (40256 points, normals from the scan's own triangles), rho = 1.25 mm: real data without overlapping layers. Expected: one open sheet with the scan's outline as boundary.

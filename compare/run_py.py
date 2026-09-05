@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 """Run Open3D's or PyMeshLab's ball pivoting on a NOFF point cloud and write a plain OFF.
 
-    python run_py.py open3d|meshlab input.off radius output.off
+    python run_py.py open3d|meshlab input.off radius[,radius..] output.off
+
+Open3D takes the radii as one pass each; MeshLab's filter takes one radius.
 """
 import sys, time
 import numpy as np
@@ -25,20 +27,23 @@ def write_off(path, P, F):
             f.write(f"3 {t[0]} {t[1]} {t[2]}\n")
 
 
-def run_open3d(P, N, rho):
+def run_open3d(P, N, radii):
     import open3d as o3d
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(P)
     pcd.normals = o3d.utility.Vector3dVector(N)
     t0 = time.perf_counter()
     mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
-        pcd, o3d.utility.DoubleVector([rho]))
+        pcd, o3d.utility.DoubleVector(radii))
     t = time.perf_counter() - t0
     return np.asarray(mesh.vertices), np.asarray(mesh.triangles), t
 
 
-def run_meshlab(P, N, rho):
+def run_meshlab(P, N, radii):
     import pymeshlab
+    if len(radii) != 1:
+        sys.exit("meshlab: one radius only")
+    rho = radii[0]
     ms = pymeshlab.MeshSet()
     ms.add_mesh(pymeshlab.Mesh(vertex_matrix=P, v_normals_matrix=N))
     t0 = time.perf_counter()
@@ -48,8 +53,8 @@ def run_meshlab(P, N, rho):
     return m.vertex_matrix(), m.face_matrix(), t
 
 
-tool, inp, rho, out = sys.argv[1], sys.argv[2], float(sys.argv[3]), sys.argv[4]
+tool, inp, radii, out = sys.argv[1], sys.argv[2], sorted(float(r) for r in sys.argv[3].split(",")), sys.argv[4]
 P, N = read_noff(inp)
-V, F, t = {"open3d": run_open3d, "meshlab": run_meshlab}[tool](P, N, rho)
+V, F, t = {"open3d": run_open3d, "meshlab": run_meshlab}[tool](P, N, radii)
 write_off(out, V, F)
 print(f"{tool}: {len(V)} vertices, {len(F)} triangles, time: {t:.3f} s")

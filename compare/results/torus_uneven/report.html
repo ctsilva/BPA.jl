@@ -1,0 +1,74 @@
+<section id="torus_uneven"><h2>torus_uneven</h2>
+<p>jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y &gt;= 0 and 63 x 25 at 2 mm for y &lt; 0 (3942 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 0, every point used.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_uneven.off`, rho = 0.0015,0.003, 3942 points</code></p>
+<div class="tables">
+<table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
+<tr><td>triangles</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.025</td><td>n/a</td><td>0.037</td><td>0.021</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
+<tr><td>vertices used</td><td>3942</td><td>3942</td><td>n/a</td><td>3942</td><td>3942</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>3942</td></tr>
+<tr><td>boundary edges</td><td>0</td><td>18</td><td>n/a</td><td>18</td><td>30</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>boundary loops</td><td>0</td><td>2</td><td>n/a</td><td>2</td><td>6</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>components</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>1</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
+<tr><td>largest component (triangles)</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
+<tr><td>Euler characteristic</td><td>0</td><td>-6</td><td>n/a</td><td>-6</td><td>-10</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>orientable</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
+<tr><td>edge-manifold</td><td>yes</td><td>yes</td><td>n/a</td><td>yes</td><td>yes</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
+<tr><td>vertex-manifold</td><td>yes</td><td>no</td><td>n/a</td><td>no</td><td>no</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>yes</td></tr>
+<tr><td>duplicate triangles</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>valid</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
+<tr><td>valid_reversed_winding</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>ball_not_empty_tie</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>ball_not_empty</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>circumradius_too_large</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>degenerate</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
+<tr><td>deepest intrusion / rho</td><td>0.00e+00</td><td>0.00e+00</td><td>n/a</td><td>0.00e+00</td><td>0.00e+00</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.00e+00</td></tr>
+<tr><td>render: odd-parity pixels (holes seen through)</td><td>0.00%</td><td>0.50%</td><td>n/a</td><td>0.50%</td><td>0.81%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.00%</td></tr>
+<tr><td>render: pixels with front ≠ back</td><td>0.00%</td><td>0.50%</td><td>n/a</td><td>0.50%</td><td>0.81%</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.00%</td></tr>
+</tbody></table>
+<div><p>triangle sets against BPA.jl</p>
+<table><thead><tr><th></th><th>common</th><th>same winding</th><th>only in BPA.jl</th><th>only in the other</th><th>edges of only-in-BPA.jl triangles present in the other (0/1/2/3)</th><th>edges of only-in-other triangles present in BPA.jl (0/1/2/3)</th></tr></thead><tbody>
+<tr><td>Open3D</td><td>7878</td><td>7878</td><td>6</td><td>0</td><td>0/0/0/6</td><td>0/0/0/0</td></tr>
+<tr><td>Digne</td><td>7878</td><td>7878</td><td>6</td><td>0</td><td>0/0/0/6</td><td>0/0/0/0</td></tr>
+<tr><td>Digne -p</td><td>7874</td><td>7874</td><td>10</td><td>0</td><td>0/0/0/10</td><td>0/0/0/0</td></tr>
+<tr><td>bpa fork</td><td>7884</td><td>7884</td><td>0</td><td>0</td><td>0/0/0/0</td><td>0/0/0/0</td></tr>
+</tbody></table>
+</div></div>
+<p class="kind">shaded, boundary edges in red (view 30.0°)</p><div class="grid">
+<figure><a href="torus_uneven/render/bpa.png"><img src="torus_uneven/render/bpa.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_uneven/render/open3d.png"><img src="torus_uneven/render/open3d.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_uneven/render/meshlab.ppm"><img src="torus_uneven/render/meshlab.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+<figure><a href="torus_uneven/render/digne.png"><img src="torus_uneven/render/digne.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_par.png"><img src="torus_uneven/render/digne_par.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber.ppm"><img src="torus_uneven/render/gruber.ppm" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_reseed.ppm"><img src="torus_uneven/render/gruber_reseed.ppm" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
+<figure><a href="torus_uneven/render/bpa_rs.ppm"><img src="torus_uneven/render/bpa_rs.ppm" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
+<figure><a href="torus_uneven/render/schmehla.ppm"><img src="torus_uneven/render/schmehla.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
+<figure><a href="torus_uneven/render/giaccari.ppm"><img src="torus_uneven/render/giaccari.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
+<figure><a href="torus_uneven/render/bpafork.png"><img src="torus_uneven/render/bpafork.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+</div>
+<p class="kind">triangles behind each pixel: warm = odd (a hole is seen through), cool = even (view 30.0°)</p><div class="grid">
+<figure><a href="torus_uneven/render/bpa_depth.png"><img src="torus_uneven/render/bpa_depth.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_uneven/render/open3d_depth.png"><img src="torus_uneven/render/open3d_depth.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_uneven/render/meshlab_depth.ppm"><img src="torus_uneven/render/meshlab_depth.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_depth.png"><img src="torus_uneven/render/digne_depth.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_par_depth.png"><img src="torus_uneven/render/digne_par_depth.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_depth.ppm"><img src="torus_uneven/render/gruber_depth.ppm" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_reseed_depth.ppm"><img src="torus_uneven/render/gruber_reseed_depth.ppm" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
+<figure><a href="torus_uneven/render/bpa_rs_depth.ppm"><img src="torus_uneven/render/bpa_rs_depth.ppm" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
+<figure><a href="torus_uneven/render/schmehla_depth.ppm"><img src="torus_uneven/render/schmehla_depth.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
+<figure><a href="torus_uneven/render/giaccari_depth.ppm"><img src="torus_uneven/render/giaccari_depth.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
+<figure><a href="torus_uneven/render/bpafork_depth.png"><img src="torus_uneven/render/bpafork_depth.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+</div>
+<p class="kind">front-facing minus back-facing: grey 0, blue +, red − (view 30.0°)</p><div class="grid">
+<figure><a href="torus_uneven/render/bpa_signed.png"><img src="torus_uneven/render/bpa_signed.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_uneven/render/open3d_signed.png"><img src="torus_uneven/render/open3d_signed.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_uneven/render/meshlab_signed.ppm"><img src="torus_uneven/render/meshlab_signed.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_signed.png"><img src="torus_uneven/render/digne_signed.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_par_signed.png"><img src="torus_uneven/render/digne_par_signed.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_signed.ppm"><img src="torus_uneven/render/gruber_signed.ppm" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_reseed_signed.ppm"><img src="torus_uneven/render/gruber_reseed_signed.ppm" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
+<figure><a href="torus_uneven/render/bpa_rs_signed.ppm"><img src="torus_uneven/render/bpa_rs_signed.ppm" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
+<figure><a href="torus_uneven/render/schmehla_signed.ppm"><img src="torus_uneven/render/schmehla_signed.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
+<figure><a href="torus_uneven/render/giaccari_signed.ppm"><img src="torus_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
+<figure><a href="torus_uneven/render/bpafork_signed.png"><img src="torus_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+</div>
+</section>

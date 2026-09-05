@@ -119,7 +119,8 @@ def run_digne(P, N, rho, work, parallel):
     xyz = temp(os.path.join(work, "digne_in.xyz"))
     ply = temp(os.path.join(work, "digne_out.ply"))
     np.savetxt(xyz, np.hstack([P, N]), fmt="%.17g")
-    cmd = [exe, "-i", xyz, "-o", ply, "-r", repr(rho), "-n"] + (["-p"] if parallel else [])
+    radii = rho if isinstance(rho, list) else [rho]
+    cmd = [exe, "-i", xyz, "-o", ply, "-n"] + [a for r in radii for a in ("-r", repr(r))] + (["-p"] if parallel else [])
     out, wall = run(cmd)
     t = grab(out, "Reconstructing the mesh took")
     with open(ply) as f:
@@ -244,7 +245,11 @@ TOOLS = {
 }
 
 if __name__ == "__main__":
-    tool, INPUT, rho, output = sys.argv[1], os.path.abspath(sys.argv[2]), float(sys.argv[3]), sys.argv[4]
+    tool, INPUT, output = sys.argv[1], os.path.abspath(sys.argv[2]), sys.argv[4]
+    radii = sorted(float(r) for r in sys.argv[3].split(","))
+    if len(radii) > 1 and not tool.startswith("digne"):
+        sys.exit(f"{tool}: one radius only")
+    rho = radii if tool.startswith("digne") else radii[0]
     work = os.path.dirname(os.path.abspath(output))
     P, N = read_noff(INPUT)
     try:

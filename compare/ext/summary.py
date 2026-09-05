@@ -11,7 +11,8 @@ import os, re, sys
 
 ROWS = ["triangles", "reconstruction time (s)", "components", "boundary edges", "ball_not_empty"]
 ORDER = ["sphere2000", "plane40", "torus_r0.10", "torus_r0.05", "torus_jitter", "torus_sampled20k",
-         "knot_r0.0188", "knot_r0.03", "bun000", "bunny4_r0.0008", "bunny4_r0.0015",
+         "knot_r0.0188", "knot_r0.03", "plane_uneven", "sphere_uneven", "torus_uneven",
+         "bun000", "bunny4_r0.0008", "bunny4_r0.0015",
          "bunny10_r0.00125", "dragon62_r0.0007"]
 
 
