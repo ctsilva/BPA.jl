@@ -1,0 +1,6 @@
+input: /Users/csilva/src/BPA.jl/compare/results/plane_uneven/input.off (6250 points)
+triangles: 11982 in 0.01 s
+points used: 6249 of 6250
+seeds: 1, pivots: 12673, boundary edges: 692
+rejected: no hit 692, normal 0, interior vertex 0, manifold 0
+wrote /Users/csilva/src/BPA.jl/compare/results/plane_uneven/bpa_pass1.off

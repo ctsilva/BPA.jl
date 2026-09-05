@@ -1,0 +1,6 @@
+input: /Users/csilva/src/BPA.jl/compare/results/torus_uneven/input.off (3942 points)
+triangles: 7364 in 0.01 s
+points used: 3838 of 3942
+seeds: 25, pivots: 7641, boundary edges: 302
+rejected: no hit 299, normal 3, interior vertex 0, manifold 0
+wrote /Users/csilva/src/BPA.jl/compare/results/torus_uneven/bpa_pass1.off

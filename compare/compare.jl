@@ -220,8 +220,10 @@ end
 
 """
 Run the selected tools on the case, one after the other (or at once with `--parallel`).
-Returns the output paths (or `nothing` for a tool without output) and the reconstruction
-times as reported by the tools themselves, in tool order.
+Returns the output paths (or `nothing` for a tool without output), the reconstruction
+times as reported by the tools themselves, in tool order, and, for a case with several
+radii, the outputs of each tool run with the first `j` radii only (`<stem>_pass<j>.off`,
+`j < number of radii`), from which the triangles each pass added are told apart.
 """
 function run_case(c::Case, cloud)
     dir = joinpath(OUT_DIR[], c.name)
@@ -269,7 +271,25 @@ function run_case(c::Case, cloud)
         times[k] === nothing && (outs[k] = nothing; println("  ", tools[k].name, ": no output",
                                                               isfile(logs[k]) ? " (see $(logs[k]))" : ""))
     end
-    outs, times
+    # a case with several radii: the same tool with the first j radii, for the pass attribution
+    prefixes = [Union{Nothing,String}[] for _ in tools]
+    for k in eachindex(tools), j in 1:length(c.radii)-1
+        out = joinpath(dir, tools[k].stem * "_pass$j.off")
+        if selected[k]
+            rm(out; force = true)
+            cmd = outs[k] === nothing ? nothing : Base.invokelatest(tools[k].command, input, c.radii[1:j], out)
+            if cmd !== nothing
+                log = joinpath(dir, tools[k].stem * "_pass$j.log")
+                try
+                    run(pipeline(Cmd(cmd; dir = dir, ignorestatus = true); stdout = log, stderr = log))
+                catch err
+                    write(log, "could not start: " * sprint(showerror, err) * "\n")
+                end
+            end
+        end
+        push!(prefixes[k], isfile(out) ? out : nothing)
+    end
+    outs, times, prefixes
 end
 
 # ---------------------------------------------------------------- renderings
@@ -348,6 +368,62 @@ function render_case(c::Case, outs)
     stats
 end
 
+"""
+For a case with several radii, render each output with its triangles coloured by the pass
+that built them (blue for the first radius, orange for the second, green for a third), as
+told apart by the tool's own runs with the first radii only (`run_case`). The COFF format
+colours vertices and the renderer paints a triangle with its first vertex's colour, so a
+vertex shared by two passes takes the later pass and each triangle is rotated to start at a
+vertex of its own colour, which keeps the winding; only a triangle whose three vertices all
+belong to a later pass is painted wrongly, and that is rare.
+"""
+function render_passes(c::Case, outs, faces, passes, cloud)
+    (NO_RENDER[] || length(c.radii) < 2) && return
+    rdir = joinpath(OUT_DIR[], c.name, "render")
+    P = cloud.positions
+    procs = Pair{String,Base.Process}[]
+    for (k, t) in enumerate(TOOLS[])
+        (outs[k] === nothing || faces[k] === nothing || passes[k] === nothing) && continue
+        png = joinpath(rdir, t.stem * "_passes.png")
+        !(t.stem in ONLY[]) && isfile(png) && continue
+        tris = faces[k]
+        pass = passes[k]
+        vpass = zeros(Int, length(P))
+        for (i, t) in enumerate(tris), v in t
+            vpass[v] = max(vpass[v], pass[i])
+        end
+        rotated = map(zip(tris, pass)) do (t, p)
+            r = findfirst(v -> vpass[v] == p, t)
+            r === nothing || r == 1 ? t : r == 2 ? Tri(t[2], t[3], t[1]) : Tri(t[3], t[1], t[2])
+        end
+        coff = joinpath(OUT_DIR[], c.name, t.stem * "_passes.off")
+        open(coff, "w") do io
+            println(io, "COFF\n", length(P), " ", length(tris), " 0")
+            for (p, v) in zip(P, vpass)
+                r, g, b = PASS_COLORS[min(v, length(PASS_COLORS) - 1) + 1]
+                println(io, p[1], " ", p[2], " ", p[3], " ", r, " ", g, " ", b, " 1.0")
+            end
+            for t in rotated
+                println(io, "3 ", t[1] - 1, " ", t[2] - 1, " ", t[3] - 1)
+            end
+        end
+        ppm = joinpath(rdir, t.stem * "_passes.ppm")
+        log = joinpath(rdir, t.stem * "_passes.log")
+        push!(procs, t.stem => run(pipeline(`$(Base.julia_cmd()) $RENDER $coff $ppm $(c.angle)`; stdout = log, stderr = log); wait = false))
+    end
+    for (stem, p) in procs
+        wait(p)
+        ppm = joinpath(rdir, stem * "_passes.ppm")
+        isfile(ppm) && to_png(ppm)
+        for suffix in ("_passes_depth", "_passes_signed")               # the renderer's other images: not needed
+            rm(joinpath(rdir, stem * suffix * ".ppm"); force = true)
+        end
+    end
+end
+
+"Vertex colours by pass: unused, first radius, second, third and beyond."
+const PASS_COLORS = [(0.45, 0.45, 0.45), (0.55, 0.68, 0.9), (0.98, 0.62, 0.2), (0.4, 0.8, 0.45)]
+
 # ---------------------------------------------------------------- checks on one output
 
 """
@@ -404,6 +480,7 @@ const CLASSES = (:valid, :valid_reversed_winding, :ball_not_empty_tie, :ball_not
 
 struct Analysis
     ntri::Int
+    per_pass::Vector{Int}       # triangles each radius' pass added (empty for one radius)
     check::MeshCheck
     classes::Dict{Symbol,Int}
     max_depth::Float64          # deepest intrusion among :ball_not_empty triangles
@@ -429,7 +506,7 @@ function largest_component(tris)
     maximum(size)
 end
 
-function analyze(cloud, grid, radii, tris)
+function analyze(cloud, grid, radii, tris, per_pass = Int[])
     P, N = cloud.positions, cloud.normals
     classes = Dict{Symbol,Int}()
     max_depth = 0.0
@@ -447,7 +524,7 @@ function analyze(cloud, grid, radii, tris)
     for t in tris, v in t
         used[v] = true
     end
-    Analysis(length(tris), check_mesh(tris), classes, max_depth, dup, count(used), largest_component(tris))
+    Analysis(length(tris), per_pass, check_mesh(tris), classes, max_depth, dup, count(used), largest_component(tris))
 end
 
 # ---------------------------------------------------------------- comparing two outputs
@@ -496,6 +573,9 @@ function summary_rows(an::Vector, times, rstats)
     col(f) = [a === nothing ? "n/a" : f(a) for a in an]
     rows = Pair{String,Vector{String}}[]
     push!(rows, "triangles" => col(a -> string(a.ntri)))
+    any(a -> a !== nothing && !isempty(a.per_pass), an) &&
+        push!(rows, "triangles per pass (one radius, then each further one)" =>
+              col(a -> isempty(a.per_pass) ? "n/a" : join(a.per_pass, " + ")))
     push!(rows, "reconstruction time (s)" => [na(t, t -> string(round(t; digits = 3))) for t in times])
     push!(rows, "vertices used" => col(a -> string(a.verts_used)))
     push!(rows, "boundary edges" => col(a -> string(a.check.boundary_edges)))
@@ -547,6 +627,11 @@ const IMAGE_KINDS = [("", "shaded, boundary edges in red"),
                      ("_depth", "triangles behind each pixel: warm = odd (a hole is seen through), cool = even"),
                      ("_signed", "front-facing minus back-facing: grey 0, blue +, red −")]
 
+"The image rows of a case: the three above, plus the pass colouring when it has several radii."
+image_kinds(c::Case) = length(c.radii) < 2 ? IMAGE_KINDS :
+    vcat(IMAGE_KINDS, [("_passes", "coloured by the pass that built the triangle: blue rho = " *
+                        join(c.radii, ", orange ", ", green "))])
+
 "Write results/<case>/report.md and report.html, the fragments the assembled report is built from."
 function write_case_report(c::Case, cloud, an, diffs, times, rstats)
     dir = joinpath(OUT_DIR[], c.name)
@@ -562,8 +647,8 @@ function write_case_report(c::Case, cloud, an, diffs, times, rstats)
         md_table(io, vcat([""], diff_header(ref)), drows)
         if !NO_RENDER[]
             println(io, "renderings (`", c.name, "/render/`, view $(c.angle)°):\n")
-            imgs = [["![](" * image(c, s, suffix) * ")" for s in stems()] for (suffix, _) in IMAGE_KINDS]
-            md_table(io, vcat([""], names()), [vcat([label], row) for ((_, label), row) in zip(IMAGE_KINDS, imgs)])
+            imgs = [["![](" * image(c, s, suffix) * ")" for s in stems()] for (suffix, _) in image_kinds(c)]
+            md_table(io, vcat([""], names()), [vcat([label], row) for ((_, label), row) in zip(image_kinds(c), imgs)])
             isempty(c.scan_list) || println(io, "input scans: ![](", image(c, "input", ""), ")\n")
         end
     end
@@ -576,7 +661,7 @@ function write_case_report(c::Case, cloud, an, diffs, times, rstats)
         html_table(io, vcat([""], diff_header(ref)), drows)
         println(io, "</div></div>")
         NO_RENDER[] && (println(io, "</section>"); return)
-        for (suffix, label) in IMAGE_KINDS
+        for (suffix, label) in image_kinds(c)
             println(io, "<p class=\"kind\">", html_escape(label), " (view $(c.angle)°)</p><div class=\"grid\">")
             for t in TOOLS[]
                 src = image(c, t.stem, suffix)
@@ -649,13 +734,14 @@ end
 function run_and_check(c::Case)
     println("== ", c.name)
     cloud = load_cloud(c)
-    outs, times = run_case(c, cloud)
+    outs, times, prefixes = run_case(c, cloud)
     println("  reconstruction times: ", join((na(t, t -> @sprintf("%.2f", t)) for t in times), " / "))
     rstats = render_case(c, outs)
     grid = VoxelGrid(cloud.positions, 2 * rho_max(c))
     scale = 1 + maximum(norm.(cloud.positions))
     n = length(TOOLS[])
     faces = Vector{Union{Nothing,Vector{Tri}}}(nothing, n)
+    passes = Vector{Union{Nothing,Vector{Int}}}(nothing, n)   # the pass that built each triangle
     an = Vector{Union{Nothing,Analysis}}(nothing, n)
     Threads.@threads for k in 1:n                      # start julia with -t <number of tools>
         out = outs[k]
@@ -665,8 +751,21 @@ function run_and_check(c::Case)
         maximum(norm.(P .- cloud.positions)) < 1e-5 * scale ||
             error("$(c.name): $(TOOLS[][k].name) output vertices differ from the input")
         faces[k] = F
-        an[k] = analyze(cloud, grid, c.radii, F)
+        per_pass = Int[]
+        if length(c.radii) > 1 && all(p -> p !== nothing, prefixes[k])
+            # a triangle belongs to the first pass whose prefix run produced it
+            passes[k] = fill(length(c.radii), length(F))
+            for j in length(prefixes[k]):-1:1
+                built = Set(Tuple(sort(collect(t))) for t in read_off(prefixes[k][j])[2])
+                for (i, t) in enumerate(F)
+                    Tuple(sort(collect(t))) in built && (passes[k][i] = j)
+                end
+            end
+            per_pass = [count(==(j), passes[k]) for j in 1:length(c.radii)]
+        end
+        an[k] = analyze(cloud, grid, c.radii, F, per_pass)
     end
+    render_passes(c, outs, faces, passes, cloud)
     r = findfirst(t -> t.stem == REFERENCE[], TOOLS[])
     others = [k for k in 1:n if k != r]
     diffs = Vector{Union{Nothing,Diff}}(nothing, length(others))

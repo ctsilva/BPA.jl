@@ -675,7 +675,8 @@ code{font-size:12px}
 <div class="tables">
 <table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
 <tr><td>triangles</td><td>12214</td><td>12214</td><td>n/a</td><td>12214</td><td>12213</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>12214</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.031</td><td>n/a</td><td>0.046</td><td>0.024</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
+<tr><td>triangles per pass (one radius, then each further one)</td><td>11982 + 232</td><td>11982 + 232</td><td>n/a</td><td>11982 + 232</td><td>11982 + 231</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>11982 + 232</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.032</td><td>n/a</td><td>0.047</td><td>0.023</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.009</td></tr>
 <tr><td>vertices used</td><td>6250</td><td>6250</td><td>n/a</td><td>6250</td><td>6250</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>6250</td></tr>
 <tr><td>boundary edges</td><td>284</td><td>284</td><td>n/a</td><td>284</td><td>287</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>284</td></tr>
 <tr><td>boundary loops</td><td>1</td><td>1</td><td>n/a</td><td>1</td><td>2</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>1</td></tr>
@@ -743,13 +744,27 @@ code{font-size:12px}
 <figure><a href="plane_uneven/render/giaccari_signed.ppm"><img src="plane_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
 <figure><a href="plane_uneven/render/bpafork_signed.png"><img src="plane_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
 </div>
+<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 (view 30.0°)</p><div class="grid">
+<figure><a href="plane_uneven/render/bpa_passes.png"><img src="plane_uneven/render/bpa_passes.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="plane_uneven/render/open3d_passes.png"><img src="plane_uneven/render/open3d_passes.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="plane_uneven/render/meshlab_passes.ppm"><img src="plane_uneven/render/meshlab_passes.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+<figure><a href="plane_uneven/render/digne_passes.png"><img src="plane_uneven/render/digne_passes.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
+<figure><a href="plane_uneven/render/digne_par_passes.png"><img src="plane_uneven/render/digne_par_passes.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
+<figure><a href="plane_uneven/render/gruber_passes.ppm"><img src="plane_uneven/render/gruber_passes.ppm" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
+<figure><a href="plane_uneven/render/gruber_reseed_passes.ppm"><img src="plane_uneven/render/gruber_reseed_passes.ppm" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
+<figure><a href="plane_uneven/render/bpa_rs_passes.ppm"><img src="plane_uneven/render/bpa_rs_passes.ppm" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
+<figure><a href="plane_uneven/render/schmehla_passes.ppm"><img src="plane_uneven/render/schmehla_passes.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
+<figure><a href="plane_uneven/render/giaccari_passes.ppm"><img src="plane_uneven/render/giaccari_passes.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
+<figure><a href="plane_uneven/render/bpafork_passes.png"><img src="plane_uneven/render/bpafork_passes.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+</div>
 </section>
 <section id="sphere_uneven"><h2>sphere_uneven</h2>
 <p>Fibonacci sphere of radius 25 mm, 1 mm spacing above the equator and every fourth point below it (2 mm; 4909 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 2, every point used, 2V - 4 triangles.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/sphere_uneven.off`, rho = 0.0015,0.003, 4909 points</code></p>
 <div class="tables">
 <table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
 <tr><td>triangles</td><td>9814</td><td>9814</td><td>n/a</td><td>9814</td><td>9814</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>9814</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.02</td><td>0.03</td><td>n/a</td><td>0.095</td><td>0.029</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.01</td></tr>
+<tr><td>triangles per pass (one radius, then each further one)</td><td>8300 + 1514</td><td>8300 + 1514</td><td>n/a</td><td>8300 + 1514</td><td>8300 + 1514</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>8300 + 1514</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.02</td><td>0.031</td><td>n/a</td><td>0.048</td><td>0.03</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.01</td></tr>
 <tr><td>vertices used</td><td>4909</td><td>4909</td><td>n/a</td><td>4909</td><td>4909</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>4909</td></tr>
 <tr><td>boundary edges</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>boundary loops</td><td>0</td><td>0</td><td>n/a</td><td>0</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
@@ -817,13 +832,27 @@ code{font-size:12px}
 <figure><a href="sphere_uneven/render/giaccari_signed.ppm"><img src="sphere_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
 <figure><a href="sphere_uneven/render/bpafork_signed.png"><img src="sphere_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
 </div>
+<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 (view 30.0°)</p><div class="grid">
+<figure><a href="sphere_uneven/render/bpa_passes.png"><img src="sphere_uneven/render/bpa_passes.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="sphere_uneven/render/open3d_passes.png"><img src="sphere_uneven/render/open3d_passes.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="sphere_uneven/render/meshlab_passes.ppm"><img src="sphere_uneven/render/meshlab_passes.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+<figure><a href="sphere_uneven/render/digne_passes.png"><img src="sphere_uneven/render/digne_passes.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
+<figure><a href="sphere_uneven/render/digne_par_passes.png"><img src="sphere_uneven/render/digne_par_passes.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
+<figure><a href="sphere_uneven/render/gruber_passes.ppm"><img src="sphere_uneven/render/gruber_passes.ppm" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
+<figure><a href="sphere_uneven/render/gruber_reseed_passes.ppm"><img src="sphere_uneven/render/gruber_reseed_passes.ppm" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
+<figure><a href="sphere_uneven/render/bpa_rs_passes.ppm"><img src="sphere_uneven/render/bpa_rs_passes.ppm" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
+<figure><a href="sphere_uneven/render/schmehla_passes.ppm"><img src="sphere_uneven/render/schmehla_passes.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
+<figure><a href="sphere_uneven/render/giaccari_passes.ppm"><img src="sphere_uneven/render/giaccari_passes.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
+<figure><a href="sphere_uneven/render/bpafork_passes.png"><img src="sphere_uneven/render/bpafork_passes.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+</div>
 </section>
 <section id="torus_uneven"><h2>torus_uneven</h2>
 <p>jittered torus (R = 20 mm, r = 8 mm), a 126 x 50 lattice at 1 mm for y &gt;= 0 and 63 x 25 at 2 mm for y &lt; 0 (3942 points), radii 1.5 mm then 3 mm. Expected: closed, chi = 0, every point used.</p><p><code>input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_uneven.off`, rho = 0.0015,0.003, 3942 points</code></p>
 <div class="tables">
 <table><thead><tr><th></th><th>BPA.jl</th><th>Open3D</th><th>MeshLab</th><th>Digne</th><th>Digne -p</th><th>Gruber</th><th>Gruber reseeded</th><th>bpa_rs</th><th>Schmehla</th><th>Giaccari</th><th>bpa fork</th></tr></thead><tbody>
 <tr><td>triangles</td><td>7884</td><td>7878</td><td>n/a</td><td>7878</td><td>7874</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7884</td></tr>
-<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.025</td><td>n/a</td><td>0.037</td><td>0.021</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
+<tr><td>triangles per pass (one radius, then each further one)</td><td>7364 + 520</td><td>7360 + 518</td><td>n/a</td><td>7362 + 516</td><td>7360 + 514</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>7360 + 524</td></tr>
+<tr><td>reconstruction time (s)</td><td>0.01</td><td>0.025</td><td>n/a</td><td>0.038</td><td>0.021</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0.008</td></tr>
 <tr><td>vertices used</td><td>3942</td><td>3942</td><td>n/a</td><td>3942</td><td>3942</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>3942</td></tr>
 <tr><td>boundary edges</td><td>0</td><td>18</td><td>n/a</td><td>18</td><td>30</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
 <tr><td>boundary loops</td><td>0</td><td>2</td><td>n/a</td><td>2</td><td>6</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>0</td></tr>
@@ -890,6 +919,19 @@ code{font-size:12px}
 <figure><a href="torus_uneven/render/schmehla_signed.ppm"><img src="torus_uneven/render/schmehla_signed.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
 <figure><a href="torus_uneven/render/giaccari_signed.ppm"><img src="torus_uneven/render/giaccari_signed.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
 <figure><a href="torus_uneven/render/bpafork_signed.png"><img src="torus_uneven/render/bpafork_signed.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
+</div>
+<p class="kind">coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 (view 30.0°)</p><div class="grid">
+<figure><a href="torus_uneven/render/bpa_passes.png"><img src="torus_uneven/render/bpa_passes.png" loading="lazy"></a><figcaption>BPA.jl</figcaption></figure>
+<figure><a href="torus_uneven/render/open3d_passes.png"><img src="torus_uneven/render/open3d_passes.png" loading="lazy"></a><figcaption>Open3D</figcaption></figure>
+<figure><a href="torus_uneven/render/meshlab_passes.ppm"><img src="torus_uneven/render/meshlab_passes.ppm" loading="lazy"></a><figcaption>MeshLab</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_passes.png"><img src="torus_uneven/render/digne_passes.png" loading="lazy"></a><figcaption>Digne</figcaption></figure>
+<figure><a href="torus_uneven/render/digne_par_passes.png"><img src="torus_uneven/render/digne_par_passes.png" loading="lazy"></a><figcaption>Digne -p</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_passes.ppm"><img src="torus_uneven/render/gruber_passes.ppm" loading="lazy"></a><figcaption>Gruber</figcaption></figure>
+<figure><a href="torus_uneven/render/gruber_reseed_passes.ppm"><img src="torus_uneven/render/gruber_reseed_passes.ppm" loading="lazy"></a><figcaption>Gruber reseeded</figcaption></figure>
+<figure><a href="torus_uneven/render/bpa_rs_passes.ppm"><img src="torus_uneven/render/bpa_rs_passes.ppm" loading="lazy"></a><figcaption>bpa_rs</figcaption></figure>
+<figure><a href="torus_uneven/render/schmehla_passes.ppm"><img src="torus_uneven/render/schmehla_passes.ppm" loading="lazy"></a><figcaption>Schmehla</figcaption></figure>
+<figure><a href="torus_uneven/render/giaccari_passes.ppm"><img src="torus_uneven/render/giaccari_passes.ppm" loading="lazy"></a><figcaption>Giaccari</figcaption></figure>
+<figure><a href="torus_uneven/render/bpafork_passes.png"><img src="torus_uneven/render/bpafork_passes.png" loading="lazy"></a><figcaption>bpa fork</figcaption></figure>
 </div>
 </section>
 <section id="bun000"><h2>bun000</h2>

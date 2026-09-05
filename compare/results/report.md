@@ -442,7 +442,8 @@ input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/plane_uneven.off`, rh
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 12214 | 12214 | n/a | 12214 | 12213 | n/a | n/a | n/a | n/a | n/a | 12214 |
-| reconstruction time (s) | 0.01 | 0.031 | n/a | 0.046 | 0.024 | n/a | n/a | n/a | n/a | n/a | 0.008 |
+| triangles per pass (one radius, then each further one) | 11982 + 232 | 11982 + 232 | n/a | 11982 + 232 | 11982 + 231 | n/a | n/a | n/a | n/a | n/a | 11982 + 232 |
+| reconstruction time (s) | 0.01 | 0.032 | n/a | 0.047 | 0.023 | n/a | n/a | n/a | n/a | n/a | 0.009 |
 | vertices used | 6250 | 6250 | n/a | 6250 | 6250 | n/a | n/a | n/a | n/a | n/a | 6250 |
 | boundary edges | 284 | 284 | n/a | 284 | 287 | n/a | n/a | n/a | n/a | n/a | 284 |
 | boundary loops | 1 | 1 | n/a | 1 | 2 | n/a | n/a | n/a | n/a | n/a | 1 |
@@ -479,6 +480,7 @@ renderings (`plane_uneven/render/`, view 30.0°):
 | shaded, boundary edges in red | ![](plane_uneven/render/bpa.png) | ![](plane_uneven/render/open3d.png) | ![](plane_uneven/render/meshlab.ppm) | ![](plane_uneven/render/digne.png) | ![](plane_uneven/render/digne_par.png) | ![](plane_uneven/render/gruber.ppm) | ![](plane_uneven/render/gruber_reseed.ppm) | ![](plane_uneven/render/bpa_rs.ppm) | ![](plane_uneven/render/schmehla.ppm) | ![](plane_uneven/render/giaccari.ppm) | ![](plane_uneven/render/bpafork.png) |
 | triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](plane_uneven/render/bpa_depth.png) | ![](plane_uneven/render/open3d_depth.png) | ![](plane_uneven/render/meshlab_depth.ppm) | ![](plane_uneven/render/digne_depth.png) | ![](plane_uneven/render/digne_par_depth.png) | ![](plane_uneven/render/gruber_depth.ppm) | ![](plane_uneven/render/gruber_reseed_depth.ppm) | ![](plane_uneven/render/bpa_rs_depth.ppm) | ![](plane_uneven/render/schmehla_depth.ppm) | ![](plane_uneven/render/giaccari_depth.ppm) | ![](plane_uneven/render/bpafork_depth.png) |
 | front-facing minus back-facing: grey 0, blue +, red − | ![](plane_uneven/render/bpa_signed.png) | ![](plane_uneven/render/open3d_signed.png) | ![](plane_uneven/render/meshlab_signed.ppm) | ![](plane_uneven/render/digne_signed.png) | ![](plane_uneven/render/digne_par_signed.png) | ![](plane_uneven/render/gruber_signed.ppm) | ![](plane_uneven/render/gruber_reseed_signed.ppm) | ![](plane_uneven/render/bpa_rs_signed.ppm) | ![](plane_uneven/render/schmehla_signed.ppm) | ![](plane_uneven/render/giaccari_signed.ppm) | ![](plane_uneven/render/bpafork_signed.png) |
+| coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 | ![](plane_uneven/render/bpa_passes.png) | ![](plane_uneven/render/open3d_passes.png) | ![](plane_uneven/render/meshlab_passes.ppm) | ![](plane_uneven/render/digne_passes.png) | ![](plane_uneven/render/digne_par_passes.png) | ![](plane_uneven/render/gruber_passes.ppm) | ![](plane_uneven/render/gruber_reseed_passes.ppm) | ![](plane_uneven/render/bpa_rs_passes.ppm) | ![](plane_uneven/render/schmehla_passes.ppm) | ![](plane_uneven/render/giaccari_passes.ppm) | ![](plane_uneven/render/bpafork_passes.png) |
 
 
 ## sphere_uneven
@@ -490,7 +492,8 @@ input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/sphere_uneven.off`, r
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 9814 | 9814 | n/a | 9814 | 9814 | n/a | n/a | n/a | n/a | n/a | 9814 |
-| reconstruction time (s) | 0.02 | 0.03 | n/a | 0.095 | 0.029 | n/a | n/a | n/a | n/a | n/a | 0.01 |
+| triangles per pass (one radius, then each further one) | 8300 + 1514 | 8300 + 1514 | n/a | 8300 + 1514 | 8300 + 1514 | n/a | n/a | n/a | n/a | n/a | 8300 + 1514 |
+| reconstruction time (s) | 0.02 | 0.031 | n/a | 0.048 | 0.03 | n/a | n/a | n/a | n/a | n/a | 0.01 |
 | vertices used | 4909 | 4909 | n/a | 4909 | 4909 | n/a | n/a | n/a | n/a | n/a | 4909 |
 | boundary edges | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
 | boundary loops | 0 | 0 | n/a | 0 | 0 | n/a | n/a | n/a | n/a | n/a | 0 |
@@ -527,6 +530,7 @@ renderings (`sphere_uneven/render/`, view 30.0°):
 | shaded, boundary edges in red | ![](sphere_uneven/render/bpa.png) | ![](sphere_uneven/render/open3d.png) | ![](sphere_uneven/render/meshlab.ppm) | ![](sphere_uneven/render/digne.png) | ![](sphere_uneven/render/digne_par.png) | ![](sphere_uneven/render/gruber.ppm) | ![](sphere_uneven/render/gruber_reseed.ppm) | ![](sphere_uneven/render/bpa_rs.ppm) | ![](sphere_uneven/render/schmehla.ppm) | ![](sphere_uneven/render/giaccari.ppm) | ![](sphere_uneven/render/bpafork.png) |
 | triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](sphere_uneven/render/bpa_depth.png) | ![](sphere_uneven/render/open3d_depth.png) | ![](sphere_uneven/render/meshlab_depth.ppm) | ![](sphere_uneven/render/digne_depth.png) | ![](sphere_uneven/render/digne_par_depth.png) | ![](sphere_uneven/render/gruber_depth.ppm) | ![](sphere_uneven/render/gruber_reseed_depth.ppm) | ![](sphere_uneven/render/bpa_rs_depth.ppm) | ![](sphere_uneven/render/schmehla_depth.ppm) | ![](sphere_uneven/render/giaccari_depth.ppm) | ![](sphere_uneven/render/bpafork_depth.png) |
 | front-facing minus back-facing: grey 0, blue +, red − | ![](sphere_uneven/render/bpa_signed.png) | ![](sphere_uneven/render/open3d_signed.png) | ![](sphere_uneven/render/meshlab_signed.ppm) | ![](sphere_uneven/render/digne_signed.png) | ![](sphere_uneven/render/digne_par_signed.png) | ![](sphere_uneven/render/gruber_signed.ppm) | ![](sphere_uneven/render/gruber_reseed_signed.ppm) | ![](sphere_uneven/render/bpa_rs_signed.ppm) | ![](sphere_uneven/render/schmehla_signed.ppm) | ![](sphere_uneven/render/giaccari_signed.ppm) | ![](sphere_uneven/render/bpafork_signed.png) |
+| coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 | ![](sphere_uneven/render/bpa_passes.png) | ![](sphere_uneven/render/open3d_passes.png) | ![](sphere_uneven/render/meshlab_passes.ppm) | ![](sphere_uneven/render/digne_passes.png) | ![](sphere_uneven/render/digne_par_passes.png) | ![](sphere_uneven/render/gruber_passes.ppm) | ![](sphere_uneven/render/gruber_reseed_passes.ppm) | ![](sphere_uneven/render/bpa_rs_passes.ppm) | ![](sphere_uneven/render/schmehla_passes.ppm) | ![](sphere_uneven/render/giaccari_passes.ppm) | ![](sphere_uneven/render/bpafork_passes.png) |
 
 
 ## torus_uneven
@@ -538,7 +542,8 @@ input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_uneven.off`, rh
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 7884 | 7878 | n/a | 7878 | 7874 | n/a | n/a | n/a | n/a | n/a | 7884 |
-| reconstruction time (s) | 0.01 | 0.025 | n/a | 0.037 | 0.021 | n/a | n/a | n/a | n/a | n/a | 0.008 |
+| triangles per pass (one radius, then each further one) | 7364 + 520 | 7360 + 518 | n/a | 7362 + 516 | 7360 + 514 | n/a | n/a | n/a | n/a | n/a | 7360 + 524 |
+| reconstruction time (s) | 0.01 | 0.025 | n/a | 0.038 | 0.021 | n/a | n/a | n/a | n/a | n/a | 0.008 |
 | vertices used | 3942 | 3942 | n/a | 3942 | 3942 | n/a | n/a | n/a | n/a | n/a | 3942 |
 | boundary edges | 0 | 18 | n/a | 18 | 30 | n/a | n/a | n/a | n/a | n/a | 0 |
 | boundary loops | 0 | 2 | n/a | 2 | 6 | n/a | n/a | n/a | n/a | n/a | 0 |
@@ -575,6 +580,7 @@ renderings (`torus_uneven/render/`, view 30.0°):
 | shaded, boundary edges in red | ![](torus_uneven/render/bpa.png) | ![](torus_uneven/render/open3d.png) | ![](torus_uneven/render/meshlab.ppm) | ![](torus_uneven/render/digne.png) | ![](torus_uneven/render/digne_par.png) | ![](torus_uneven/render/gruber.ppm) | ![](torus_uneven/render/gruber_reseed.ppm) | ![](torus_uneven/render/bpa_rs.ppm) | ![](torus_uneven/render/schmehla.ppm) | ![](torus_uneven/render/giaccari.ppm) | ![](torus_uneven/render/bpafork.png) |
 | triangles behind each pixel: warm = odd (a hole is seen through), cool = even | ![](torus_uneven/render/bpa_depth.png) | ![](torus_uneven/render/open3d_depth.png) | ![](torus_uneven/render/meshlab_depth.ppm) | ![](torus_uneven/render/digne_depth.png) | ![](torus_uneven/render/digne_par_depth.png) | ![](torus_uneven/render/gruber_depth.ppm) | ![](torus_uneven/render/gruber_reseed_depth.ppm) | ![](torus_uneven/render/bpa_rs_depth.ppm) | ![](torus_uneven/render/schmehla_depth.ppm) | ![](torus_uneven/render/giaccari_depth.ppm) | ![](torus_uneven/render/bpafork_depth.png) |
 | front-facing minus back-facing: grey 0, blue +, red − | ![](torus_uneven/render/bpa_signed.png) | ![](torus_uneven/render/open3d_signed.png) | ![](torus_uneven/render/meshlab_signed.ppm) | ![](torus_uneven/render/digne_signed.png) | ![](torus_uneven/render/digne_par_signed.png) | ![](torus_uneven/render/gruber_signed.ppm) | ![](torus_uneven/render/gruber_reseed_signed.ppm) | ![](torus_uneven/render/bpa_rs_signed.ppm) | ![](torus_uneven/render/schmehla_signed.ppm) | ![](torus_uneven/render/giaccari_signed.ppm) | ![](torus_uneven/render/bpafork_signed.png) |
+| coloured by the pass that built the triangle: blue rho = 0.0015, green 0.003 | ![](torus_uneven/render/bpa_passes.png) | ![](torus_uneven/render/open3d_passes.png) | ![](torus_uneven/render/meshlab_passes.ppm) | ![](torus_uneven/render/digne_passes.png) | ![](torus_uneven/render/digne_par_passes.png) | ![](torus_uneven/render/gruber_passes.ppm) | ![](torus_uneven/render/gruber_reseed_passes.ppm) | ![](torus_uneven/render/bpa_rs_passes.ppm) | ![](torus_uneven/render/schmehla_passes.ppm) | ![](torus_uneven/render/giaccari_passes.ppm) | ![](torus_uneven/render/bpafork_passes.png) |
 
 
 ## bun000
