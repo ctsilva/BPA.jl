@@ -6,7 +6,8 @@
 # A COFF mesh (per-vertex colours, as bpa.jl writes with --save-colored or -p) is shaded in
 # its own colours, each triangle taking the colour of its first vertex; --no-edges leaves the
 # boundary edges undrawn, for pictures rather than diagnosis; --wire draws every triangle
-# edge in dark grey, for meshes small enough that the triangles can be told apart; --size
+# edge in dark grey, one pixel wide, and the boundary edges as thin, for meshes small enough
+# that the triangles can be told apart; --size
 # sets the image size (default 1400x1000), for instance to crop a detail at full resolution
 # afterwards.
 # The second form renders the range scans named in the list file (one per line, # comments)
@@ -200,7 +201,7 @@ function main(args)
     for ((p,q),c) in ec
         (edges && c == 1) || continue
         a, b = P[p], P[q]
-        draw_line!(img, sx(a), sy(a), sx(b), sy(b), (220, 20, 20), 1, W, H)
+        draw_line!(img, sx(a), sy(a), sx(b), sy(b), (220, 20, 20), wire ? 0 : 1, W, H)   # thin next to the wire edges
     end
     write_ppm(out, img)
 
