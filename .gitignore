@@ -40,3 +40,4 @@ compare/results/regen.log
 
 # Third-party implementations cloned for the comparison (compare/external/README.md)
 compare/external/
+__pycache__/

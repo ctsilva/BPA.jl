@@ -130,6 +130,15 @@ propagation decides, so between overlapping scan layers it accepts balls that ar
 the inner side while the outward ball is full; and the torus fallback does not test
 emptiness at all.
 
+## Licenses
+
+This repository is MIT-licensed, but the patch files here inherit the license of the code
+they modify, since they quote it: `digne_main.patch` is GPL-3 like Digne's IPOL code, and
+`gruber_reseed.patch` is BSL-1.0 like Gruber's. The wrappers (`run_ext.py`,
+`gruber_noff2off.cpp`, `bpa_rs_noff2off/`) are ours and MIT. No third-party source is
+committed: `build.sh` fetches it into the gitignored `external/`, and the outputs in
+`../results/` are data, not covered by the tools' licenses.
+
 ## The wrappers
 
 `run_ext.py TOOL input.noff rho output.off` handles the conversions:
