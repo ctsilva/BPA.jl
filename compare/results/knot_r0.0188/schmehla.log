@@ -1,0 +1,8 @@
+[info] Reading pointcloud...
+[info] Read 30000 vertices.
+[info] Running computations...
+[info] Found no seed triangle.
+[info] Reconstructed 0 faces in 0 seconds.
+[info] Used 0 vertices (0% of total vertices amount).
+[info] Muli-rolling did not occur.
+schmehla: 30000 vertices, 0 triangles, time: 0.155 s

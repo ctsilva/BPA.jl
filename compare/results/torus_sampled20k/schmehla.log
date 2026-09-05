@@ -1,0 +1,7 @@
+[info] Reading pointcloud...
+[info] Read 20000 vertices.
+[info] Running computations...
+[info] Reconstructed 40000 faces in 1 second.
+[info] Used 20000 vertices (100% of total vertices amount).
+[info] Muli-rolling did not occur.
+schmehla: 20000 vertices, 40000 triangles, time: 0.724 s

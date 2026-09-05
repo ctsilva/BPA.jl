@@ -1,0 +1,100 @@
+--- main.cpp	2013-06-28 05:20:58
++++ /Users/csilva/src/BPA.jl/compare/ext/digne_main.cpp	2026-09-04 08:12:58
+@@ -21,6 +21,7 @@
+ #include <sstream>
+ #include <ctime>
+ #include <getopt.h>
++#include <chrono>
+ #include <vector>
+ 
+ #include "src/Octree.h"
+@@ -52,8 +53,9 @@
+     int outfile_flag = -1;
+     std::list<double> radii;
+     int parallel_flag = -1;
++    int nofill_flag = -1;
+ 
+-    while( (c = getopt(argc,argv, "i:o:d:r:p")) != -1)
++    while( (c = getopt(argc,argv, "i:o:d:r:pn")) != -1)
+     {
+         switch(c)
+         {
+@@ -80,6 +82,9 @@
+                 f>>depth;
+                 break;
+             }
++            case 'n':
++                nofill_flag = 1;
++                break;
+             case 'p':
+             {
+                 parallel_flag = 1;
+@@ -117,12 +122,13 @@
+         radius = radii.front();
+     }
+ 
+-    time_t start,end;
++    std::chrono::steady_clock::time_point start,end;
++#define HR_SECONDS(a,b) std::chrono::duration<double>((b)-(a)).count()
+ 
+     Octree octree;
+ 
+ 
+-    std::time(&start);
++    start = std::chrono::steady_clock::now();
+     bool ok;
+     if(radius >0)
+     {
+@@ -138,14 +144,14 @@
+         std::cerr<<"Pb opening the file; exiting."<<std::endl;
+         return EXIT_FAILURE;
+     }
+-    std::time(&end);
++    end = std::chrono::steady_clock::now();
+ 
+     std::cout<<"Octree with depth "<<octree.getDepth()<<" created."<<std::endl;
+     std::cout<<"Octree contains "<<octree.getNpoints()
+              <<" points. The bounding box size is "
+              <<octree.getSize()<<std::endl;
+     std::cout<<"Reading and sorting points in this octree took "
+-             <<difftime(end,start)<<" s."<<std::endl;
++             <<HR_SECONDS(start,end)<<" s."<<std::endl;
+     std::cout<<"Octree statistics"<<std::endl;
+     octree.printOctreeStat();
+ 
+@@ -165,28 +171,28 @@
+     if(radius>0)
+         iterator.setR(radius);
+ 
+-    std::time(&start);
++    start = std::chrono::steady_clock::now();
+ 
+     Mesher mesher(&octree, &iterator);
+     if(parallel_flag == 1)
+         mesher.parallelReconstruct(radii);
+     else
+         mesher.reconstruct(radii);
+-    std::time(&end);
++    end = std::chrono::steady_clock::now();
+ 
+     std::cout<<"Reconstructed mesh: "<<mesher.nVertices()
+              <<" vertices; "<<mesher.nFacets()<<" facets. "<<std::endl;
+     std::cout<<mesher.nBorderEdges()<<" border edges"<<std::endl;
+-    std::cout<<"Reconstructing the mesh took "<<difftime(end,start)
++    std::cout<<"Reconstructing the mesh took "<<HR_SECONDS(start,end)
+              <<"s."<<std::endl;
+ 
+     std::cout<<"Filling the holes... "<<std::flush;
+ 
+-    std::time(&start);
+-    mesher.fillHoles();
+-    std::time(&end);
++    start = std::chrono::steady_clock::now();
++    if(nofill_flag != 1) mesher.fillHoles();
++    end = std::chrono::steady_clock::now();
+ 
+-    std::cout<<difftime(end,start)<<" s."<<std::endl;
++    std::cout<<HR_SECONDS(start,end)<<" s."<<std::endl;
+     std::cout<<"Final mesh: "<<mesher.nVertices()
+              <<" vertices; "<<mesher.nFacets()<<" facets. "<<std::endl;
+     std::cout<<mesher.nBorderEdges()<<" border edges"<<std::endl;

@@ -9,6 +9,13 @@
 # captures the tool's own reconstruction time in seconds from its log; when it does not
 # match, the wall time of the whole process is used instead.
 
+const EXTERNAL = get(ENV, "BPA_EXTERNAL", joinpath(@__DIR__, "external"))
+const FORK = get(ENV, "BPA_FORK", joinpath(homedir(), "src", "bpa", "build", "bpa"))
+ext(name, stem, exe) = Tool(name, stem,
+    (input, rho, output) -> isfile(PYTHON) && isfile(joinpath(EXTERNAL, exe)) ?
+        `$PYTHON $(joinpath(@__DIR__, "ext", "run_ext.py")) $stem $input $rho $output` : nothing,
+    r"time: ([\d.]+) s")
+
 [
     # BPA.jl, run through its command-line tool from the package directory
     Tool("BPA.jl", "bpa",
@@ -25,6 +32,23 @@
     Tool("MeshLab", "meshlab",
          (input, rho, output) -> isfile(PYTHON) ?
              `$PYTHON $(joinpath(@__DIR__, "run_py.py")) meshlab $input $rho $output` : nothing,
+         r"time: ([\d.]+) s"),
+
+    # Third-party implementations found on the web, through ext/run_ext.py, which converts
+    # to and from their own formats; ext/build.sh fetches and builds them into external/
+    # (see ext/README.md for what each one is). Each shows n/a until it is built.
+    ext("Digne", "digne", "ipol_digne/BallPivoting/build/ballpivoting"),                 # IPOL 2014, serial
+    ext("Digne -p", "digne_par", "ipol_digne/BallPivoting/build/ballpivoting"),          # the same, OpenMP
+    ext("Gruber", "gruber", "bernhardmgruber_bpa/build/gruber_noff2off"),                # C++20
+    ext("Gruber reseeded", "gruber_reseed", "bernhardmgruber_bpa/build/gruber_reseed_noff2off"),  # + ext/gruber_reseed.patch
+    ext("bpa_rs", "bpa_rs", "martinfrances107_bpa_rs/target/release/bpa_rs_noff2off"),   # Rust port of Gruber
+    ext("Schmehla", "schmehla", "schmehla_ball-pivoting-algorithm/build/BPA"),           # thesis, "modified" BPA
+    ext("Giaccari", "giaccari", "LuigiGiaccari_Surface-Reconstruction-Toolbox/build/ballpivoting"),  # no normals
+
+    # The fork of Gruber's C++ at ~/src/bpa (BPA_FORK to point elsewhere): reads the NOFF and
+    # writes the OFF itself, so no wrapper is needed. n/a until it is built.
+    Tool("bpa fork", "bpafork",
+         (input, rho, output) -> isfile(FORK) ? `$FORK $input $rho $output` : nothing,
          r"time: ([\d.]+) s"),
 
     # Your implementation: any command that follows the contract above, for example

@@ -1,0 +1,54 @@
+INFOS
+Ball Pivoting Algorithm v0.1
+Author: Luigi Giaccari
+User: WhoEver
+Build Time: Fri Sep  4 12:49:08 2026
+
+
+LICENSE TERMS
+ The Software provided has to be considered as is and it is without any kind of warranty. The authors deny any kind of warranty concerning the Software  as well as any kind of  responsibility for problems and damages which may be caused by the use of the Software itself.
+
+PROGRAM STARTED!
+Reading input!
+-Input File= giaccari_in.cgo
+-Output File= giaccari_out.stl
+-Ball radius= 0.0007
+
+Importing points...1826038 Points imported
+
+LAUNCHING BPA
+Algorithm started with the following parameters:
+-TooSharp_Torus: -0.5
+-TooSharp_SR: 0
+-Max_BCAngle: 1.1
+-FlatnessToll: -0.7
+-NN_Filter_Cutdist: 20
+-Max_Edge_Length: inf
+-EnablePreProcessing: 1
+-EnablePostProcessing: 1
+Building Search Data Structure...Empty percentage: 16.3041%
+Mean density: 0.0212022
+Done
+
+PREPROCESSING
+Deleted 147 points
+Radius set to: 0.0007
+
+MESHING
+Seed Triangle...Found: 16 50593 15
+Running Front... 1378461 Triangles generated: NumSr :1332168 NumTorus: 63901
+
+POSTPROCESSING
+Filling triplets: 431Triangles 
+Found 1756 starting not manifold vertxes
+Total Time: 4.31545 s
+
+OUTPUT!
+Writing stl file...Done
+
+PROGRAM ENDED!
+
+
+UNMESHABLE IS NOTHING!
+
+giaccari: 1826038 vertices, 1368343 triangles, time: 4.315 s

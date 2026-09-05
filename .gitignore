@@ -37,3 +37,6 @@ compare/results/**/*.off
 compare/results/**/only_in_*.txt
 compare/results/inputs/
 compare/results/regen.log
+
+# Third-party implementations cloned for the comparison (compare/external/README.md)
+compare/external/

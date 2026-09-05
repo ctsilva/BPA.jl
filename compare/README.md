@@ -60,7 +60,14 @@ rerun one at a time and a tool can be rerun alone with `--tools`.
 
 ## Adding an implementation
 
-Append a `Tool` to the vector in `tools.jl`:
+Seven third-party entries found on GitHub and the web are already registered
+through `ext/` (Digne's IPOL parallel BPA, Gruber's C++ as published and patched to seed
+more than once, its Rust port bpa_rs, Schmehla's thesis code and Giaccari's toolbox); `sh ext/build.sh` fetches and builds them, and
+[`ext/README.md`](ext/README.md) says what each one does and lists the implementations
+that were read and left out. The cleaned-up fork of Gruber's code that grew out of that
+survey is registered as "bpa fork": it reads the NOFF and writes the OFF itself, and is
+looked for at `~/src/bpa/build/bpa` (`BPA_FORK` points elsewhere). For your own, append a
+`Tool` to the vector in `tools.jl`:
 
 ```julia
 Tool("mine", "mine",

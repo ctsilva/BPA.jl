@@ -1,0 +1,15 @@
+[package]
+name = "bpa_rs_noff2off"
+version = "0.1.0"
+edition = "2024"
+
+# Built by build.sh with --target-dir inside the checked-out bpa_rs, whose lib/ is the
+# dependency. BPA_RS_LIB is substituted by build.sh (cargo has no env-in-path support).
+[workspace]
+
+[dependencies]
+bpa_rs = { path = "../../external/martinfrances107_bpa_rs/lib" }
+glam = "0.32"
+
+[profile.release]
+opt-level = 3

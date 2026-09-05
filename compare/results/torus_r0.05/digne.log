@@ -1,0 +1,22 @@
+9600 points read
+Octree with depth 6 created.
+Octree contains 9600 points. The bounding box size is 3.2
+Reading and sorting points in this octree took 0.02474 s.
+Octree statistics
+level 5 : 3.2 ; mean number of points: 2400
+level 4 : 1.6 ; mean number of points: 640
+level 3 : 0.8 ; mean number of points: 129.73
+level 2 : 0.4 ; mean number of points: 32
+level 1 : 0.2 ; mean number of points: 7.60095
+level 0 : 0.1 ; mean number of points: 2.27058
+****** Reconstructing with radii 0.05; ******
+single threaded reconstruction
+***********Ball radius 0.05 ***********
+5140 vertices. 10000 facets. 5140 front edges. 0 border edges.
+Reconstructed mesh: 9600 vertices; 19200 facets. 
+0 border edges
+Reconstructing the mesh took 0.096133s.
+Filling the holes... 0 s.
+Final mesh: 9600 vertices; 19200 facets. 
+0 border edges
+digne: 9600 vertices, 19200 triangles, time: 0.096 s

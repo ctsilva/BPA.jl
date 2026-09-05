@@ -1,0 +1,42 @@
+150983 points read
+Octree with depth 7 created.
+Octree contains 150983 points. The bounding box size is 0.192
+Reading and sorting points in this octree took 0.386999 s.
+Octree statistics
+level 6 : 0.192 ; mean number of points: 18872.9
+level 5 : 0.096 ; mean number of points: 4575.24
+level 4 : 0.048 ; mean number of points: 1135.21
+level 3 : 0.024 ; mean number of points: 303.789
+level 2 : 0.012 ; mean number of points: 75.4538
+level 1 : 0.006 ; mean number of points: 20.1418
+level 0 : 0.003 ; mean number of points: 5.69146
+****** Reconstructing with radii 0.0015; ******
+single threaded reconstruction
+***********Ball radius 0.0015 ***********
+6426 vertices. 10000 facets. 5133 front edges. 1287 border edges.
+11589 vertices. 20000 facets. 10186 front edges. 1425 border edges.
+16718 vertices. 30000 facets. 15140 front edges. 1602 border edges.
+21705 vertices. 40000 facets. 16783 front edges. 1822 border edges.
+26689 vertices. 50000 facets. 21736 front edges. 1850 border edges.
+31700 vertices. 60000 facets. 26680 front edges. 1923 border edges.
+36729 vertices. 70000 facets. 31648 front edges. 1992 border edges.
+41739 vertices. 80000 facets. 36628 front edges. 2038 border edges.
+46670 vertices. 90000 facets. 40532 front edges. 2142 border edges.
+51718 vertices. 100000 facets. 45483 front edges. 2262 border edges.
+56863 vertices. 110000 facets. 50450 front edges. 2436 border edges.
+61847 vertices. 120000 facets. 55207 front edges. 2481 border edges.
+66854 vertices. 130000 facets. 60138 front edges. 2572 border edges.
+71855 vertices. 140000 facets. 65095 front edges. 2635 border edges.
+76865 vertices. 150000 facets. 70001 front edges. 2742 border edges.
+81916 vertices. 160000 facets. 74918 front edges. 2883 border edges.
+86921 vertices. 170000 facets. 79789 front edges. 3009 border edges.
+91939 vertices. 180000 facets. 84749 front edges. 3090 border edges.
+96892 vertices. 190000 facets. 89646 front edges. 3171 border edges.
+101619 vertices. 200000 facets. 90711 front edges. 3198 border edges.
+Reconstructed mesh: 103541 vertices; 202474 facets. 
+4772 border edges
+Reconstructing the mesh took 14.6271s.
+Filling the holes... 0 s.
+Final mesh: 103541 vertices; 202474 facets. 
+4772 border edges
+digne: 150983 vertices, 202474 triangles, time: 14.627 s

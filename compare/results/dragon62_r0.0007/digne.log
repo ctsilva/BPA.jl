@@ -1,0 +1,88 @@
+1826038 points read
+Octree with depth 10 created.
+Octree contains 1826038 points. The bounding box size is 0.7168
+Reading and sorting points in this octree took 4.82576 s.
+Octree statistics
+level 9 : 0.7168 ; mean number of points: 228255
+level 8 : 0.3584 ; mean number of points: 140464
+level 7 : 0.1792 ; mean number of points: 46821.5
+level 6 : 0.0896 ; mean number of points: 18079.6
+level 5 : 0.0448 ; mean number of points: 6340.41
+level 4 : 0.0224 ; mean number of points: 1769.42
+level 3 : 0.0112 ; mean number of points: 451.654
+level 2 : 0.0056 ; mean number of points: 109.272
+level 1 : 0.0028 ; mean number of points: 26.1681
+level 0 : 0.0014 ; mean number of points: 6.21262
+****** Reconstructing with radii 0.0007; ******
+single threaded reconstruction
+***********Ball radius 0.0007 ***********
+5794 vertices. 10000 facets. 4380 front edges. 1514 border edges.
+11070 vertices. 20000 facets. 9178 front edges. 2112 border edges.
+16369 vertices. 30000 facets. 13991 front edges. 2731 border edges.
+21803 vertices. 40000 facets. 18873 front edges. 3435 border edges.
+26909 vertices. 50000 facets. 23662 front edges. 3731 border edges.
+32132 vertices. 60000 facets. 28468 front edges. 4191 border edges.
+37275 vertices. 70000 facets. 33363 front edges. 4499 border edges.
+42325 vertices. 80000 facets. 38152 front edges. 4738 border edges.
+47464 vertices. 90000 facets. 43062 front edges. 5035 border edges.
+52646 vertices. 100000 facets. 47972 front edges. 5391 border edges.
+57901 vertices. 110000 facets. 52742 front edges. 5972 border edges.
+63190 vertices. 120000 facets. 57494 front edges. 6655 border edges.
+68430 vertices. 130000 facets. 62311 front edges. 7195 border edges.
+73581 vertices. 140000 facets. 67053 front edges. 7651 border edges.
+78800 vertices. 150000 facets. 71917 front edges. 8097 border edges.
+83998 vertices. 160000 facets. 76778 front edges. 8518 border edges.
+89220 vertices. 170000 facets. 81634 front edges. 8961 border edges.
+94441 vertices. 180000 facets. 86499 front edges. 9387 border edges.
+99694 vertices. 190000 facets. 91315 front edges. 9916 border edges.
+104906 vertices. 200000 facets. 96124 front edges. 10395 border edges.
+110190 vertices. 210000 facets. 100830 front edges. 11058 border edges.
+115661 vertices. 220000 facets. 105473 front edges. 12048 border edges.
+121135 vertices. 230000 facets. 109973 front edges. 13060 border edges.
+126633 vertices. 240000 facets. 114549 front edges. 14065 border edges.
+132519 vertices. 250000 facets. 119048 front edges. 15615 border edges.
+138004 vertices. 260000 facets. 123427 front edges. 16750 border edges.
+143186 vertices. 270000 facets. 127939 front edges. 17474 border edges.
+148441 vertices. 280000 facets. 131799 front edges. 18515 border edges.
+153472 vertices. 290000 facets. 132881 front edges. 19190 border edges.
+158853 vertices. 300000 facets. 137623 front edges. 20014 border edges.
+164140 vertices. 310000 facets. 141616 front edges. 20949 border edges.
+169417 vertices. 320000 facets. 146157 front edges. 21791 border edges.
+173869 vertices. 330000 facets. 131799 front edges. 22760 border edges.
+178366 vertices. 340000 facets. 96691 front edges. 24399 border edges.
+183495 vertices. 350000 facets. 101553 front edges. 24705 border edges.
+188770 vertices. 360000 facets. 106332 front edges. 25266 border edges.
+193983 vertices. 370000 facets. 111208 front edges. 25711 border edges.
+199203 vertices. 380000 facets. 116098 front edges. 26095 border edges.
+204641 vertices. 390000 facets. 120981 front edges. 26721 border edges.
+209776 vertices. 400000 facets. 125871 front edges. 27004 border edges.
+214827 vertices. 410000 facets. 130700 front edges. 27231 border edges.
+220040 vertices. 420000 facets. 135495 front edges. 27673 border edges.
+225622 vertices. 430000 facets. 140058 front edges. 28685 border edges.
+230992 vertices. 440000 facets. 144795 front edges. 29445 border edges.
+236228 vertices. 450000 facets. 149555 front edges. 29990 border edges.
+241360 vertices. 460000 facets. 154330 front edges. 30346 border edges.
+246599 vertices. 470000 facets. 159190 front edges. 30833 border edges.
+252037 vertices. 480000 facets. 163865 front edges. 31670 border edges.
+257274 vertices. 490000 facets. 168314 front edges. 32459 border edges.
+262586 vertices. 500000 facets. 172439 front edges. 33277 border edges.
+267743 vertices. 510000 facets. 177223 front edges. 33749 border edges.
+273124 vertices. 520000 facets. 181920 front edges. 34529 border edges.
+278766 vertices. 530000 facets. 186563 front edges. 35711 border edges.
+284008 vertices. 540000 facets. 191000 front edges. 36491 border edges.
+289189 vertices. 550000 facets. 195111 front edges. 37182 border edges.
+294117 vertices. 560000 facets. 198067 front edges. 37600 border edges.
+299477 vertices. 570000 facets. 190642 front edges. 39064 border edges.
+304581 vertices. 580000 facets. 195259 front edges. 39664 border edges.
+307888 vertices. 590000 facets. 103877 front edges. 41873 border edges.
+311954 vertices. 600000 facets. 1191 front edges. 43915 border edges.
+317484 vertices. 610000 facets. 3847 front edges. 44658 border edges.
+322412 vertices. 620000 facets. 8777 front edges. 44658 border edges.
+328686 vertices. 630000 facets. 221 front edges. 46827 border edges.
+Reconstructed mesh: 329732 vertices; 631174 facets. 
+47656 border edges
+Reconstructing the mesh took 1986.91s.
+Filling the holes... 0 s.
+Final mesh: 329732 vertices; 631174 facets. 
+47656 border edges
+digne: 1826038 vertices, 631174 triangles, time: 1986.910 s

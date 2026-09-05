@@ -1,0 +1,31 @@
+/Users/csilva/src/BPA.jl/compare/ext/../external/LuigiGiaccari_Surface-Reconstruction-Toolbox/build/ballpivoting exited with status 1
+ware provided has to be considered as is and it is without any kind of warranty. The authors deny any kind of warranty concerning the Software  as well as any kind of  responsibility for problems and damages which may be caused by the use of the Software itself.
+
+PROGRAM STARTED!
+Reading input!
+-Input File= giaccari_in.cgo
+-Output File= giaccari_out.stl
+-Ball radius= 0.15
+
+Importing points...1600 Points imported
+
+LAUNCHING BPA
+Algorithm started with the following parameters:
+-TooSharp_Torus: -0.5
+-TooSharp_SR: 0
+-Max_BCAngle: 1.1
+-FlatnessToll: -0.7
+-NN_Filter_Cutdist: 20
+-Max_Edge_Length: inf
+-EnablePreProcessing: 1
+-EnablePostProcessing: 1
+Building Search Data Structure...Empty percentage: 0.274348%
+Mean density: 2.20083
+Done
+
+PREPROCESSING
+Deleted 0 points
+Radius set to: 0.15
+
+MESHING
+Seed Triangle...FATAL ERROR:Unable to find Seed Triangle
