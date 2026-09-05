@@ -172,7 +172,7 @@ input: `-i /Users/csilva/src/BPA.jl/data/torus-120-80.off`, rho = 0.05, 9600 poi
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 19200 | 19200 | 19196 | 19200 | 19200 | 19036 | 19060 | 19094 | 19200 | 19200 | 19200 |
-| reconstruction time (s) | 0.03 | 0.061 | 0.043 | 0.096 | 0.025 | 0.024 | 0.025 | 0.028 | 1.008 | 0.014 | 0.02 |
+| reconstruction time (s) | 0.03 | 0.061 | 0.043 | 0.096 | 0.025 | 0.024 | 0.025 | 0.028 | 1.008 | 0.014 | 0.019 |
 | vertices used | 9600 | 9600 | 9599 | 9600 | 9600 | 9598 | 9600 | 9600 | 9600 | 9600 | 9600 |
 | boundary edges | 0 | 0 | 4 | 0 | 0 | 234 | 208 | 162 | 0 | 0 | 0 |
 | boundary loops | 0 | 0 | 1 | 0 | 0 | 37 | 34 | 28 | 0 | 0 | 0 |
@@ -280,7 +280,7 @@ input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_sampled20k.off`
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 40000 | 40000 | 30279 | 40000 | 40000 | 40000 | 40000 | 40000 | 40000 | 39962 | 40000 |
-| reconstruction time (s) | 0.1 | 0.274 | 0.077 | 0.417 | 0.071 | 0.092 | 0.091 | 0.11 | 0.724 | 0.027 | 0.075 |
+| reconstruction time (s) | 0.1 | 0.274 | 0.077 | 0.417 | 0.071 | 0.092 | 0.091 | 0.11 | 0.724 | 0.027 | 0.072 |
 | vertices used | 20000 | 20000 | 15197 | 20000 | 20000 | 20000 | 20000 | 20000 | 20000 | 19981 | 20000 |
 | boundary edges | 0 | 0 | 425 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | boundary loops | 0 | 0 | 94 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -388,7 +388,7 @@ input: `-i /Users/csilva/src/BPA.jl/data/knot-300-100.off`, rho = 0.03, 30000 po
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 58400 | 58326 | 59570 | 58326 | 58325 | 58370 | 58389 | 58370 | 58401 | 58432 | 58418 |
-| reconstruction time (s) | 0.16 | 0.209 | 0.222 | 0.33 | 0.132 | 0.075 | 0.07 | 0.082 | 6.508 | 0.045 | 0.06 |
+| reconstruction time (s) | 0.16 | 0.209 | 0.222 | 0.33 | 0.132 | 0.075 | 0.07 | 0.082 | 6.508 | 0.045 | 0.059 |
 | vertices used | 29208 | 29202 | 29993 | 29202 | 29202 | 29208 | 29265 | 29208 | 29208 | 29213 | 29208 |
 | boundary edges | 62 | 214 | 1770 | 210 | 217 | 112 | 169 | 112 | 63 | 12 | 58 |
 | boundary loops | 16 | 35 | 7 | 35 | 35 | 18 | 37 | 18 | 15 | 3 | 17 |
@@ -442,7 +442,7 @@ input: `-l bun000 -d /Users/csilva/src/BPA.jl/data/bunny/data`, rho = 0.00125, 4
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 78152 | 77994 | 78203 | 77941 | 77933 | 1631 | 78093 | 1631 | 134 | 75613 | 78162 |
-| reconstruction time (s) | 0.12 | 0.35 | 0.276 | 0.51 | 0.308 | 0.003 | 0.128 | 0.005 | 0.206 | 0.048 | 0.093 |
+| reconstruction time (s) | 0.12 | 0.35 | 0.276 | 0.51 | 0.308 | 0.003 | 0.128 | 0.005 | 0.206 | 0.048 | 0.091 |
 | vertices used | 39759 | 39748 | 39838 | 39785 | 39785 | 883 | 39773 | 883 | 66 | 38325 | 39780 |
 | boundary edges | 1418 | 1692 | 1921 | 2095 | 2137 | 137 | 1459 | 137 | 9 | 1061 | 1440 |
 | boundary loops | 26 | 97 | 86 | 146 | 151 | 3 | 37 | 3 | 4 | 10 | 32 |
@@ -498,7 +498,7 @@ input: `-l bun000,bun045,bun090,bun180 -d /Users/csilva/src/BPA.jl/data/bunny/da
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 239041 | 237204 | 256474 | 238054 | 238061 | 236662 | 238317 | 236662 | 10 | 244053 | 239022 |
-| reconstruction time (s) | 0.47 | 1.158 | 10.239 | 1.751 | 0.569 | 0.337 | 0.335 | 0.384 | 0.754 | 0.209 | 0.293 |
+| reconstruction time (s) | 0.47 | 1.158 | 10.239 | 1.751 | 0.569 | 0.337 | 0.335 | 0.384 | 0.754 | 0.209 | 0.297 |
 | vertices used | 122478 | 122347 | 133234 | 122802 | 122808 | 120826 | 122464 | 120826 | 11 | 125428 | 122473 |
 | boundary edges | 6475 | 8818 | 15692 | 8690 | 8681 | 5455 | 6710 | 5455 | 10 | 7305 | 6432 |
 | boundary loops | 357 | 632 | 424 | 727 | 716 | 219 | 400 | 219 | 1 | 229 | 365 |
@@ -554,7 +554,7 @@ input: `-l bun000,bun045,bun090,bun180 -d /Users/csilva/src/BPA.jl/data/bunny/da
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 202958 | 201124 | 218720 | 202474 | 202440 | 202501 | 202581 | 202517 | 201 | 245099 | 202968 |
-| reconstruction time (s) | 0.74 | 7.083 | 15.871 | 14.627 | 5.657 | 0.669 | 0.662 | 0.768 | 0.762 | 0.344 | 0.507 |
+| reconstruction time (s) | 0.74 | 7.083 | 15.871 | 14.627 | 5.657 | 0.669 | 0.662 | 0.768 | 0.762 | 0.344 | 0.506 |
 | vertices used | 102271 | 102125 | 113527 | 103541 | 103551 | 102199 | 102283 | 102200 | 108 | 129371 | 102285 |
 | boundary edges | 1732 | 3918 | 28558 | 4772 | 4932 | 2077 | 2143 | 2055 | 32 | 15259 | 1758 |
 | boundary loops | 60 | 315 | 512 | 727 | 736 | 89 | 100 | 85 | 5 | 746 | 62 |
@@ -610,7 +610,7 @@ input: `-l bun000,bun045,bun090,bun180,bun270,bun315,chin,ear_back,top2,top3 -d 
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 323934 | 317975 | 477737 | 323808 | 323783 | 323175 | 323224 | 323175 | 0 | 540947 | 323920 |
-| reconstruction time (s) | 1.61 | 36.63 | 294.74 | 81.82 | 38.681 | 1.401 | 1.402 | 1.757 | 2.321 | 1.013 | 1.107 |
+| reconstruction time (s) | 1.61 | 36.63 | 294.74 | 81.82 | 38.681 | 1.401 | 1.402 | 1.757 | 2.321 | 1.013 | 1.115 |
 | vertices used | 162289 | 161945 | 253390 | 168141 | 168134 | 162226 | 162343 | 162226 | 0 | 283969 | 162289 |
 | boundary edges | 806 | 8125 | 173875 | 10696 | 10733 | 1601 | 1718 | 1601 | 0 | 30293 | 856 |
 | boundary loops | 107 | 938 | 715 | 2572 | 2578 | 157 | 191 | 157 | 0 | 1777 | 121 |
@@ -666,7 +666,7 @@ input: `-l dragonBottomFill1_0,dragonBottomFill2_0,dragonKnee_0,dragonMouth1_0,d
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 649518 | 624851 | 2545632 | 631174 | 631171 | 1 | 639668 | 1 | 5 | 1368343 | 649459 |
-| reconstruction time (s) | 6.59 | 830.594 | 19355.382 | 1986.91 | 1382.47 | 0.086 | 4.906 | 0.48 | 9.38 | 4.315 | 4.327 |
+| reconstruction time (s) | 6.59 | 830.594 | 19355.382 | 1986.91 | 1382.47 | 0.086 | 4.906 | 0.48 | 9.38 | 4.315 | 4.51 |
 | vertices used | 329013 | 328647 | 1376106 | 329732 | 329736 | 3 | 329247 | 3 | 6 | 690586 | 329005 |
 | boundary edges | 13434 | 53205 | 1707330 | 47656 | 47687 | 3 | 24103 | 3 | 5 | 16195 | 13757 |
 | boundary loops | 2257 | 6804 | 398 | 6459 | 6454 | 1 | 3011 | 1 | 1 | 1383 | 2320 |

@@ -8,7 +8,7 @@ input: `-l dragonBottomFill1_0,dragonBottomFill2_0,dragonKnee_0,dragonMouth1_0,d
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 649518 | 624851 | 2545632 | 631174 | 631171 | 1 | 639668 | 1 | 5 | 1368343 | 649459 |
-| reconstruction time (s) | 6.59 | 830.594 | 19355.382 | 1986.91 | 1382.47 | 0.086 | 4.906 | 0.48 | 9.38 | 4.315 | 4.327 |
+| reconstruction time (s) | 6.59 | 830.594 | 19355.382 | 1986.91 | 1382.47 | 0.086 | 4.906 | 0.48 | 9.38 | 4.315 | 4.51 |
 | vertices used | 329013 | 328647 | 1376106 | 329732 | 329736 | 3 | 329247 | 3 | 6 | 690586 | 329005 |
 | boundary edges | 13434 | 53205 | 1707330 | 47656 | 47687 | 3 | 24103 | 3 | 5 | 16195 | 13757 |
 | boundary loops | 2257 | 6804 | 398 | 6459 | 6454 | 1 | 3011 | 1 | 1 | 1383 | 2320 |

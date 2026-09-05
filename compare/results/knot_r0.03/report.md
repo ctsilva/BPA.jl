@@ -8,7 +8,7 @@ input: `-i /Users/csilva/src/BPA.jl/data/knot-300-100.off`, rho = 0.03, 30000 po
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 58400 | 58326 | 59570 | 58326 | 58325 | 58370 | 58389 | 58370 | 58401 | 58432 | 58418 |
-| reconstruction time (s) | 0.16 | 0.209 | 0.222 | 0.33 | 0.132 | 0.075 | 0.07 | 0.082 | 6.508 | 0.045 | 0.06 |
+| reconstruction time (s) | 0.16 | 0.209 | 0.222 | 0.33 | 0.132 | 0.075 | 0.07 | 0.082 | 6.508 | 0.045 | 0.059 |
 | vertices used | 29208 | 29202 | 29993 | 29202 | 29202 | 29208 | 29265 | 29208 | 29208 | 29213 | 29208 |
 | boundary edges | 62 | 214 | 1770 | 210 | 217 | 112 | 169 | 112 | 63 | 12 | 58 |
 | boundary loops | 16 | 35 | 7 | 35 | 35 | 18 | 37 | 18 | 15 | 3 | 17 |

@@ -8,7 +8,7 @@ input: `-i /Users/csilva/src/BPA.jl/data/torus-120-80.off`, rho = 0.05, 9600 poi
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 19200 | 19200 | 19196 | 19200 | 19200 | 19036 | 19060 | 19094 | 19200 | 19200 | 19200 |
-| reconstruction time (s) | 0.03 | 0.061 | 0.043 | 0.096 | 0.025 | 0.024 | 0.025 | 0.028 | 1.008 | 0.014 | 0.02 |
+| reconstruction time (s) | 0.03 | 0.061 | 0.043 | 0.096 | 0.025 | 0.024 | 0.025 | 0.028 | 1.008 | 0.014 | 0.019 |
 | vertices used | 9600 | 9600 | 9599 | 9600 | 9600 | 9598 | 9600 | 9600 | 9600 | 9600 | 9600 |
 | boundary edges | 0 | 0 | 4 | 0 | 0 | 234 | 208 | 162 | 0 | 0 | 0 |
 | boundary loops | 0 | 0 | 1 | 0 | 0 | 37 | 34 | 28 | 0 | 0 | 0 |

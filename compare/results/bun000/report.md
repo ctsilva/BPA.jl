@@ -8,7 +8,7 @@ input: `-l bun000 -d /Users/csilva/src/BPA.jl/data/bunny/data`, rho = 0.00125, 4
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 78152 | 77994 | 78203 | 77941 | 77933 | 1631 | 78093 | 1631 | 134 | 75613 | 78162 |
-| reconstruction time (s) | 0.12 | 0.35 | 0.276 | 0.51 | 0.308 | 0.003 | 0.128 | 0.005 | 0.206 | 0.048 | 0.093 |
+| reconstruction time (s) | 0.12 | 0.35 | 0.276 | 0.51 | 0.308 | 0.003 | 0.128 | 0.005 | 0.206 | 0.048 | 0.091 |
 | vertices used | 39759 | 39748 | 39838 | 39785 | 39785 | 883 | 39773 | 883 | 66 | 38325 | 39780 |
 | boundary edges | 1418 | 1692 | 1921 | 2095 | 2137 | 137 | 1459 | 137 | 9 | 1061 | 1440 |
 | boundary loops | 26 | 97 | 86 | 146 | 151 | 3 | 37 | 3 | 4 | 10 | 32 |

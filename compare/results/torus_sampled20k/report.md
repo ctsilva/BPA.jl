@@ -8,7 +8,7 @@ input: `-i /Users/csilva/src/BPA.jl/compare/results/inputs/torus_sampled20k.off`
 |  | BPA.jl | Open3D | MeshLab | Digne | Digne -p | Gruber | Gruber reseeded | bpa_rs | Schmehla | Giaccari | bpa fork |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | triangles | 40000 | 40000 | 30279 | 40000 | 40000 | 40000 | 40000 | 40000 | 40000 | 39962 | 40000 |
-| reconstruction time (s) | 0.1 | 0.274 | 0.077 | 0.417 | 0.071 | 0.092 | 0.091 | 0.11 | 0.724 | 0.027 | 0.075 |
+| reconstruction time (s) | 0.1 | 0.274 | 0.077 | 0.417 | 0.071 | 0.092 | 0.091 | 0.11 | 0.724 | 0.027 | 0.072 |
 | vertices used | 20000 | 20000 | 15197 | 20000 | 20000 | 20000 | 20000 | 20000 | 20000 | 19981 | 20000 |
 | boundary edges | 0 | 0 | 425 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | boundary loops | 0 | 0 | 94 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
