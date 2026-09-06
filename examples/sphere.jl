@@ -30,4 +30,5 @@ println(mesh.stats)
 out = joinpath(@__DIR__, "sphere")
 write_obj(out * ".obj", mesh)
 write_ply(out * ".ply", mesh)
-println("wrote $out.obj and $out.ply")
+write_off(out * ".off", mesh)               # for tools/render.jl and tools/check.jl
+println("wrote $out.obj, $out.ply and $out.off")

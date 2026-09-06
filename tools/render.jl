@@ -1,13 +1,17 @@
 # Minimal flat-shaded painter's-algorithm renderer: OFF -> PPM, plus depth-complexity images.
 #
-#   julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--size WxH]
-#   julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]
+#   julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--bands] [--elev DEG] [--size WxH]
+#   julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--elev DEG] [--size WxH]
 #
 # A COFF mesh (per-vertex colours, as bpa.jl writes with --save-colored or -p) is shaded in
 # its own colours, each triangle taking the colour of its first vertex; --no-edges leaves the
 # boundary edges undrawn, for pictures rather than diagnosis; --wire draws every triangle
 # edge in dark grey, one pixel wide, and the boundary edges as thin, for meshes small enough
-# that the triangles can be told apart; --size
+# that the triangles can be told apart; --bands splits the picture into three vertical
+# bands, the shaded surface on the left, the wireframe over a pale surface in the middle and
+# the bare vertices on the right (the classic "points to mesh" picture: each triangle goes to
+# the band of its centre, and a vertex is drawn as a dot when nothing is in front of it);
+# --elev sets the elevation of the view in degrees (default 15); --size
 # sets the image size (default 1400x1000), for instance to crop a detail at full resolution
 # afterwards.
 # The second form renders the range scans named in the list file (one per line, # comments)
@@ -133,19 +137,22 @@ function draw_line!(img, x1, y1, x2, y2, col, halfwidth, W, H)
 end
 
 function main(args)
-    list = ""; dir = ""; positional = String[]; edges = true; wire = false; W, H = 1400, 1000
+    list = ""; dir = ""; positional = String[]; edges = true; wire = false; bands = false
+    W, H = 1400, 1000; elev = 15.0
     i = 1
     while i <= length(args)
         if args[i] == "-f" && i < length(args); list = args[i+1]; i += 2
         elseif args[i] == "-d" && i < length(args); dir = args[i+1]; i += 2
         elseif args[i] == "--no-edges"; edges = false; i += 1
         elseif args[i] == "--wire"; wire = true; i += 1
+        elseif args[i] == "--bands"; bands = true; i += 1
+        elseif args[i] == "--elev" && i < length(args); elev = parse(Float64, args[i+1]); i += 2
         elseif args[i] == "--size" && i < length(args); W, H = parse.(Int, split(args[i+1], 'x')); i += 2
         else push!(positional, args[i]); i += 1
         end
     end
     if isempty(list) && isempty(positional)
-        println(stderr, "usage: julia render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--size WxH]\n       julia render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]")
+        println(stderr, "usage: julia render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--bands] [--elev DEG] [--size WxH]\n       julia render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--elev DEG] [--size WxH]")
         exit(1)
     end
     if isempty(list)
@@ -159,7 +166,7 @@ function main(args)
     out = length(positional) >= 1 ? positional[1] : splitext(input)[1] * ".ppm"
     angle = length(positional) >= 2 ? parse(Float64, positional[2]) : 30.0
     # View: rotate about Y (bunny's up axis is +Y in Stanford data) so we see the side/front
-    θ = deg2rad(angle); φ = deg2rad(15)
+    θ = deg2rad(angle); φ = deg2rad(elev)
     Ry = [cos(θ) 0 sin(θ); 0 1 0; -sin(θ) 0 cos(θ)]
     Rx = [1 0 0; 0 cos(φ) -sin(φ); 0 sin(φ) cos(φ)]
     R = Rx * Ry
@@ -172,6 +179,10 @@ function main(args)
     img = fill(UInt8(245), 3, W, H)
     cover = zeros(Int, W, H)        # triangles behind each pixel
     signed = zeros(Int, W, H)       # front-facing minus back-facing
+    zbuf = fill(-Inf, W, H)         # depth of the nearest triangle at each pixel
+    # --bands: the band of a screen x, by thirds of the mesh's width on screen
+    xmin, xmax = extrema(sx(p) for p in P)
+    band(x) = bands ? min(3, 1 + floor(Int, 3 * (x - xmin) / (xmax - xmin + eps()))) : 1
     depth = [ (P[f[1]][3]+P[f[2]][3]+P[f[3]][3])/3 for f in F ]
     order = sortperm(depth)  # far to near (z toward viewer is +)
     for i in order
@@ -181,17 +192,44 @@ function main(args)
         if n[3] < 0; n = -n; end  # two-sided lighting
         shade = 0.25 + 0.75 * max(0.0, dot(n, light))
         base = C === nothing ? (0.85, 0.70, 0.55) : (C[f[1]][1], C[f[1]][2], C[f[1]][3])
+        k = band((sx(a) + sx(b) + sx(c)) / 3)
+        k == 2 && (base = 0.35 .* base .+ 0.65)              # pale, so the wire stands out
         col = (UInt8(round(255*base[1]*shade)), UInt8(round(255*base[2]*shade)), UInt8(round(255*base[3]*shade)))
-        rasterize(sx(a),sy(a),sx(b),sy(b),sx(c),sy(c), W, H) do x, y
-            img[1,x,y] = col[1]; img[2,x,y] = col[2]; img[3,x,y] = col[3]
+        # depth of the triangle's plane at a pixel, for the z-buffer
+        ax, ay, bx, by, cx_, cy_ = sx(a), sy(a), sx(b), sy(b), sx(c), sy(c)
+        det = (bx-ax)*(cy_-ay) - (cx_-ax)*(by-ay)
+        zat(x, y) = begin
+            l2 = ((x-ax)*(cy_-ay) - (cx_-ax)*(y-ay)) / det
+            l3 = ((bx-ax)*(y-ay) - (x-ax)*(by-ay)) / det
+            (1 - l2 - l3) * a[3] + l2 * b[3] + l3 * c[3]
+        end
+        rasterize(ax, ay, bx, by, cx_, cy_, W, H) do x, y
+            if k != 3
+                img[1,x,y] = col[1]; img[2,x,y] = col[2]; img[3,x,y] = col[3]
+            end
             cover[x,y] += 1
             signed[x,y] += facing
+            zbuf[x,y] = max(zbuf[x,y], zat(x, y))
         end
         # --wire: the triangle's own edges, drawn right after it so that nearer triangles,
         # painted later, cover them like any other part of it
-        if wire
+        if wire || k == 2
             for (p, q) in ((a, b), (b, c), (c, a))
                 draw_line!(img, sx(p), sy(p), sx(q), sy(q), (40, 40, 40), 0, W, H)
+            end
+        end
+    end
+    # --bands: the vertices of the right band, as dots where no triangle hides them
+    if bands
+        tol = 2e-3 * (maximum(p[3] for p in P) - minimum(p[3] for p in P))
+        side = max(1, round(Int, W / 700))      # dot side in pixels, so it survives downscaling
+        for p in P
+            x, y = round(Int, sx(p)), round(Int, sy(p))
+            (band(sx(p)) == 3 && 1 <= x <= W && 1 <= y <= H && p[3] >= zbuf[x,y] - tol) || continue
+            for dx in 0:side-1, dy in 0:side-1
+                xx, yy = x + dx, y + dy
+                1 <= xx <= W && 1 <= yy <= H || continue
+                img[1,xx,yy] = 40; img[2,xx,yy] = 40; img[3,xx,yy] = 40
             end
         end
     end

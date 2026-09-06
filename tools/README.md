@@ -9,14 +9,25 @@ Renders a mesh to an image and, alongside it, two images that count what lies be
 pixel. Useful for finding the holes and duplicate layers that the summary numbers only hint at.
 
 ```
-julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--size WxH]
-julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]
+julia tools/render.jl mesh.off [out.ppm] [ANGLE] [--no-edges] [--wire] [--bands] [--elev DEG] [--size WxH]
+julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--elev DEG] [--size WxH]
 ```
 
 - `mesh.off`: an OFF, NOFF or COFF file. A COFF file's per-vertex colours (as `bpa.jl`
   writes with `--save-colored` or `-p`) are used for the shading, each triangle taking the
   colour of its first vertex; otherwise the mesh is drawn in a single colour.
 - `--no-edges`: leave the boundary edges undrawn, for a picture rather than a diagnosis.
+- `--wire`: draw every triangle edge in dark grey, one pixel wide, for meshes small enough
+  that the triangles can be told apart.
+- `--bands`: the "points to surface" picture: three vertical bands, the shaded surface on
+  the left, the wireframe over a pale surface in the middle and the bare vertices on the
+  right. Each triangle goes to the band of its centre, and a vertex is drawn as a dot
+  where no triangle is in front of it. The pictures at the top of the package README are
+  `julia tools/render.jl results/wavy_torus_bpa.off out.ppm 20 --bands --elev 40 --no-edges --size 2800x2000`
+  and the same for the sphere (`--elev 20`) and the bunny (angle 30, default elevation),
+  each cropped to its content and scaled down afterwards so that the lines and dots are
+  antialiased (`sips -s format png --resampleWidth 2400 ...` on macOS).
+- `--elev DEG`: elevation of the view in degrees, default 15.
 - `--size WxH`: image size, default 1400x1000; a larger size lets a detail be cropped at
   full resolution afterwards (the dragon pictures in the package README are a 2800x2000
   rendering cropped to the figure, since its bounding box includes the turntable).
@@ -25,8 +36,8 @@ julia tools/render.jl -f scans.txt [-d DIR] [out.ppm] [ANGLE] [--size WxH]
   (`-d`, default: the list file's directory) and moved by `<name>.xf` when that file exists.
   This is the same list format the command line tool takes.
 - `out.ppm`: default is the mesh's (or list's) name with a `.ppm` extension, next to it.
-- `ANGLE`: rotation about the vertical axis in degrees, default 30. The elevation is fixed
-  at 15 degrees, and the projection is orthographic.
+- `ANGLE`: rotation about the vertical axis in degrees, default 30. The projection is
+  orthographic.
 
 Three images are written, binary PPM, 1400×1000 unless `--size` says otherwise:
 

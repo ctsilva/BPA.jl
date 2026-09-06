@@ -6,6 +6,16 @@ A Julia implementation of the Ball-Pivoting Algorithm for surface reconstruction
 > *The Ball-Pivoting Algorithm for Surface Reconstruction.*
 > IEEE Transactions on Visualization and Computer Graphics 5(4), 349–359, 1999.
 
+![A sphere, a waved torus and the Stanford bunny, each shown as the reconstructed surface on the left, its triangles in the middle and the input points on the right](docs/images/points_to_surface.png)
+
+*From points to surface. Each reconstruction is one rendering by `tools/render.jl --bands`:
+the shaded mesh on the left, its wireframe in the middle, the input points on the right.
+The sphere is the 5,000 Fibonacci points of `examples/sphere.jl`; the waved torus is 15,512
+points from `examples/make_wavy_torus.jl`, reconstructed with `bpa.jl -r 0.04`; the bunny is
+the 35,947 vertices of Stanford's zippered model (`data/bunny/reconstruction/bun_zipper.off`,
+normals from its faces, `-r 0.002,0.004`). The sphere and torus close from a single seed with
+every point used; the bunny keeps the holes of its underside.*
+
 Given points sampled on a surface, each with an outward-oriented normal, and a ball radius
 ρ, the algorithm builds a triangle mesh that interpolates the points: starting from a seed
 triangle, a ball of radius ρ pivots around each boundary edge of the mesh until it touches
@@ -439,6 +449,7 @@ larger radius, or a list of radii.
 | --- | --- |
 | `data/torus-120-80.off` | trimesh2 `mesh_make torus 120 80`: 9,600 vertices, use `-r 0.1` |
 | `data/knot-300-100.off` | trimesh2 `mesh_make knot 300 100`: 30,000 vertices, use `-r 0.03` to `0.05` |
+| `data/wavy_torus.off` | `examples/make_wavy_torus.jl`: 15,512 points with normals, evenly but irregularly spaced on a torus whose tube swells six times around the ring, use `-r 0.04`; the middle picture at the top of this file |
 | `data/bunny/data/` | the 10 Stanford bunny range scans as `.off` meshes with `.xf` alignment matrices, `bun.conf`, `combined.ply`, and the scan lists `bunny_scans.txt` / `bunny_main.txt` |
 | `data/bunny/reconstruction/` | Stanford's zippered reference reconstruction, useful for checking alignment |
 | `data/dragon/scans/` | the 71 Stanford dragon range scans as `.off` meshes with `.xf` matrices, the five `.conf` files, `dragon_combined.ply` |
@@ -447,7 +458,7 @@ larger radius, or a list of radii.
 | `scripts/` | shell scripts that generate the meshes and download and convert the Stanford scans; they need trimesh2 (see `scripts/README.md`) |
 | `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers; `check.jl`: topology report and empty-ball audit of any mesh file; `sweep.jl`: one reconstruction per radius, as a table (see `tools/README.md`) |
 | `compare/` | the cross-check harness: runs BPA.jl, Open3D, MeshLab and any implementation you register on the same inputs, audits every output and renders them side by side (see `compare/README.md`; findings in `compare/REPORT.md`) |
-| `examples/` | `sphere.jl` and `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) |
+| `examples/` | `sphere.jl`, `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) and `make_wavy_torus.jl` (the waved torus at the top of this file, sampled by dart throwing with analytic normals) |
 
 ## Documentation
 
