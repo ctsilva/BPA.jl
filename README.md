@@ -450,6 +450,7 @@ larger radius, or a list of radii.
 | `data/torus-120-80.off` | trimesh2 `mesh_make torus 120 80`: 9,600 vertices, use `-r 0.1` |
 | `data/knot-300-100.off` | trimesh2 `mesh_make knot 300 100`: 30,000 vertices, use `-r 0.03` to `0.05` |
 | `data/wavy_torus.off` | `examples/make_wavy_torus.jl`: 15,512 points with normals, evenly but irregularly spaced on a torus whose tube swells six times around the ring, use `-r 0.04`; the middle picture at the top of this file |
+| `data/plane_uneven.off` | `examples/make_uneven_plane.jl`: 5,300 points on a plane, 50 x 100 at 1 mm beside 12 x 25 at 4 mm, for the multi-radius passes: use `-r 0.0015,0.006` (the `plane_uneven` case of `compare/`) |
 | `data/bunny/data/` | the 10 Stanford bunny range scans as `.off` meshes with `.xf` alignment matrices, `bun.conf`, `combined.ply`, and the scan lists `bunny_scans.txt` / `bunny_main.txt` |
 | `data/bunny/reconstruction/` | Stanford's zippered reference reconstruction, useful for checking alignment |
 | `data/dragon/scans/` | the 71 Stanford dragon range scans as `.off` meshes with `.xf` matrices, the five `.conf` files, `dragon_combined.ply` |
@@ -458,7 +459,7 @@ larger radius, or a list of radii.
 | `scripts/` | shell scripts that generate the meshes and download and convert the Stanford scans; they need trimesh2 (see `scripts/README.md`) |
 | `tools/` | `render.jl`: shaded, depth-complexity and signed renderings of a mesh or a merged scan list, for finding holes and duplicate layers; `check.jl`: topology report and empty-ball audit of any mesh file; `sweep.jl`: one reconstruction per radius, as a table (see `tools/README.md`) |
 | `compare/` | the cross-check harness: runs BPA.jl, Open3D, MeshLab and any implementation you register on the same inputs, audits every output and renders them side by side (see `compare/README.md`; findings in `compare/REPORT.md`) |
-| `examples/` | `sphere.jl`, `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) and `make_wavy_torus.jl` (the waved torus at the top of this file, sampled by dart throwing with analytic normals) |
+| `examples/` | `sphere.jl`, `make_torus_off.jl` (a torus without trimesh2, with a different minor radius than the trimesh2 one) `make_wavy_torus.jl` (the waved torus at the top of this file, sampled by dart throwing with analytic normals) and `make_uneven_plane.jl` (a plane sampled at 1 mm on one half and 4 mm on the other, for the multi-radius passes) |
 
 ## Documentation
 
@@ -575,19 +576,25 @@ same machine):
 | bunny, 10 scans, ρ = 1.25 mm | 362 272 | 323 934 | 1.2 s | 27 s | 166 s |
 | dragon, 62 scans, ρ = 0.7 mm | 1 826 038 | 649 518 | 5.1 s | 11.2 min | 4.1 h |
 
-The two reconstructions and the waved torus from the top of this file, rendered with
-`tools/render.jl`. On the right, the same meshes coloured by creation order
-(`--save-colored`): each block of triangles, 3 102 on the torus, 72 454 on the bunny and
-100 000 on the dragon, takes the next colour of blue, green, red, yellow and magenta,
-brightening within the block, so the sweep of the front over the surface is visible. On the
-torus the front wraps around the tube and advances along the ring, so the blocks are bands
-across the tube, and the ten blocks cycle through the five colours twice. The bunny grew
-from one seed on the head to the tail; the dragon needed 101 seeds, and its first block
-starts on the turntable fragments the scans contain.
+The two reconstructions, the waved torus from the top of this file and an unevenly sampled
+plane, rendered with `tools/render.jl`. On the right, the same meshes coloured by creation
+order (`--save-colored`): each block of triangles, 3 102 on the torus, 1 060 on the plane,
+72 454 on the bunny and 100 000 on the dragon, takes the next colour of blue, green, red,
+yellow and magenta, brightening within the block, so the sweep of the front over the surface
+is visible. On the torus the front wraps around the tube and advances along the ring, so the
+blocks are bands across the tube, and the ten blocks cycle through the five colours twice.
+The plane (`examples/make_uneven_plane.jl`, drawn with `--wire` so the two spacings can be
+told apart) has 5 000 points at 1 mm on the left and 300 at 4 mm on the right, and is
+reconstructed in two passes, `-r 0.0015,0.006`: the small ball sweeps the dense half in
+rings from a seed in its lower corner and stops at the coarse half, which the 6 mm ball of
+the second pass then covers, in the last block. The bunny grew from one seed on the head to
+the tail; the dragon needed 101 seeds, and its first block starts on the turntable fragments
+the scans contain.
 
 | | reconstruction | coloured by creation order |
 | --- | --- | --- |
 | waved torus, 15 512 points | ![](docs/images/wavy_torus.png) | ![](docs/images/wavy_torus_colored.png) |
+| uneven plane, 5 300 points | ![](docs/images/plane_uneven.png) | ![](docs/images/plane_uneven_colored.png) |
 | bunny, 10 scans | ![](docs/images/bunny.png) | ![](docs/images/bunny_colored.png) |
 | dragon, 62 scans | ![](docs/images/dragon.png) | ![](docs/images/dragon_colored.png) |
 
